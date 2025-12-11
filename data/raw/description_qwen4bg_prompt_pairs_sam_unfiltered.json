@@ -1,0 +1,22 @@
+[
+      {
+            "prompt1": "A tidy reading nook setup.",
+            "description1": "A cozy corner with soft lighting, a cushioned chair, a bookshelf filled with books, and a small side table with a warm beverage.",
+            "prompt2": "A cluttered reading corner.",
+            "description2": "Stacks of books, a half-empty coffee cup, a worn armchair, and a pile of papers scattered across a small table.",
+            "ans1": "Yes.",
+            "ans2": "Yes.",
+            "ans3": "Yes.",
+            "ans4": "Yes."
+      },
+      {
+            "prompt1": "A cuddly bear toy in a child's room.",
+            "description1": "A soft, plush bear with a friendly face, sitting on a bed with toys and a colorful rug around it, and a window with sunlight streaming in.",
+            "prompt2": "A concrete bear sculpture in a public park.",
+            "description2": "The bear is made of concrete with rough, textured surfaces and stands outdoors surrounded by grass, benches, and trees under natural daylight.",
+            "ans1": "Yes.",
+            "ans2": "Yes.",
+            "ans3": "Yes.",
+            "ans4": "Yes."
+      }
+]

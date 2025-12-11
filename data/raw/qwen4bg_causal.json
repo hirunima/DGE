@@ -1,0 +1,28 @@
+[
+      {
+            "positive": {
+                  "description": "A sleek, single chair beside a yellow, opaque book.",
+                  "context": "A tidy reading nook setup."
+            },
+            "negative": {
+                  "description": "A bulky, long chair beside a dirty, short yellow book.",
+                  "context": "A cluttered reading corner."
+            },
+            "filename": {
+                  "filename": "000000000139.json"
+            }
+      },
+      {
+            "positive": {
+                  "description": "A soft, fluffy, two-colored bear.",
+                  "context": "A cuddly bear toy in a child's room."
+            },
+            "negative": {
+                  "description": "A hard, cold, two-colored bear made of concrete.",
+                  "context": "A concrete bear sculpture in a public park."
+            },
+            "filename": {
+                  "filename": "000000000285.json"
+            }
+      }
+]

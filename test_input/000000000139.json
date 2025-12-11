@@ -1,0 +1,1580 @@
+{
+  "image_id": 139,
+  "image_path": "/fs/nexus-projects/scene_graph_sd/ovad/images/000000000139.png",
+  "items": [
+    {
+      "object_id": 0,
+      "category": "chair",
+      "original attributes": [
+        "clean/neat",
+        "single-colored/unicolored",
+        "brown",
+        "single/one/individual/sole",
+        "wood/wooden/bamboo/hardwood",
+        "opaque",
+        "plain",
+        "vertical/upright/standing",
+        "empty",
+        "smooth/sleek",
+        "light/bright"
+      ],
+      "sorted attributes": [
+        "vertical/upright/standing",
+        "smooth/sleek",
+        "opaque",
+        "single-colored/unicolored",
+        "light/bright",
+        "plain",
+        "clean/neat",
+        "brown",
+        "empty",
+        "single/one/individual/sole",
+        "wood/wooden/bamboo/hardwood"
+      ],
+      "five most utilized attributes": [
+        "vertical/upright/standing",
+        "smooth/sleek",
+        "opaque",
+        "single-colored/unicolored",
+        "light/bright"
+      ],
+      "five least utilized attributes": [
+        "clean/neat",
+        "brown",
+        "empty",
+        "single/one/individual/sole",
+        "wood/wooden/bamboo/hardwood"
+      ],
+      "five negative attributes": [
+        "long",
+        "short",
+        "messy/disordered/unordered/disorganized/unorganized/cluttered/untidy",
+        "big/large/giant/huge",
+        "ordered/arranged/organized/tidy"
+      ],
+      "bbox": [
+        290.69,
+        218.0,
+        61.83,
+        98.48
+      ],
+      "closest_bbox": [
+        358.98,
+        218.05,
+        56.0,
+        102.83
+      ],
+      "closest_category": "chair",
+      "closest_id": 14,
+      "relationship_llava": {
+        "subject": 0,
+        "relation": "Opposite each other",
+        "object": 14
+      },
+      "llava_relationship_correct": false,
+      "relationship_qwen": {
+        "subject": 0,
+        "relation": "Adjacent, side by side",
+        "object": 14
+      },
+      "qwen_relationship_correct": false,
+      "relationship_final": {
+        "subject": [
+          "chair",
+          0
+        ],
+        "relation": "adjacent",
+        "object": [
+          "chair",
+          14
+        ]
+      },
+      "relationship_final_id": {
+        "subject": 0,
+        "relation": "adjacent",
+        "object": 14
+      }
+    },
+    {
+      "object_id": 1,
+      "category": "person",
+      "original attributes": [
+        "green clothes",
+        "single/one/individual/sole",
+        "tan hair",
+        "short",
+        "light/bright hair",
+        "curly/curled",
+        "adult/old/aged",
+        "vertical/upright/standing"
+      ],
+      "sorted attributes": [
+        "vertical/upright/standing",
+        "adult/old/aged",
+        "light/bright hair",
+        "short",
+        "green clothes",
+        "curly/curled",
+        "tan hair",
+        "single/one/individual/sole"
+      ],
+      "five most utilized attributes": [
+        "vertical/upright/standing",
+        "adult/old/aged",
+        "light/bright hair",
+        "short",
+        "green clothes"
+      ],
+      "five least utilized attributes": [
+        "short",
+        "green clothes",
+        "curly/curled",
+        "tan hair",
+        "single/one/individual/sole"
+      ],
+      "five negative attributes": [
+        "dotted/speckled/spotted clothes",
+        "floral clothes",
+        "lettered clothes",
+        "angry/mad",
+        "female/woman/girl"
+      ],
+      "bbox": [
+        384.43,
+        172.21,
+        15.12,
+        35.74
+      ],
+      "closest_bbox": [
+        412.25,
+        219.02,
+        9.63,
+        12.52
+      ],
+      "closest_category": "chair",
+      "closest_id": 16,
+      "relationship_llava": {
+        "subject": 16,
+        "relation": "Sitting on",
+        "object": 1
+      },
+      "llava_relationship_correct": false,
+      "relationship_qwen": {
+        "subject": 1,
+        "relation": "sitting on",
+        "object": 16
+      },
+      "qwen_relationship_correct": false,
+      "relationship_final": {
+        "subject": [
+          "person",
+          1
+        ],
+        "relation": "behind",
+        "object": [
+          "chair",
+          16
+        ]
+      },
+      "relationship_final_id": {
+        "subject": 1,
+        "relation": "behind",
+        "object": 16
+      }
+    },
+    {
+      "object_id": 2,
+      "category": "dining table",
+      "original attributes": [
+        "clean/neat",
+        "single-colored/unicolored",
+        "brown",
+        "single/one/individual/sole",
+        "long",
+        "wood/wooden/bamboo/hardwood",
+        "opaque",
+        "ordered/arranged/organized/tidy",
+        "plain",
+        "horizontal/lying",
+        "smooth/sleek",
+        "light/bright"
+      ],
+      "sorted attributes": [
+        "smooth/sleek",
+        "opaque",
+        "single-colored/unicolored",
+        "light/bright",
+        "plain",
+        "horizontal/lying",
+        "clean/neat",
+        "brown",
+        "long",
+        "single/one/individual/sole",
+        "wood/wooden/bamboo/hardwood",
+        "ordered/arranged/organized/tidy"
+      ],
+      "five most utilized attributes": [
+        "smooth/sleek",
+        "opaque",
+        "single-colored/unicolored",
+        "light/bright",
+        "plain"
+      ],
+      "five least utilized attributes": [
+        "brown",
+        "long",
+        "single/one/individual/sole",
+        "wood/wooden/bamboo/hardwood",
+        "ordered/arranged/organized/tidy"
+      ],
+      "five negative attributes": [
+        "big/large/giant/huge",
+        "small/little/tiny",
+        "closed",
+        "covered",
+        "cracked"
+      ],
+      "bbox": [
+        321.21,
+        231.22,
+        125.56,
+        88.93
+      ],
+      "closest_bbox": [
+        413.2,
+        223.01,
+        30.17,
+        81.36
+      ],
+      "closest_category": "chair",
+      "closest_id": 6,
+      "relationship_llava": {
+        "subject": 6,
+        "relation": "in front of",
+        "object": 2
+      },
+      "llava_relationship_correct": false,
+      "relationship_qwen": {
+        "subject": 2,
+        "relation": "Adjacent, side by side",
+        "object": 6
+      },
+      "qwen_relationship_correct": false,
+      "relationship_final": {
+        "subject": [
+          "dining table",
+          2
+        ],
+        "relation": "adjacent",
+        "object": [
+          "chair",
+          6
+        ]
+      },
+      "relationship_final_id": {
+        "subject": 2,
+        "relation": "adjacent",
+        "object": 6
+      }
+    },
+    {
+      "object_id": 3,
+      "category": "book",
+      "original attributes": [
+        "single-colored/unicolored",
+        "yellow",
+        "single/one/individual/sole",
+        "paper/cardboard",
+        "opaque",
+        "ordered/arranged/organized/tidy",
+        "plain",
+        "vertical/upright/standing",
+        "closed",
+        "smooth/sleek",
+        "light/bright"
+      ],
+      "sorted attributes": [
+        "vertical/upright/standing",
+        "smooth/sleek",
+        "opaque",
+        "single-colored/unicolored",
+        "light/bright",
+        "plain",
+        "closed",
+        "yellow",
+        "paper/cardboard",
+        "single/one/individual/sole",
+        "ordered/arranged/organized/tidy"
+      ],
+      "five most utilized attributes": [
+        "vertical/upright/standing",
+        "smooth/sleek",
+        "opaque",
+        "single-colored/unicolored",
+        "light/bright"
+      ],
+      "five least utilized attributes": [
+        "closed",
+        "yellow",
+        "paper/cardboard",
+        "single/one/individual/sole",
+        "ordered/arranged/organized/tidy"
+      ],
+      "five negative attributes": [
+        "clean/neat",
+        "unclean/dirt/dirty/muddy",
+        "long",
+        "big/large/giant/huge",
+        "short"
+      ],
+      "bbox": [
+        604.77,
+        305.89,
+        14.34,
+        45.71
+      ],
+      "closest_bbox": [
+        613.24,
+        308.24,
+        12.88,
+        46.44
+      ],
+      "closest_category": "book",
+      "closest_id": 7,
+      "relationship_llava": {
+        "subject": 3,
+        "relation": "in to right of in",
+        "object": 7
+      },
+      "llava_relationship_correct": false,
+      "relationship_qwen": {
+        "subject": 3,
+        "relation": "Adjacent, side by side",
+        "object": 7
+      },
+      "qwen_relationship_correct": false,
+      "relationship_final": {
+        "subject": [
+          "book",
+          3
+        ],
+        "relation": "side by side",
+        "object": [
+          "book",
+          7
+        ]
+      },
+      "relationship_final_id": {
+        "subject": 3,
+        "relation": "side by side",
+        "object": 7
+      }
+    },
+    {
+      "object_id": 4,
+      "category": "chair",
+      "original attributes": [
+        "single-colored/unicolored",
+        "brown",
+        "single/one/individual/sole",
+        "wood/wooden/bamboo/hardwood",
+        "opaque",
+        "plain",
+        "vertical/upright/standing",
+        "empty",
+        "smooth/sleek",
+        "light/bright"
+      ],
+      "sorted attributes": [
+        "vertical/upright/standing",
+        "smooth/sleek",
+        "opaque",
+        "single-colored/unicolored",
+        "light/bright",
+        "plain",
+        "brown",
+        "empty",
+        "single/one/individual/sole",
+        "wood/wooden/bamboo/hardwood"
+      ],
+      "five most utilized attributes": [
+        "vertical/upright/standing",
+        "smooth/sleek",
+        "opaque",
+        "single-colored/unicolored",
+        "light/bright"
+      ],
+      "five least utilized attributes": [
+        "plain",
+        "brown",
+        "empty",
+        "single/one/individual/sole",
+        "wood/wooden/bamboo/hardwood"
+      ],
+      "five negative attributes": [
+        "clean/neat",
+        "unclean/dirt/dirty/muddy",
+        "long",
+        "messy/disordered/unordered/disorganized/unorganized/cluttered/untidy",
+        "big/large/giant/huge"
+      ],
+      "bbox": [
+        317.4,
+        219.24,
+        21.58,
+        11.59
+      ],
+      "closest_bbox": [
+        336.79,
+        199.5,
+        9.73,
+        16.73
+      ],
+      "closest_category": "vase",
+      "closest_id": 17,
+      "relationship_llava": {
+        "subject": 4,
+        "relation": "in , and in",
+        "object": 17
+      },
+      "llava_relationship_correct": false,
+      "relationship_qwen": {
+        "subject": 4,
+        "relation": "to left of",
+        "object": 17
+      },
+      "qwen_relationship_correct": true,
+      "relationship_final": {
+        "subject": [
+          "chair",
+          4
+        ],
+        "relation": "to left of",
+        "object": [
+          "vase",
+          17
+        ]
+      },
+      "relationship_final_id": {
+        "subject": 4,
+        "relation": "to left of",
+        "object": 17
+      }
+    },
+    {
+      "object_id": 5,
+      "category": "person",
+      "original attributes": [
+        "black clothes",
+        "plain clothes",
+        "single/one/individual/sole",
+        "tan hair",
+        "long",
+        "light/bright hair",
+        "straight",
+        "adult/old/aged",
+        "vertical/upright/standing"
+      ],
+      "sorted attributes": [
+        "vertical/upright/standing",
+        "adult/old/aged",
+        "plain clothes",
+        "black clothes",
+        "straight",
+        "long",
+        "light/bright hair",
+        "tan hair",
+        "single/one/individual/sole"
+      ],
+      "five most utilized attributes": [
+        "vertical/upright/standing",
+        "adult/old/aged",
+        "plain clothes",
+        "black clothes",
+        "straight"
+      ],
+      "five least utilized attributes": [
+        "straight",
+        "long",
+        "light/bright hair",
+        "tan hair",
+        "single/one/individual/sole"
+      ],
+      "five negative attributes": [
+        "angry/mad",
+        "disgust/frowning",
+        "female/woman/girl",
+        "fear/surprise",
+        "happy/smiling/laughing/grinning/joyful"
+      ],
+      "bbox": [
+        412.8,
+        157.61,
+        53.05,
+        138.01
+      ]
+    },
+    {
+      "object_id": 6,
+      "category": "chair",
+      "original attributes": [
+        "clean/neat",
+        "single-colored/unicolored",
+        "brown",
+        "single/one/individual/sole",
+        "wood/wooden/bamboo/hardwood",
+        "opaque",
+        "plain",
+        "vertical/upright/standing",
+        "empty",
+        "smooth/sleek",
+        "light/bright"
+      ],
+      "sorted attributes": [
+        "vertical/upright/standing",
+        "smooth/sleek",
+        "opaque",
+        "single-colored/unicolored",
+        "light/bright",
+        "plain",
+        "clean/neat",
+        "brown",
+        "empty",
+        "single/one/individual/sole",
+        "wood/wooden/bamboo/hardwood"
+      ],
+      "five most utilized attributes": [
+        "vertical/upright/standing",
+        "smooth/sleek",
+        "opaque",
+        "single-colored/unicolored",
+        "light/bright"
+      ],
+      "five least utilized attributes": [
+        "clean/neat",
+        "brown",
+        "empty",
+        "single/one/individual/sole",
+        "wood/wooden/bamboo/hardwood"
+      ],
+      "five negative attributes": [
+        "long",
+        "short",
+        "messy/disordered/unordered/disorganized/unorganized/cluttered/untidy",
+        "big/large/giant/huge",
+        "ordered/arranged/organized/tidy"
+      ],
+      "bbox": [
+        413.2,
+        223.01,
+        30.17,
+        81.36
+      ]
+    },
+    {
+      "object_id": 7,
+      "category": "book",
+      "original attributes": [
+        "single-colored/unicolored",
+        "yellow",
+        "single/one/individual/sole",
+        "paper/cardboard",
+        "opaque",
+        "ordered/arranged/organized/tidy",
+        "plain",
+        "vertical/upright/standing",
+        "closed",
+        "smooth/sleek",
+        "light/bright"
+      ],
+      "sorted attributes": [
+        "vertical/upright/standing",
+        "smooth/sleek",
+        "opaque",
+        "single-colored/unicolored",
+        "light/bright",
+        "plain",
+        "closed",
+        "yellow",
+        "paper/cardboard",
+        "single/one/individual/sole",
+        "ordered/arranged/organized/tidy"
+      ],
+      "five most utilized attributes": [
+        "vertical/upright/standing",
+        "smooth/sleek",
+        "opaque",
+        "single-colored/unicolored",
+        "light/bright"
+      ],
+      "five least utilized attributes": [
+        "closed",
+        "yellow",
+        "paper/cardboard",
+        "single/one/individual/sole",
+        "ordered/arranged/organized/tidy"
+      ],
+      "five negative attributes": [
+        "clean/neat",
+        "unclean/dirt/dirty/muddy",
+        "long",
+        "big/large/giant/huge",
+        "short"
+      ],
+      "bbox": [
+        613.24,
+        308.24,
+        12.88,
+        46.44
+      ]
+    },
+    {
+      "object_id": 8,
+      "category": "vase",
+      "original attributes": [
+        "single/one/individual/sole",
+        "long",
+        "glass",
+        "transparent/translucent",
+        "ordered/arranged/organized/tidy",
+        "vertical/upright/standing",
+        "full/whole",
+        "smooth/sleek",
+        "light/bright"
+      ],
+      "sorted attributes": [
+        "vertical/upright/standing",
+        "smooth/sleek",
+        "light/bright",
+        "full/whole",
+        "long",
+        "transparent/translucent",
+        "glass",
+        "single/one/individual/sole",
+        "ordered/arranged/organized/tidy"
+      ],
+      "five most utilized attributes": [
+        "vertical/upright/standing",
+        "smooth/sleek",
+        "light/bright",
+        "full/whole",
+        "long"
+      ],
+      "five least utilized attributes": [
+        "long",
+        "transparent/translucent",
+        "glass",
+        "single/one/individual/sole",
+        "ordered/arranged/organized/tidy"
+      ],
+      "five negative attributes": [
+        "clean/neat",
+        "unclean/dirt/dirty/muddy",
+        "multicolored/colorful",
+        "black",
+        "dotted/speckled/spotted"
+      ],
+      "bbox": [
+        350.76,
+        208.84,
+        11.37,
+        22.55
+      ],
+      "closest_bbox": [
+        336.79,
+        199.5,
+        9.73,
+        16.73
+      ],
+      "closest_category": "vase",
+      "closest_id": 17,
+      "relationship_llava": {
+        "subject": 8,
+        "relation": "Opposite corners of image",
+        "object": 17
+      },
+      "llava_relationship_correct": false,
+      "relationship_qwen": {
+        "subject": 17,
+        "relation": "side by side",
+        "object": 8
+      },
+      "qwen_relationship_correct": true,
+      "relationship_final": {
+        "subject": [
+          "vase",
+          17
+        ],
+        "relation": "side by side",
+        "object": [
+          "vase",
+          8
+        ]
+      },
+      "relationship_final_id": {
+        "subject": 17,
+        "relation": "side by side",
+        "object": 8
+      }
+    },
+    {
+      "object_id": 9,
+      "category": "refrigerator",
+      "original attributes": [
+        "clean/neat",
+        "single-colored/unicolored",
+        "gray",
+        "single/one/individual/sole",
+        "metal/metallic/aluminum/brass/copper-zinc/iron/stainless steel/steel/silver",
+        "reflective",
+        "ordered/arranged/organized/tidy",
+        "plain",
+        "vertical/upright/standing",
+        "closed",
+        "smooth/sleek",
+        "light/bright"
+      ],
+      "sorted attributes": [
+        "vertical/upright/standing",
+        "smooth/sleek",
+        "single-colored/unicolored",
+        "light/bright",
+        "plain",
+        "clean/neat",
+        "gray",
+        "closed",
+        "reflective",
+        "single/one/individual/sole",
+        "metal/metallic/aluminum/brass/copper-zinc/iron/stainless steel/steel/silver",
+        "ordered/arranged/organized/tidy"
+      ],
+      "five most utilized attributes": [
+        "vertical/upright/standing",
+        "smooth/sleek",
+        "single-colored/unicolored",
+        "light/bright",
+        "plain"
+      ],
+      "five least utilized attributes": [
+        "closed",
+        "reflective",
+        "single/one/individual/sole",
+        "metal/metallic/aluminum/brass/copper-zinc/iron/stainless steel/steel/silver",
+        "ordered/arranged/organized/tidy"
+      ],
+      "five negative attributes": [
+        "long",
+        "short",
+        "big/large/giant/huge",
+        "small/little/tiny"
+      ],
+      "bbox": [
+        493.1,
+        174.34,
+        20.29,
+        108.31
+      ],
+      "closest_bbox": [
+        412.8,
+        157.61,
+        53.05,
+        138.01
+      ],
+      "closest_category": "person",
+      "closest_id": 5,
+      "relationship_llava": {
+        "subject": 9,
+        "relation": "Opposite sides of room",
+        "object": 5
+      },
+      "llava_relationship_correct": false,
+      "relationship_qwen": {
+        "subject": 9,
+        "relation": "behind",
+        "object": 5
+      },
+      "qwen_relationship_correct": true,
+      "relationship_final": {
+        "subject": [
+          "refrigerator",
+          9
+        ],
+        "relation": "behind",
+        "object": [
+          "person",
+          5
+        ]
+      },
+      "relationship_final_id": {
+        "subject": 9,
+        "relation": "behind",
+        "object": 5
+      }
+    },
+    {
+      "object_id": 10,
+      "category": "microwave",
+      "original attributes": [
+        "two-colored",
+        "black",
+        "gray",
+        "single/one/individual/sole",
+        "metal/metallic/aluminum/brass/copper-zinc/iron/stainless steel/steel/silver",
+        "opaque",
+        "closed",
+        "smooth/sleek",
+        "dark"
+      ],
+      "sorted attributes": [
+        "smooth/sleek",
+        "opaque",
+        "dark",
+        "black",
+        "two-colored",
+        "gray",
+        "closed",
+        "single/one/individual/sole",
+        "metal/metallic/aluminum/brass/copper-zinc/iron/stainless steel/steel/silver"
+      ],
+      "five most utilized attributes": [
+        "smooth/sleek",
+        "opaque",
+        "dark",
+        "black",
+        "two-colored"
+      ],
+      "five least utilized attributes": [
+        "two-colored",
+        "gray",
+        "closed",
+        "single/one/individual/sole",
+        "metal/metallic/aluminum/brass/copper-zinc/iron/stainless steel/steel/silver"
+      ],
+      "five negative attributes": [
+        "clean/neat",
+        "unclean/dirt/dirty/muddy",
+        "long",
+        "messy/disordered/unordered/disorganized/unorganized/cluttered/untidy",
+        "dotted/speckled/spotted"
+      ],
+      "bbox": [
+        512.22,
+        205.75,
+        14.74,
+        15.97
+      ],
+      "closest_bbox": [
+        493.1,
+        174.34,
+        20.29,
+        108.31
+      ],
+      "closest_category": "refrigerator",
+      "closest_id": 9,
+      "relationship_llava": {
+        "subject": 10,
+        "relation": "in front of",
+        "object": 9
+      },
+      "llava_relationship_correct": false,
+      "relationship_qwen": {
+        "subject": 10,
+        "relation": "Adjacent, side-by-side",
+        "object": 9
+      },
+      "qwen_relationship_correct": false,
+      "relationship_final": {
+        "subject": [
+          "refrigerator",
+          9
+        ],
+        "relation": "adjacent",
+        "object": [
+          "microwave",
+          10
+        ]
+      },
+      "relationship_final_id": {
+        "subject": 9,
+        "relation": "adjacent",
+        "object": 10
+      }
+    },
+    {
+      "object_id": 11,
+      "category": "potted plant",
+      "original attributes": [
+        "two-colored",
+        "green",
+        "red",
+        "single/one/individual/sole",
+        "ceramic/brick/porcelain",
+        "opaque",
+        "plain",
+        "vertical/upright/standing",
+        "small/little/tiny",
+        "smooth/sleek",
+        "light/bright"
+      ],
+      "sorted attributes": [
+        "vertical/upright/standing",
+        "smooth/sleek",
+        "opaque",
+        "light/bright",
+        "plain",
+        "two-colored",
+        "small/little/tiny",
+        "red",
+        "green",
+        "single/one/individual/sole",
+        "ceramic/brick/porcelain"
+      ],
+      "five most utilized attributes": [
+        "vertical/upright/standing",
+        "smooth/sleek",
+        "opaque",
+        "light/bright",
+        "plain"
+      ],
+      "five least utilized attributes": [
+        "small/little/tiny",
+        "red",
+        "green",
+        "single/one/individual/sole",
+        "ceramic/brick/porcelain"
+      ],
+      "five negative attributes": [
+        "clean/neat",
+        "unclean/dirt/dirty/muddy",
+        "long",
+        "messy/disordered/unordered/disorganized/unorganized/cluttered/untidy",
+        "closed"
+      ],
+      "bbox": [
+        236.98,
+        142.51,
+        24.7,
+        69.5
+      ],
+      "closest_bbox": [
+        241.24,
+        194.99,
+        14.22,
+        17.63
+      ],
+      "closest_category": "vase",
+      "closest_id": 18,
+      "relationship_llava": {
+        "subject": 11,
+        "relation": "inside",
+        "object": 18
+      },
+      "llava_relationship_correct": true,
+      "relationship_qwen": {
+        "subject": 18,
+        "relation": "above",
+        "object": 11
+      },
+      "qwen_relationship_correct": false,
+      "relationship_final": {
+        "subject": [
+          "potted plant",
+          11
+        ],
+        "relation": "inside",
+        "object": [
+          "vase",
+          18
+        ]
+      },
+      "relationship_final_id": {
+        "subject": 11,
+        "relation": "inside",
+        "object": 18
+      }
+    },
+    {
+      "object_id": 12,
+      "category": "vase",
+      "original attributes": [
+        "clean/neat",
+        "single-colored/unicolored",
+        "green",
+        "single/one/individual/sole",
+        "glass",
+        "opaque",
+        "plain",
+        "vertical/upright/standing",
+        "full/whole",
+        "smooth/sleek",
+        "light/bright"
+      ],
+      "sorted attributes": [
+        "vertical/upright/standing",
+        "smooth/sleek",
+        "opaque",
+        "single-colored/unicolored",
+        "light/bright",
+        "plain",
+        "clean/neat",
+        "full/whole",
+        "green",
+        "glass",
+        "single/one/individual/sole"
+      ],
+      "five most utilized attributes": [
+        "vertical/upright/standing",
+        "smooth/sleek",
+        "opaque",
+        "single-colored/unicolored",
+        "light/bright"
+      ],
+      "five least utilized attributes": [
+        "clean/neat",
+        "full/whole",
+        "green",
+        "glass",
+        "single/one/individual/sole"
+      ],
+      "five negative attributes": [
+        "long",
+        "short",
+        "messy/disordered/unordered/disorganized/unorganized/cluttered/untidy",
+        "big/large/giant/huge",
+        "ordered/arranged/organized/tidy"
+      ],
+      "bbox": [
+        549.06,
+        309.43,
+        36.68,
+        89.67
+      ],
+      "closest_bbox": [
+        604.77,
+        305.89,
+        14.34,
+        45.71
+      ],
+      "closest_category": "book",
+      "closest_id": 3,
+      "relationship_llava": {
+        "subject": 12,
+        "relation": "inside",
+        "object": 3
+      },
+      "llava_relationship_correct": false,
+      "relationship_qwen": {
+        "subject": 12,
+        "relation": "to left of",
+        "object": 3
+      },
+      "qwen_relationship_correct": true,
+      "relationship_final": {
+        "subject": [
+          "vase",
+          12
+        ],
+        "relation": "to left of",
+        "object": [
+          "book",
+          3
+        ]
+      },
+      "relationship_final_id": {
+        "subject": 12,
+        "relation": "to left of",
+        "object": 3
+      }
+    },
+    {
+      "object_id": 13,
+      "category": "tv",
+      "original attributes": [
+        "clean/neat",
+        "single-colored/unicolored",
+        "black",
+        "single/one/individual/sole",
+        "long",
+        "polymers/plastic/rubber/styrofoam/polymer",
+        "reflective",
+        "plain",
+        "vertical/upright/standing",
+        "big/large/giant/huge",
+        "off",
+        "smooth/sleek",
+        "dark"
+      ],
+      "sorted attributes": [
+        "vertical/upright/standing",
+        "smooth/sleek",
+        "single-colored/unicolored",
+        "plain",
+        "dark",
+        "black",
+        "clean/neat",
+        "long",
+        "reflective",
+        "off",
+        "single/one/individual/sole",
+        "polymers/plastic/rubber/styrofoam/polymer",
+        "big/large/giant/huge"
+      ],
+      "five most utilized attributes": [
+        "vertical/upright/standing",
+        "smooth/sleek",
+        "single-colored/unicolored",
+        "plain",
+        "dark"
+      ],
+      "five least utilized attributes": [
+        "reflective",
+        "off",
+        "single/one/individual/sole",
+        "polymers/plastic/rubber/styrofoam/polymer",
+        "big/large/giant/huge"
+      ],
+      "five negative attributes": [
+        "messy/disordered/unordered/disorganized/unorganized/cluttered/untidy",
+        "ordered/arranged/organized/tidy"
+      ],
+      "bbox": [
+        7.03,
+        167.76,
+        149.32,
+        94.87
+      ],
+      "closest_bbox": [
+        241.24,
+        194.99,
+        14.22,
+        17.63
+      ],
+      "closest_category": "vase",
+      "closest_id": 18,
+      "relationship_llava": {
+        "subject": 13,
+        "relation": "inside",
+        "object": 18
+      },
+      "llava_relationship_correct": false,
+      "relationship_qwen": {
+        "subject": 13,
+        "relation": "above",
+        "object": 18
+      },
+      "qwen_relationship_correct": false,
+      "relationship_final": {
+        "subject": [
+          "tv",
+          13
+        ],
+        "relation": "to left of",
+        "object": [
+          "vase",
+          18
+        ]
+      },
+      "relationship_final_id": {
+        "subject": 13,
+        "relation": "to left of",
+        "object": 18
+      }
+    },
+    {
+      "object_id": 14,
+      "category": "chair",
+      "original attributes": [
+        "clean/neat",
+        "single-colored/unicolored",
+        "brown",
+        "single/one/individual/sole",
+        "wood/wooden/bamboo/hardwood",
+        "opaque",
+        "plain",
+        "vertical/upright/standing",
+        "empty",
+        "smooth/sleek",
+        "light/bright"
+      ],
+      "sorted attributes": [
+        "vertical/upright/standing",
+        "smooth/sleek",
+        "opaque",
+        "single-colored/unicolored",
+        "light/bright",
+        "plain",
+        "clean/neat",
+        "brown",
+        "empty",
+        "single/one/individual/sole",
+        "wood/wooden/bamboo/hardwood"
+      ],
+      "five most utilized attributes": [
+        "vertical/upright/standing",
+        "smooth/sleek",
+        "opaque",
+        "single-colored/unicolored",
+        "light/bright"
+      ],
+      "five least utilized attributes": [
+        "clean/neat",
+        "brown",
+        "empty",
+        "single/one/individual/sole",
+        "wood/wooden/bamboo/hardwood"
+      ],
+      "five negative attributes": [
+        "long",
+        "short",
+        "messy/disordered/unordered/disorganized/unorganized/cluttered/untidy",
+        "big/large/giant/huge",
+        "ordered/arranged/organized/tidy"
+      ],
+      "bbox": [
+        358.98,
+        218.05,
+        56.0,
+        102.83
+      ]
+    },
+    {
+      "object_id": 15,
+      "category": "clock",
+      "original attributes": [
+        "two-colored",
+        "black",
+        "brown",
+        "single/one/individual/sole",
+        "opaque",
+        "plaid/tartan/checkered",
+        "vertical/upright/standing",
+        "smooth/sleek",
+        "light/bright"
+      ],
+      "sorted attributes": [
+        "vertical/upright/standing",
+        "smooth/sleek",
+        "opaque",
+        "light/bright",
+        "black",
+        "two-colored",
+        "brown",
+        "plaid/tartan/checkered",
+        "single/one/individual/sole"
+      ],
+      "five most utilized attributes": [
+        "vertical/upright/standing",
+        "smooth/sleek",
+        "opaque",
+        "light/bright",
+        "black"
+      ],
+      "five least utilized attributes": [
+        "black",
+        "two-colored",
+        "brown",
+        "plaid/tartan/checkered",
+        "single/one/individual/sole"
+      ],
+      "five negative attributes": [
+        "clean/neat",
+        "unclean/dirt/dirty/muddy",
+        "long",
+        "asphalt/cement/clay/concrete/stucco",
+        "messy/disordered/unordered/disorganized/unorganized/cluttered/untidy"
+      ],
+      "bbox": [
+        447.77,
+        121.12,
+        13.97,
+        21.88
+      ],
+      "closest_bbox": [
+        384.43,
+        172.21,
+        15.12,
+        35.74
+      ],
+      "closest_category": "person",
+      "closest_id": 1,
+      "relationship_llava": {
+        "subject": 15,
+        "relation": "Opposite sides of room",
+        "object": 1
+      },
+      "llava_relationship_correct": false,
+      "relationship_qwen": {
+        "subject": 15,
+        "relation": "above 's head",
+        "object": 1
+      },
+      "qwen_relationship_correct": false,
+      "relationship_final": {
+        "subject": [
+          "person",
+          1
+        ],
+        "relation": "above",
+        "object": [
+          "clock",
+          15
+        ]
+      },
+      "relationship_final_id": {
+        "subject": 1,
+        "relation": "above",
+        "object": 15
+      }
+    },
+    {
+      "object_id": 16,
+      "category": "chair",
+      "original attributes": [
+        "single-colored/unicolored",
+        "brown",
+        "single/one/individual/sole",
+        "wood/wooden/bamboo/hardwood",
+        "opaque",
+        "plain",
+        "vertical/upright/standing",
+        "empty",
+        "smooth/sleek",
+        "light/bright"
+      ],
+      "sorted attributes": [
+        "vertical/upright/standing",
+        "smooth/sleek",
+        "opaque",
+        "single-colored/unicolored",
+        "light/bright",
+        "plain",
+        "brown",
+        "empty",
+        "single/one/individual/sole",
+        "wood/wooden/bamboo/hardwood"
+      ],
+      "five most utilized attributes": [
+        "vertical/upright/standing",
+        "smooth/sleek",
+        "opaque",
+        "single-colored/unicolored",
+        "light/bright"
+      ],
+      "five least utilized attributes": [
+        "plain",
+        "brown",
+        "empty",
+        "single/one/individual/sole",
+        "wood/wooden/bamboo/hardwood"
+      ],
+      "five negative attributes": [
+        "clean/neat",
+        "unclean/dirt/dirty/muddy",
+        "long",
+        "messy/disordered/unordered/disorganized/unorganized/cluttered/untidy",
+        "big/large/giant/huge"
+      ],
+      "bbox": [
+        412.25,
+        219.02,
+        9.63,
+        12.52
+      ]
+    },
+    {
+      "object_id": 17,
+      "category": "vase",
+      "original attributes": [
+        "single-colored/unicolored",
+        "red",
+        "single/one/individual/sole",
+        "opaque",
+        "plain",
+        "vertical/upright/standing",
+        "smooth/sleek",
+        "light/bright"
+      ],
+      "sorted attributes": [
+        "vertical/upright/standing",
+        "smooth/sleek",
+        "opaque",
+        "single-colored/unicolored",
+        "light/bright",
+        "plain",
+        "red",
+        "single/one/individual/sole"
+      ],
+      "five most utilized attributes": [
+        "vertical/upright/standing",
+        "smooth/sleek",
+        "opaque",
+        "single-colored/unicolored",
+        "light/bright"
+      ],
+      "five least utilized attributes": [
+        "single-colored/unicolored",
+        "light/bright",
+        "plain",
+        "red",
+        "single/one/individual/sole"
+      ],
+      "five negative attributes": [
+        "clean/neat",
+        "unclean/dirt/dirty/muddy",
+        "long",
+        "asphalt/cement/clay/concrete/stucco",
+        "messy/disordered/unordered/disorganized/unorganized/cluttered/untidy"
+      ],
+      "bbox": [
+        336.79,
+        199.5,
+        9.73,
+        16.73
+      ]
+    },
+    {
+      "object_id": 18,
+      "category": "vase",
+      "original attributes": [
+        "single-colored/unicolored",
+        "red",
+        "single/one/individual/sole",
+        "ceramic/brick/porcelain",
+        "opaque",
+        "plain",
+        "vertical/upright/standing",
+        "full/whole",
+        "smooth/sleek",
+        "light/bright"
+      ],
+      "sorted attributes": [
+        "vertical/upright/standing",
+        "smooth/sleek",
+        "opaque",
+        "single-colored/unicolored",
+        "light/bright",
+        "plain",
+        "full/whole",
+        "red",
+        "single/one/individual/sole",
+        "ceramic/brick/porcelain"
+      ],
+      "five most utilized attributes": [
+        "vertical/upright/standing",
+        "smooth/sleek",
+        "opaque",
+        "single-colored/unicolored",
+        "light/bright"
+      ],
+      "five least utilized attributes": [
+        "plain",
+        "full/whole",
+        "red",
+        "single/one/individual/sole",
+        "ceramic/brick/porcelain"
+      ],
+      "five negative attributes": [
+        "clean/neat",
+        "unclean/dirt/dirty/muddy",
+        "long",
+        "messy/disordered/unordered/disorganized/unorganized/cluttered/untidy",
+        "big/large/giant/huge"
+      ],
+      "bbox": [
+        241.24,
+        194.99,
+        14.22,
+        17.63
+      ]
+    },
+    {
+      "object_id": 19,
+      "category": "tv",
+      "original attributes": [
+        "single-colored/unicolored",
+        "black",
+        "single/one/individual/sole",
+        "polymers/plastic/rubber/styrofoam/polymer",
+        "reflective",
+        "plain",
+        "big/large/giant/huge",
+        "smooth/sleek",
+        "dark"
+      ],
+      "sorted attributes": [
+        "smooth/sleek",
+        "single-colored/unicolored",
+        "plain",
+        "dark",
+        "black",
+        "reflective",
+        "single/one/individual/sole",
+        "polymers/plastic/rubber/styrofoam/polymer",
+        "big/large/giant/huge"
+      ],
+      "five most utilized attributes": [
+        "smooth/sleek",
+        "single-colored/unicolored",
+        "plain",
+        "dark",
+        "black"
+      ],
+      "five least utilized attributes": [
+        "black",
+        "reflective",
+        "single/one/individual/sole",
+        "polymers/plastic/rubber/styrofoam/polymer",
+        "big/large/giant/huge"
+      ],
+      "five negative attributes": [
+        "clean/neat",
+        "unclean/dirt/dirty/muddy",
+        "long",
+        "messy/disordered/unordered/disorganized/unorganized/cluttered/untidy",
+        "horizontal/lying"
+      ],
+      "bbox": [
+        557.21,
+        209.19,
+        81.35,
+        78.73
+      ],
+      "closest_bbox": [
+        604.77,
+        305.89,
+        14.34,
+        45.71
+      ],
+      "closest_category": "book",
+      "closest_id": 3,
+      "relationship_llava": {
+        "subject": 3,
+        "relation": "in front of",
+        "object": 19
+      },
+      "llava_relationship_correct": false,
+      "relationship_qwen": {
+        "subject": 19,
+        "relation": "above",
+        "object": 3
+      },
+      "qwen_relationship_correct": true,
+      "relationship_final": {
+        "subject": [
+          "tv",
+          19
+        ],
+        "relation": "above",
+        "object": [
+          "book",
+          3
+        ]
+      },
+      "relationship_final_id": {
+        "subject": 19,
+        "relation": "above",
+        "object": 3
+      }
+    }
+  ]
+}
