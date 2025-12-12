@@ -8,6 +8,9 @@ All functionality is delegated to specialized modules in the modules/ directory.
 import argparse
 import sys
 import os
+import random
+import numpy as np
+import torch
 
 from .modules.config import DEFAULT_SEED, DEFAULT_CAUSAL_FILE, DEFAULT_INPUT_DIR
 
@@ -21,6 +24,13 @@ def main():
     parser.add_argument("--causal_dir", type=str, default=DEFAULT_CAUSAL_FILE)
     parser.add_argument("--skip_desc", action="store_true")
     args = parser.parse_args()
+
+    # Set seeds for reproducibility
+    random.seed(args.seed)
+    np.random.seed(args.seed)
+    torch.manual_seed(args.seed)
+    if torch.cuda.is_available():
+        torch.cuda.manual_seed_all(args.seed)
 
     # Import model functions only when needed (to handle vLLM dependencies)
     from .modules.model import initialize_model

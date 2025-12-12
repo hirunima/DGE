@@ -12,7 +12,7 @@ DATA_RAW_DIR = os.path.join(PROJECT_ROOT, "data", "raw")
 DEFAULT_INPUT_DIR = "/fs/nexus-projects/scene_graph_sd/ovad/info_manual_checked_final"
 DEFAULT_OUTPUT_FILE = os.path.join(DATA_RAW_DIR, "description_qwen4bg_prompt_pairs_sam.json")
 DEFAULT_CAUSAL_FILE = os.path.join(DATA_RAW_DIR, "qwen4bg_causal.json")
-DEFAULT_SEED = 0
+DEFAULT_SEED = 42
 
 # Model configuration
 MODEL_NAME = "Qwen/Qwen3-VL-4B-Instruct"

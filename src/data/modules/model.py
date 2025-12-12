@@ -85,7 +85,6 @@ Description:
     desc_prompts, prompt_metadata = [], []
     omitted_cnt = 0
     for i, prompt_result in enumerate(prompts):
-        breakpoint()
         try:
             if not args.skip_causal:
                 output_text = prompt_result.outputs[0].text

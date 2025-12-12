@@ -1,19 +1,19 @@
 [
       {
-            "prompt1": "A tidy reading nook setup.",
-            "description1": "A cozy corner with soft lighting, a cushioned chair, a bookshelf filled with books, and a small side table with a warm beverage.",
-            "prompt2": "A cluttered reading corner.",
-            "description2": "Stacks of books, a half-empty coffee cup, a worn armchair, and a pile of papers scattered across a small table.",
+            "prompt1": "A quiet reading corner with no one present.",
+            "description1": "A cozy corner with soft lighting, a wooden chair, a bookshelf filled with books, and a small table with a cup of tea or coffee.",
+            "prompt2": "A cluttered room after a messy event.",
+            "description2": "A room with scattered furniture, overturned items, and a general sense of disarray, including spilled food, clothing strewn across the floor, and broken or knocked-over objects.",
             "ans1": "Yes.",
             "ans2": "Yes.",
             "ans3": "Yes.",
             "ans4": "Yes."
       },
       {
-            "prompt1": "A cuddly bear toy in a child's room.",
-            "description1": "A soft, plush bear with a friendly face, sitting on a bed with toys and a colorful rug around it, and a window with sunlight streaming in.",
-            "prompt2": "A concrete bear sculpture in a public park.",
-            "description2": "The bear is made of concrete with rough, textured surfaces and stands outdoors surrounded by grass, benches, and trees under natural daylight.",
+            "prompt1": "A bear in its natural habitat.",
+            "description1": "A bear with thick fur standing in a forested area, surrounded by trees, possibly with snow or fallen leaves on the ground.",
+            "prompt2": "A bear in an urban or artificial environment.",
+            "description2": "A bear wearing clothing or interacting with human-made objects like traffic lights or signage.",
             "ans1": "Yes.",
             "ans2": "Yes.",
             "ans3": "Yes.",
