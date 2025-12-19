@@ -1,19 +1,19 @@
 [
       {
-            "prompt1": "A quiet reading corner with no one present.",
-            "description1": "A cozy corner with soft lighting, a wooden chair, a bookshelf filled with books, and a small table with a cup of tea or coffee.",
-            "prompt2": "A cluttered room after a messy event.",
-            "description2": "A room with scattered furniture, overturned items, and a general sense of disarray, including spilled food, clothing strewn across the floor, and broken or knocked-over objects.",
+            "prompt1": "A garden path after a light rain.",
+            "description1": "The path glistens with water droplets, the stones or gravel are damp and reflective, and surrounding foliage is fresh and vibrant from the rain.",
+            "prompt2": "A garden path before a storm.",
+            "description2": "The path is damp with scattered leaves, the sky is dark and threatening, and the wind is visibly stirring the nearby grass and trees.",
             "ans1": "Yes.",
             "ans2": "Yes.",
             "ans3": "Yes.",
             "ans4": "Yes."
       },
       {
-            "prompt1": "A bear in its natural habitat.",
-            "description1": "A bear with thick fur standing in a forested area, surrounded by trees, possibly with snow or fallen leaves on the ground.",
-            "prompt2": "A bear in an urban or artificial environment.",
-            "description2": "A bear wearing clothing or interacting with human-made objects like traffic lights or signage.",
+            "prompt1": "Minimalist arrangement on a table.",
+            "description1": "A clean, uncluttered table with a few carefully chosen objects arranged with negative space and simple lines.",
+            "prompt2": "Overly decorative, cluttered display.",
+            "description2": "The image features excessive ornamental objects, overlapping layers of intricate designs, and crowded surfaces with no clear focal point.",
             "ans1": "Yes.",
             "ans2": "Yes.",
             "ans3": "Yes.",

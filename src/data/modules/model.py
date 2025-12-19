@@ -37,7 +37,8 @@ def initialize_model(seed: int = 0):
         top_k=TOP_K,
         top_p=TOP_P,
         max_tokens=MAX_TOKENS,
-        stop_token_ids=None
+        stop_token_ids=None, 
+        seed = seed
     )
     return model, sampling_params
 
@@ -61,7 +62,7 @@ def generate_reasoning_removed(model, prompts, reasoning_file=None, **kwargs):
 
 
 
-def get_description_prompts(args, prompts, json_metadata):
+def get_description_prompts(args, prompts, img_metadata):
     """Process prompts to generate descriptions based on causal contexts."""
     desc_prompt = """You are evaluating an text-to-image generation model. The model was given the following prompt: "{obs}".
 Describe, in one, short sentence, some key visual details the generated image should have that weren't mentioned in the prompt.
@@ -111,7 +112,7 @@ Description:
             prompt_metadata.append({
                 "prompt1": prompt_pairs["positive"]["context"],
                 "prompt2": prompt_pairs["negative"]["context"],
-                "filename": json_metadata[i]["filename"]
+                "filename": img_metadata[i]["filename"]
             })
         except Exception as e:
             print(e)

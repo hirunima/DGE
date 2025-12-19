@@ -8,7 +8,7 @@ from tqdm import tqdm
 from .config import MAX_ITEMS_PER_SCENE, MAX_ATTRIBUTES_PER_ITEM
 
 
-def process_json_file(file_path: str) -> str:
+def process_json_file(data: dict) -> str:
     """Process a single JSON file and extract scene graph data for LLM prompting.
 
     Args:
@@ -17,8 +17,6 @@ def process_json_file(file_path: str) -> str:
     Returns:
         Formatted prompt string for LLM processing
     """
-    with open(file_path, 'r') as f:
-        data = json.load(f)
 
     desc_prompt = """For the given scene graph, come up with a positive and a negative general context in the following format:
 
@@ -201,8 +199,9 @@ Output:
 
     # Limit to MAX_ITEMS_PER_SCENE items and filter attributes
     curr = {"items": [], "relationships": []}
-    items = data.get('items', [])
+    items = data.get('annotations', [])
     items = random.sample(items, min(len(items), MAX_ITEMS_PER_SCENE))
+    print("Selected objects:", [item.get('category', '') for item in items])
     for item in items:
         pos_attributes = item.get('original attributes', [])
         neg_attributes = item.get('five negative attributes', [])
@@ -213,7 +212,7 @@ Output:
         curr['items'].append({
             "object_id": item.get('object_id'),
             "category": item.get('category', ''),
-            "original attributes": random.sample(pos_attributes, min(len(pos_attributes), MAX_ATTRIBUTES_PER_ITEM)),
+            "original attributes": pos_attributes[:min(len(pos_attributes), MAX_ATTRIBUTES_PER_ITEM)],
             "negative attributes": random.sample(neg_attributes, min(len(neg_attributes), MAX_ATTRIBUTES_PER_ITEM))
         })
 
@@ -223,18 +222,18 @@ Output:
     return desc_prompt.format(sg=json.dumps(curr, indent=2))
 
 
-def process_directory(directory_path: str) -> List[Dict[str, str]]:
-    """Process all JSON files in the given directory and return a list of prompts."""
-    directory = Path(directory_path)
-    json_files = list(directory.glob('*.json'))
-    # json_files = random.sample(json_files, 10)
-    print(f"Found {len(json_files)} JSON files to process...")
-
+def process_data(file_name: str, sample=None) -> List[Dict[str, str]]:
+    """Process all or a subset of items from the given file and return a list of prompts."""
+    with open(file_name, 'r') as f:
+        data = json.load(f)['data']
+    if sample is not None:
+        data = random.sample(data, sample)
+    
     prompts = []
-    json_filenames = []
-    for json_file in tqdm(json_files, desc="Gathering description prompts"):
+    img_filenames = []
+    for img_data in tqdm(data, desc="Gathering description prompts"):
         try:
-            question = process_json_file(str(json_file))
+            question = process_json_file(img_data)
             prompt = (
                 "SYSTEM\nYou are a helpful assistant.\n"
                 f"USER\n/{question}\n"
@@ -244,8 +243,8 @@ def process_directory(directory_path: str) -> List[Dict[str, str]]:
                 "prompt": prompt
             }
             prompts.append(inputs)
-            json_filenames.append({"filename": json_file.name})
+            img_filenames.append({"filename": img_data['file_name']})
         except Exception as e:
-            print(f"Error processing {json_file.name}: {str(e)}")
+            print(f"Error processing {img_data['file_name']}: {str(e)}")
 
-    return prompts, json_filenames
+    return prompts, img_filenames

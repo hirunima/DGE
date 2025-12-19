@@ -1,28 +1,28 @@
 [
       {
             "positive": {
-                  "description": "An opaque, paper book sits beside a single-colored, empty chair.",
-                  "context": "A quiet reading corner with no one present."
+                  "description": "A short, clean path and a small, disorganized garden.",
+                  "context": "A garden path after a light rain."
             },
             "negative": {
-                  "description": "A dirty, muddy book sits beside a large, empty chair.",
-                  "context": "A cluttered room after a messy event."
+                  "description": "A long, dirty path and a large, tidy garden.",
+                  "context": "A garden path before a storm."
             },
             "filename": {
-                  "filename": "000000000139.json"
+                  "filename": "/fs/nexus-projects/scene_graph_sd/ovad/images/000000462756.jpg"
             }
       },
       {
             "positive": {
-                  "description": "A clean, light-colored bear standing on a natural surface.",
-                  "context": "A bear in its natural habitat."
+                  "description": "A small, non-floral object next to a long, non-floral object.",
+                  "context": "Minimalist arrangement on a table."
             },
             "negative": {
-                  "description": "A dirty, dark bear standing on a concrete surface.",
-                  "context": "A bear in an urban or artificial environment."
+                  "description": "A large, floral object beside a long, floral object.",
+                  "context": "Overly decorative, cluttered display."
             },
             "filename": {
-                  "filename": "000000000285.json"
+                  "filename": "/fs/nexus-projects/scene_graph_sd/ovad/images/000000041872.jpg"
             }
       }
 ]

@@ -4,16 +4,16 @@ import json
 import os
 from pathlib import Path
 from typing import Tuple
-from .config import DEFAULT_INPUT_DIR, DEFAULT_OUTPUT_FILE, DEFAULT_CAUSAL_FILE
-from .processing import process_directory
+from .config import DEFAULT_INPUT_FILE, DEFAULT_OUTPUT_FILE, DEFAULT_CAUSAL_FILE
+from .processing import process_data
 from .model import generate_reasoning_removed, get_description_prompts, filter_results
 from vllm import SamplingParams
 
 
-def handle_causal_processing(args, model, sampling_params, input_dir: str):
+def handle_causal_processing(args, model, sampling_params, input_file: str):
     """Handle the causal processing step."""
     if not args.skip_causal:
-        causal_prompts, json_metadata = process_directory(input_dir)
+        causal_prompts, img_metadata = process_data(input_file, sample=args.samples)
         causal_titles = generate_reasoning_removed(
             model, causal_prompts, sampling_params=sampling_params, use_tqdm=True
         )
@@ -21,28 +21,28 @@ def handle_causal_processing(args, model, sampling_params, input_dir: str):
         for i, desc in enumerate(causal_titles):
             try:
                 obj = json.loads(desc.outputs[0].text)
-                obj["filename"] = json_metadata[i]
+                obj["filename"] = img_metadata[i]
                 objs.append(obj)
             except:
                 continue
         with open(args.causal_dir, 'w') as f:
             json.dump(objs, f, indent=6)
-        return causal_titles, json_metadata
+        return causal_titles, img_metadata
     else:
         causal_titles = json.load(open(args.causal_dir))
         # Note: If skipping causal, we need to load metadata separately
         # For now, assuming we have json_metadata already available
-        json_metadata = [{"filename": f"file_{i}" for i in range(len(causal_titles))}]  # Placeholder
-        return causal_titles, json_metadata
+        img_metadata = [{"filename": f"file_{i}" for i in range(len(causal_titles))}]  # Placeholder
+        return causal_titles, img_metadata
 
 
-def handle_description_processing(args, model, sampling_params, causal_titles, json_metadata):
+def handle_description_processing(args, model, sampling_params, causal_titles, img_metadata):
     """Handle the description processing and filtering step."""
     from .config import FILTER_MAX_TOKENS
 
     if not args.skip_desc:
         # Prepare and generate causal prompts
-        desc_prompts, prompt_metadata = get_description_prompts(args, causal_titles, json_metadata)
+        desc_prompts, prompt_metadata = get_description_prompts(args, causal_titles, img_metadata)
         descriptions = generate_reasoning_removed(
             model, desc_prompts, sampling_params=sampling_params, use_tqdm=True
         )
@@ -96,7 +96,7 @@ def handle_description_processing(args, model, sampling_params, causal_titles, j
 def main_pipeline(args, model, sampling_params):
     """Execute the main pipeline workflow."""
     # Configuration
-    input_dir = args.input_dir
+    input_file = args.input_file
     output_file = DEFAULT_OUTPUT_FILE
     unfiltered_output_file = os.path.splitext(output_file)[0] + "_unfiltered.json"
 
@@ -104,10 +104,10 @@ def main_pipeline(args, model, sampling_params):
     os.makedirs(os.path.dirname(output_file), exist_ok=True)
 
     # Handle causal processing
-    causal_titles, json_metadata = handle_causal_processing(args, model, sampling_params, input_dir)
+    causal_titles, img_metadata = handle_causal_processing(args, model, sampling_params, input_file)
 
     # Handle description processing
-    final_results, bad_results = handle_description_processing(args, model, sampling_params, causal_titles, json_metadata)
+    final_results, bad_results = handle_description_processing(args, model, sampling_params, causal_titles, img_metadata)
 
     # Save the final results
     with open(output_file, 'w') as f:

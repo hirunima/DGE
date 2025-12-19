@@ -12,7 +12,7 @@ import random
 import numpy as np
 import torch
 
-from .modules.config import DEFAULT_SEED, DEFAULT_CAUSAL_FILE, DEFAULT_INPUT_DIR
+from .modules.config import DEFAULT_SEED, DEFAULT_CAUSAL_FILE, DEFAULT_INPUT_FILE
 
 
 def main():
@@ -20,8 +20,9 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--seed", type=int, default=DEFAULT_SEED)
     parser.add_argument("--skip_causal", action="store_true")
-    parser.add_argument("--input_dir", type=str, default=DEFAULT_INPUT_DIR)
+    parser.add_argument("--input_file", type=str, default=DEFAULT_INPUT_FILE)
     parser.add_argument("--causal_dir", type=str, default=DEFAULT_CAUSAL_FILE)
+    parser.add_argument("--samples", type=int, default=None)
     parser.add_argument("--skip_desc", action="store_true")
     args = parser.parse_args()
 
@@ -31,6 +32,8 @@ def main():
     torch.manual_seed(args.seed)
     if torch.cuda.is_available():
         torch.cuda.manual_seed_all(args.seed)
+        torch.backends.cudnn.deterministic = True
+        torch.backends.cudnn.benchmark = False
 
     # Import model functions only when needed (to handle vLLM dependencies)
     from .modules.model import initialize_model
