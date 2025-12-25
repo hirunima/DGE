@@ -9,7 +9,7 @@ PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(o
 DATA_RAW_DIR = os.path.join(PROJECT_ROOT, "data", "raw")
 
 # Configuration constants
-DEFAULT_INPUT_FILE = "/fs/nexus-projects/scene_graph_sd/ovad/ovad_test_attribute_filtered.json"
+DEFAULT_INPUT_FILE = "/fs/nexus-projects/scene_graph_sd/ovad/validated_scene_graphs.jsonl"
 DEFAULT_OUTPUT_FILE = os.path.join(DATA_RAW_DIR, "qwen8b_t2i_prompts.json")
 DEFAULT_SEED = 42
 

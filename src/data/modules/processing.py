@@ -35,7 +35,7 @@ def generate_question(data: dict, obj_counts: dict) -> str:
         item_map[x['id']] = x
     items = list(item_map.values())
 
-    if not items: return prompt, obj_counts
+    if not items: return None, obj_counts
 
     # Sample MAX_ITEMS_PER_SCENE objects, prioritizing bigger objects and part of OVAD. 
     areas = []
@@ -68,11 +68,7 @@ def generate_question(data: dict, obj_counts: dict) -> str:
         if t == "quantity" and a.isdigit():
           quantity = int(a)
         else: 
-          try:
-            description += (a + ", ") if i < len(item['attributes']) - 1 else ("and " + a if len(item['attributes']) > 1 else a) + "."
-          except Exception as e: 
-            print(e)
-            breakpoint()
+          description += (a + ", ") if i < len(item['attributes']) - 1 else ("and " + a if len(item['attributes']) > 1 else a) + "."
       prompt += f"   - {quantity} {item['name']}" 
       if len(description) > 0: 
         prompt += f" that {'are' if quantity > 1 else 'is'} {description} (object id : {item['id']})\n" 
@@ -91,14 +87,10 @@ def generate_question(data: dict, obj_counts: dict) -> str:
     return prompt, obj_counts
 
 
-def process_data(file_name: str, sample=None, jsonl=False) -> List[Dict[str, str]]:
+def process_data(file_name: str, sample=None) -> List[Dict[str, str]]:
     """Process all or a subset of items from the given file and return a list of prompts."""
-    if not jsonl: 
-      with open(file_name, 'r') as f:
-          data = json.load(f)['data']
-    else: 
-      with open(file_name, 'r') as f:
-          data = [json.loads(line) for line in f.readlines()]
+    with open(file_name, 'r') as f:
+        data = [json.loads(line) for line in f.readlines()]
 
     if sample is not None:
         data = random.sample(data, sample)
@@ -109,6 +101,7 @@ def process_data(file_name: str, sample=None, jsonl=False) -> List[Dict[str, str
     for img_data in tqdm(data, desc="Creating prompts for LLM"):
         try:
             question, obj_counts = generate_question(img_data, obj_counts)
+            if not question: continue
             prompt = (
                 "SYSTEM\nYou are a helpful assistant.\n"
                 f"USER\n{question}\n"
@@ -118,8 +111,8 @@ def process_data(file_name: str, sample=None, jsonl=False) -> List[Dict[str, str
                 "prompt": prompt
             }
             prompts.append(inputs)
-            img_filenames.append({"filename": img_data['file_name' if not jsonl else "filename"]})
+            img_filenames.append({"filename": img_data["filename"]})
         except Exception as e:
-            print(f"Error processing {img_data['file_name' if not jsonl else 'filename']}: {str(e)}")
+            print(f"Error processing {img_data['filename']}: {str(e)}")
 
     return prompts, img_filenames
