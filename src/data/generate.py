@@ -12,19 +12,24 @@ import random
 import numpy as np
 import torch
 
-from .modules.config import DEFAULT_SEED, DEFAULT_CAUSAL_FILE, DEFAULT_INPUT_FILE
+from modules.config import DEFAULT_SEED, DEFAULT_INPUT_FILE, DEFAULT_OUTPUT_FILE
 
 
 def main():
     """Main entry point for the data generation pipeline."""
     parser = argparse.ArgumentParser()
     parser.add_argument("--seed", type=int, default=DEFAULT_SEED)
-    parser.add_argument("--skip_causal", action="store_true")
     parser.add_argument("--input_file", type=str, default=DEFAULT_INPUT_FILE)
-    parser.add_argument("--causal_dir", type=str, default=DEFAULT_CAUSAL_FILE)
+    parser.add_argument("--output_file", type=str, default=DEFAULT_OUTPUT_FILE)
     parser.add_argument("--samples", type=int, default=None)
-    parser.add_argument("--skip_desc", action="store_true")
     args = parser.parse_args()
+
+    # Import model functions only when needed (to handle vLLM dependencies)
+    from modules.model import initialize_model
+    from modules.pipeline import main_pipeline
+
+    # Initialize model
+    model, sampling_params = initialize_model(args.seed)
 
     # Set seeds for reproducibility
     random.seed(args.seed)
@@ -34,13 +39,6 @@ def main():
         torch.cuda.manual_seed_all(args.seed)
         torch.backends.cudnn.deterministic = True
         torch.backends.cudnn.benchmark = False
-
-    # Import model functions only when needed (to handle vLLM dependencies)
-    from .modules.model import initialize_model
-    from .modules.pipeline import main_pipeline
-
-    # Initialize model
-    model, sampling_params = initialize_model(args.seed)
 
     # Execute the main pipeline
     main_pipeline(args, model, sampling_params)
