@@ -6,7 +6,7 @@ from typing import List, Dict, Any
 import random
 from tqdm import tqdm
 import numpy as np
-from .config import MAX_ITEMS_PER_SCENE, THRESHOLD, SCORE_THRESHOLD, GAMMA, BETA
+from .config import MAX_ITEMS_PER_SCENE, THRESHOLD, SCORE_THRESHOLD, GAMMA, BETA, PROMPTS_PER_SG
 
 def generate_question(data: dict, obj_counts: dict) -> str:
     """Generates a T2I prompt for a given scene graph and the counts of objects used already.
@@ -98,10 +98,13 @@ def process_data(file_name: str, sample=None) -> List[Dict[str, str]]:
     prompts = []
     img_filenames = []
     obj_counts = {}
+    questions = set()
     for img_data in tqdm(data, desc="Creating prompts for LLM"):
+      for i in range(PROMPTS_PER_SG):
         try:
             question, obj_counts = generate_question(img_data, obj_counts)
-            if not question: continue
+            if not question or question in questions: continue
+            questions.add(question)
             prompt = (
                 "SYSTEM\nYou are a helpful assistant.\n"
                 f"USER\n{question}\n"
