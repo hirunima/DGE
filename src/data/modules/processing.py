@@ -6,7 +6,8 @@ from typing import List, Dict, Any
 import random
 from tqdm import tqdm
 import numpy as np
-from .config import MAX_ITEMS_PER_SCENE, THRESHOLD, SCORE_THRESHOLD, GAMMA, BETA, PROMPTS_PER_SG
+from .config import MAX_ITEMS_PER_SCENE, THRESHOLD, SCORE_THRESHOLD, GAMMA, BETA, PROMPTS_PER_SG, MAX_RELATIONS_PER_SCENE
+import copy 
 
 def generate_question(data: dict, obj_counts: dict) -> str:
     """Generates a T2I prompt for a given scene graph and the counts of objects used already.
@@ -25,7 +26,7 @@ def generate_question(data: dict, obj_counts: dict) -> str:
         Formatted prompt string for LLM processing
     """
     prompt = """Generate a concise caption for an image containing the following objects:\n"""
-
+    prev_oc = copy.deepcopy(obj_counts)
     # Limit to MAX_ITEMS_PER_SCENE items and filter attributes
     curr = {"items": [], "relationships": []}
     items = data.get('entities', [])
@@ -62,28 +63,22 @@ def generate_question(data: dict, obj_counts: dict) -> str:
       quantity = 1
       description = ""
       obj_counts[item['name']] = obj_counts.get(item['name'], 0) + 1
-      for i in range(len(item['attributes'])): 
-        if type(item['attributes'][i]) != str: continue
-        t, a = item['attributes'][i].split(":") if ":" in item['attributes'][i] else ("", item['attributes'][i])
-        if t == "quantity" and a.isdigit():
-          quantity = int(a)
-        else: 
-          description += (a + ", ") if i < len(item['attributes']) - 1 else ("and " + a if len(item['attributes']) > 1 else a) + "."
-      prompt += f"   - {quantity} {item['name']}" 
-      if len(description) > 0: 
-        prompt += f" that {'are' if quantity > 1 else 'is'} {description} (object id : {item['id']})\n" 
-      else: 
-        prompt += f"(object id : {item['id']})\n"
+      
+      prompt += f"   - {quantity} {item['name']} (object id : {item['id']})\n" 
+      for attr in item['attributes']: 
+        prompt +=  f"      -{attr}\n" 
     
     # add relationship list to prompt
     relationship_list = ""
-    for relation in data.get("relations", []): 
+    relations = data.get("relations", [])
+    for relation in random.sample(relations, min(MAX_RELATIONS_PER_SCENE, len(relations))) : 
       if relation['subject'] in ids and relation['object'] in ids and relation['score'] >= SCORE_THRESHOLD: 
         relationship_list += f"   - Object {relation['subject']} {relation['relation']} object {relation['object']}\n" 
     
     if len(relationship_list) > 0: 
       prompt += f"And containing the following relationships:\n{relationship_list}"
-
+    else: 
+      return None, prev_oc 
     return prompt, obj_counts
 
 
