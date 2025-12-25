@@ -13,7 +13,20 @@ from vllm import SamplingParams
 def generate_t2i_prompts(args, model, sampling_params, input_file: str):
     prompts, img_filenames = process_data(input_file, sample=args.samples)
     outs = generate_reasoning_removed(model, prompts, sampling_params=sampling_params, use_tqdm=True)
-    t2i_prompts = [{"meta_prompt": p, "prompt": out.outputs[0].text, "filename": f} for p, out, f in zip(prompts, outs, img_filenames)]
+    t2i_prompts = []
+    seen_prompts = set()
+
+    for p, out, f in zip(prompts, outs, img_filenames):
+        generated_text = out.outputs[0].text.strip()
+        
+        if generated_text and generated_text not in seen_prompts:
+            t2i_prompts.append({
+                "meta_prompt": p, 
+                "prompt": generated_text, 
+                "filename": f
+            })
+            seen_prompts.add(generated_text)
+
     return t2i_prompts
 
 def main_pipeline(args, model, sampling_params):
