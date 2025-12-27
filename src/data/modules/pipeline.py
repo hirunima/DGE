@@ -17,15 +17,17 @@ def generate_t2i_prompts(args, model, sampling_params, input_file: str):
     seen_prompts = set()
 
     for p, out, f in zip(prompts, outs, img_filenames):
-        generated_text = out.outputs[0].text.strip()
-        
-        if generated_text and generated_text not in seen_prompts:
+        generated_text = out.outputs[0].text
+        t2i_prompt = generated_text.split("[Final Caption]")[1] if "[Final Caption]" in generated_text else ""
+        if t2i_prompt and t2i_prompt not in seen_prompts:
+            t2i_prompt = t2i_prompt.strip()
             t2i_prompts.append({
                 "meta_prompt": p, 
-                "prompt": generated_text, 
+                "response":  generated_text, 
+                "prompt": t2i_prompt, 
                 "filename": f
             })
-            seen_prompts.add(generated_text)
+            seen_prompts.add(t2i_prompt)
 
     return t2i_prompts
 
