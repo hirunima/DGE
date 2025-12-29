@@ -6,7 +6,7 @@ from typing import List, Dict, Any
 import random
 from tqdm import tqdm
 import numpy as np
-from .config import MAX_ITEMS_PER_SCENE, THRESHOLD, SCORE_THRESHOLD, GAMMA, BETA, PROMPTS_PER_SG, MAX_RELATIONS_PER_SCENE
+from .config import *
 import copy 
 
 def generate_question(data: dict, obj_counts: dict) -> str:
@@ -181,42 +181,18 @@ Objects:
     prev_oc = copy.deepcopy(obj_counts)
     
     items = data.get('entities', [])
-    item_map = {}
+    valid_ids = set()
+    valid_items = []
     for x in items:
-        if obj_counts.get(x['name'], 0) <= THRESHOLD and x['id'] not in item_map:
-            item_map[x['id']] = x
-    items = list(item_map.values())
+        if obj_counts.get(x['name'], 0) <= THRESHOLD and x['id'] not in valid_ids:
+            valid_ids.add(x['id'])
+            valid_items.append(x)
+    items = valid_items
 
     if not items: 
         return None, obj_counts
 
-    areas = []
-    non_ovad = []
-    for i in range(len(items)):
-        item = items[i] 
-        if 'bbox' not in item: 
-            non_ovad.append(i)
-            areas.append(0)
-        else: 
-            areas.append(item['bbox'][2] * item['bbox'][3])
-
-    areas = np.array(areas, dtype=np.float64)
-    if len(areas) > len(non_ovad): 
-        areas = 0 if areas.sum() == 0 else areas/areas.sum() * (0.7 if len(non_ovad) > 0 else 1) 
-    for idx in non_ovad: 
-        areas[idx] = (0.3 if len(areas) > len(non_ovad) else 1) / len(non_ovad)
-    
-    items = np.random.choice(items, size=min(MAX_ITEMS_PER_SCENE, len(items)), replace=False, p=areas)
     ids = set(x['id'] for x in items)
-
-    objects_str = ""
-    for item in items: 
-        obj_counts[item['name']] = obj_counts.get(item['name'], 0) + 1
-        
-        objects_str += f"   - 1 {item['name']} (object id : {item['id']})\n" 
-        for attr in item['attributes']: 
-            objects_str +=  f"      -{attr}\n" 
-    
     relationships_str = ""
     relations = data.get("relations", [])
     
@@ -226,12 +202,54 @@ Objects:
         return None, prev_oc
 
     selected_relations = random.sample(valid_relations, min(MAX_RELATIONS_PER_SCENE, len(valid_relations)))
-
+   
+    sel_ids = set()
     for relation in selected_relations:
         relationships_str += f"   - Object {relation['subject']} {relation['relation']} Object {relation['object']}\n" 
+        sel_ids.add(relation['subject'])
+        sel_ids.add(relation['object'])
     
     if not relationships_str: 
         return None, prev_oc 
+   
+    forced_items = [x for x in items if x['id'] in sel_ids]
+    pool_items = [x for x in items if x['id'] not in sel_ids]
+
+    areas = []
+    non_ovad = []
+    
+    for i in range(len(pool_items)):
+        item = pool_items[i] 
+        if 'bbox' not in item: 
+            non_ovad.append(i)
+            areas.append(0)
+        else: 
+            areas.append(np.log1p(item['bbox'][2] * item['bbox'][3]))
+
+    areas = np.array(areas, dtype=np.float64)
+    if len(areas) > len(non_ovad): 
+        areas = np.zeros(areas.shape) if areas.sum() == 0 else areas/areas.sum() * (OVAD_P if len(non_ovad) > 0 else 1) 
+    
+    for idx in non_ovad: 
+        areas[idx] = ((1 - OVAD_P) if len(areas) > len(non_ovad) else 1) / len(non_ovad)
+
+    slots_remaining = max(0, MAX_ITEMS_PER_SCENE - len(sel_ids))
+    sample_size = min(slots_remaining, len(pool_items))
+    
+    if sample_size > 0:
+        chosen_pool = np.random.choice(pool_items, size=sample_size, replace=False, p=areas)
+        items = np.concatenate([forced_items, chosen_pool])
+    else:
+        items = np.array(forced_items)
+        
+    objects_str = ""
+    for item in items: 
+        obj_counts[item['name']] = obj_counts.get(item['name'], 0) + 1
+        
+        objects_str += f"   - 1 {item['name']} (object id : {item['id']})\n" 
+        for attr in item['attributes']: 
+            objects_str +=  f"      -{attr}\n" 
+    
 
     final_prompt = (
         f"{PROMPT_HEADER}"
@@ -256,12 +274,15 @@ def process_data(file_name: str, sample=None) -> List[Dict[str, str]]:
     img_filenames = []
     obj_counts = {}
     questions = set()
+    counts =[]
     for img_data in tqdm(data, desc="Creating prompts for LLM"):
+      count = 0
       for i in range(PROMPTS_PER_SG):
         try:
             question, obj_counts = generate_question(img_data, obj_counts)
             if not question or question in questions: continue
             questions.add(question)
+            count += 1
             prompt = (
                 "SYSTEM\nYou are a helpful assistant.\n"
                 f"USER\n{question}\n"
@@ -274,5 +295,15 @@ def process_data(file_name: str, sample=None) -> List[Dict[str, str]]:
             img_filenames.append({"filename": img_data["filename"]})
         except Exception as e:
             print(f"Error processing {img_data['filename']}: {str(e)}")
+        counts.append(count)
+    import matplotlib.pyplot as plt
+    plt.figure()
+    plt.hist(counts, bins=30, color='skyblue', edgecolor='black')
+    # Adding labels and title
+    plt.xlabel('Frequency')
+    plt.ylabel('# of Prompts')
+    plt.title('Distribution of frequencies')
 
+    # Display the plot
+    plt.savefig(DEFAULT_COUNTS_FILE)
     return prompts, img_filenames

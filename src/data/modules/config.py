@@ -10,7 +10,8 @@ DATA_RAW_DIR = os.path.join(PROJECT_ROOT, "data", "raw")
 
 # Configuration constants
 DEFAULT_INPUT_FILE = "/fs/nexus-projects/scene_graph_sd/ovad/validated_scene_graphs.jsonl"
-DEFAULT_OUTPUT_FILE = os.path.join(DATA_RAW_DIR, "qwen8b_t2i_prompts.json")
+DEFAULT_COUNTS_FILE = "/fs/nexus-projects/scene_graph_sd/DGE-T2I/reports/figures/freq_dist.png"
+DEFAULT_OUTPUT_FILE = os.path.join(DATA_RAW_DIR, "qwen8b_t2i_prompts_rel_based.json")
 DEFAULT_SEED = 42
 
 # Model configuration
@@ -27,11 +28,12 @@ TOP_P = 1.0
 
 
 # Object sampling parameters
-THRESHOLD = 5
+THRESHOLD = 10
 SCORE_THRESHOLD = 0.6
-GAMMA = 1
+SMOOTHING_FACTOR = 1
 BETA = 1
 MAX_ITEMS_PER_SCENE = 3
 PROMPTS_PER_SG = 20
 MAX_RELATIONS_PER_SCENE = 3
+OVAD_P = 0.4
 # MAX_ATTRIBUTES_PER_ITEM = 2
