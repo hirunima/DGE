@@ -267,6 +267,8 @@ def process_data(file_name: str, sample=None) -> List[Dict[str, str]]:
     with open(file_name, 'r') as f:
         data = [json.loads(line) for line in f.readlines()]
 
+   # TODO: augment existing data, creating new scene graphs
+
     if sample is not None:
         data = random.sample(data, sample)
     
