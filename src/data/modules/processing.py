@@ -9,6 +9,124 @@ import numpy as np
 from .config import *
 import copy 
 
+def augment_scene_graphs(data: List[Dict[str, Any]], max_aug_per_item: int = 1) -> List[Dict[str, Any]]:
+    """Create augmented variants by mixing entities/relations across scene graphs."""
+    augmented = []
+    for scene in data:
+        # Always keep the original scene, then add synthetic variants.
+        augmented.append(scene)
+        entities = scene.get("entities", [])
+        relations = scene.get("relations", [])
+        if not entities or len(data) < 2:
+            continue
+
+        other_scenes = [s for s in data if s is not scene and s.get("entities")]
+        if not other_scenes:
+            continue
+
+        partner = random.choice(other_scenes)
+        partner_entities = partner.get("entities", [])
+        partner_relations = partner.get("relations", [])
+
+        def _subset_entities(entity_list: List[Dict[str, Any]], max_keep: int) -> List[Dict[str, Any]]:
+            keep = random.randint(1, min(len(entity_list), max_keep))
+            return random.sample(entity_list, keep)
+
+        def _filter_relations(rel_list: List[Dict[str, Any]], keep_ids: set, max_keep: int) -> List[Dict[str, Any]]:
+            filtered = [
+                r for r in rel_list
+                if r.get("subject") in keep_ids and r.get("object") in keep_ids
+            ]
+            if len(filtered) > max_keep:
+                filtered = random.sample(filtered, max_keep)
+            return filtered
+
+        def _reduce_attributes(entity_list: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+            adjusted = []
+            for ent in entity_list:
+                ent_copy = copy.deepcopy(ent)
+                attrs = ent_copy.get("attributes")
+                if isinstance(attrs, list) and attrs:
+                    # Reduce attributes to a smaller random subset for variation.
+                    max_keep = min(len(attrs), 5)
+                    keep = random.randint(1, max_keep)
+                    ent_copy["attributes"] = random.sample(attrs, keep)
+                adjusted.append(ent_copy)
+            return adjusted
+
+        def _remap_entities_relations(entity_list: List[Dict[str, Any]], rel_list: List[Dict[str, Any]]):
+            id_map = {ent.get("id"): idx for idx, ent in enumerate(entity_list)}
+            remapped_entities = []
+            for idx, ent in enumerate(entity_list):
+                ent_copy = copy.deepcopy(ent)
+                ent_copy["id"] = idx
+                remapped_entities.append(ent_copy)
+            remapped_relations = []
+            for rel in rel_list:
+                subj = rel.get("subject")
+                obj = rel.get("object")
+                if subj in id_map and obj in id_map:
+                    rel_copy = copy.deepcopy(rel)
+                    rel_copy["subject"] = id_map[subj]
+                    rel_copy["object"] = id_map[obj]
+                    remapped_relations.append(rel_copy)
+            return remapped_entities, remapped_relations
+
+        candidates = []
+
+        # Variant 1: combine entities/relations from both scenes.
+        base_subset = _subset_entities(entities, max_keep=MAX_ITEMS_PER_SG)
+        partner_subset = _subset_entities(partner_entities, max_keep=MAX_ITEMS_PER_SG)
+        combined_entities = base_subset + partner_subset
+        base_ids = {e.get("id") for e in base_subset}
+        partner_ids = {e.get("id") for e in partner_subset}
+        combined_relations = _filter_relations(relations, base_ids, MAX_RELATIONS_PER_SG)
+        combined_relations += _filter_relations(partner_relations, partner_ids, MAX_RELATIONS_PER_SG)
+        candidates.append(("combine", combined_entities, combined_relations))
+        
+        # Variant 2: swap attributes only (keep entities/relations from the base scene).
+        attr_swap_count = min(SWAP_COUNT, len(entities), len(partner_entities))
+        if attr_swap_count > 0:
+            base_attr_swapped = copy.deepcopy(entities)
+            base_indices = random.sample(range(len(base_attr_swapped)), attr_swap_count)
+            partner_samples = random.sample(partner_entities, attr_swap_count)
+            for idx, repl in zip(base_indices, partner_samples):
+                if isinstance(repl.get("attributes"), list):
+                    base_attr_swapped[idx]["attributes"] = repl.get("attributes", [])
+            attr_ids = {e.get("id") for e in base_attr_swapped}
+            attr_relations = _filter_relations(relations, attr_ids, MAX_RELATIONS_PER_SG)
+            candidates.append(("swap_attributes", base_attr_swapped, attr_relations))
+
+        # Variant 3: swap relationship names only (keep subjects/objects from the base scene).
+        if relations and partner_relations:
+            relation_names = [r.get("relation") for r in partner_relations if r.get("relation")]
+            if relation_names:
+                rel_name_swapped = copy.deepcopy(relations)
+                for rel in rel_name_swapped:
+                    rel["relation"] = random.choice(relation_names)
+                rel_name_ids = {e.get("id") for e in entities}
+                rel_name_relations = _filter_relations(rel_name_swapped, rel_name_ids, MAX_RELATIONS_PER_SG)
+                candidates.append(("swap_relation_names", list(entities), rel_name_relations))
+
+        random.shuffle(candidates)
+        for aug_idx, (aug_type, aug_entities, aug_relations) in enumerate(candidates[:max_aug_per_item]):
+            # Remap IDs to keep them unique and compact per augmented scene.
+            reduced_entities = _reduce_attributes(aug_entities)
+            remapped_entities, remapped_relations = _remap_entities_relations(reduced_entities, aug_relations)
+            new_scene = copy.deepcopy(scene)
+            new_scene["entities"] = remapped_entities
+            new_scene["relations"] = remapped_relations
+            new_scene["augmented"] = True
+            new_scene["augmented_from"] = [
+                scene.get("filename", scene.get("image_id")),
+                partner.get("filename", partner.get("image_id")),
+            ]
+            new_scene["augmentation_type"] = aug_type
+            new_scene["augmentation_index"] = aug_idx
+            augmented.append(new_scene)
+
+    return augmented
+
 def generate_question(data: dict, obj_counts: dict) -> str:
     """Generates a T2I prompt for a given scene graph using In-Context Learning (ICL) and CoT.
 
@@ -268,6 +386,7 @@ def process_data(file_name: str, sample=None) -> List[Dict[str, str]]:
         data = [json.loads(line) for line in f.readlines()]
 
    # TODO: augment existing data, creating new scene graphs
+    data = augment_scene_graphs(data)
 
     if sample is not None:
         data = random.sample(data, sample)
@@ -278,34 +397,20 @@ def process_data(file_name: str, sample=None) -> List[Dict[str, str]]:
     questions = set()
     counts =[]
     for img_data in tqdm(data, desc="Creating prompts for LLM"):
-      count = 0
-      for i in range(PROMPTS_PER_SG):
-        try:
-            question, obj_counts = generate_question(img_data, obj_counts)
-            if not question or question in questions: continue
-            questions.add(question)
-            count += 1
-            prompt = (
-                "SYSTEM\nYou are a helpful assistant.\n"
-                f"USER\n{question}\n"
-                f"ASSISTANT\n"
-            )
-            inputs = {
-                "prompt": prompt
-            }
-            prompts.append(inputs)
-            img_filenames.append({"filename": img_data["filename"]})
-        except Exception as e:
-            print(f"Error processing {img_data['filename']}: {str(e)}")
-        counts.append(count)
-    import matplotlib.pyplot as plt
-    plt.figure()
-    plt.hist(counts, bins=30, color='skyblue', edgecolor='black')
-    # Adding labels and title
-    plt.xlabel('Frequency')
-    plt.ylabel('# of Prompts')
-    plt.title('Distribution of frequencies')
-
-    # Display the plot
-    plt.savefig(DEFAULT_COUNTS_FILE)
+      try:
+         question, obj_counts = generate_question(img_data, obj_counts)
+         if not question or question in questions: continue
+         questions.add(question)
+         prompt = (
+               "SYSTEM\nYou are a helpful assistant.\n"
+               f"USER\n{question}\n"
+               f"ASSISTANT\n"
+         )
+         inputs = {
+               "prompt": prompt
+         }
+         prompts.append(inputs)
+         img_filenames.append({"filename": img_data["filename"]})
+      except Exception as e:
+         print(f"Error processing {img_data['filename']}: {str(e)}")
     return prompts, img_filenames
