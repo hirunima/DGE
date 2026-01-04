@@ -45,18 +45,24 @@ def analyze_benchmark(name, prompts):
 # Assuming evalmuse_df is your loaded dataframe
 # evalmuse_prompts = evalmuse_df['caption'].tolist()
 
+# --- TIIF-Bench ---
+tiif_bench_prompts = [json.loads(line)['short_description'] for line in open('/fs/nexus-projects/scene_graph_sd/TIIF-Bench/data/test_prompts/all_prompts.jsonl')]
+
 # --- DPGBench ---
-# dpg_prompts = [json.loads(line)['prompt'] for line in open('dpgbench.jsonl')]
+dpg_prompts = [json.loads(line)['prompt'] for line in open('/fs/nexus-projects/scene_graph_sd/ELLA/dpg_bench/prompts.jsonl')]
 
 # --- GenEval ---
 # geneval_prompts = [json.loads(line)['prompt'] for line in open('geneval.jsonl')]
 
+our_prompts = [obj['prompt'] for obj in json.load(open('/fs/nexus-projects/scene_graph_sd/DGE-T2I/data/raw/qwen8b_t2i_prompts_aug_v1.json'))]
+
 # 3. Execution & Comparison
 # (Dummy list for demonstration; replace with actual loaded lists)
 benchmarks = {
-    "EvalMuse": evalmuse_prompts, 
+    "TIIF-Bench": tiif_bench_prompts, 
     "DPGBench": dpg_prompts, 
-    "GenEval": geneval_prompts
+    # "GenEval": geneval_prompts, 
+    "Ours": our_prompts, 
 }
 
 results = []
