@@ -216,6 +216,7 @@ __marimo__/
 data/models
 data/embeddings
 data/images
+logs/
 
 # Streamlit
 .streamlit/secrets.toml
