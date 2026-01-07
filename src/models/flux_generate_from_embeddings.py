@@ -36,7 +36,7 @@ def generate_img_from_embeddings(
     pipeline,
     example_id,
     embedding_path,
-    prompt_dir,
+    out_dir,
     num_generations=5,
     device='cuda' if torch.cuda.is_available() else 'cpu'
 ):
@@ -72,11 +72,11 @@ def generate_img_from_embeddings(
             generator=generator
         ).images
 
-        os.makedirs(prompt_dir, exist_ok=True)
+        os.makedirs(out_dir, exist_ok=True)
 
         # Save the generated images
         for i, img in enumerate(images):
-            img.save(os.path.join(prompt_dir, f"{example_id}-{i+1}.png"))
+            img.save(os.path.join(out_dir, f"{example_id}-{i+1}.png"))
 
         return example_id
 
@@ -178,7 +178,7 @@ if __name__ == "__main__":
                     flux_pipeline,
                     example_id,
                     prompt_embedding_path,
-                    args.data_path,
+                    args.images_dir,
                     args.num_generations,
                     device
                 )
