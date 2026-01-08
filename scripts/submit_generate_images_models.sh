@@ -18,8 +18,9 @@ source ~/.bashrc
 conda activate dge-t2i-env
 module load cuda/12.6.3
 
+export HF_HOME="/scratch1/chuonghm/huggingface"
 ROOT_DIR="/fs/nexus-projects/scene_graph_sd/DGE-T2I"
-MODEL="sdxl,sd15"  # sdxl|sd15|flux2|z-image|qwen-image-2512|emu-3-5|mogao-7b|bagel|all
+MODEL="z-image"  # sdxl|sd15|flux2|z-image|qwen-image-2512|emu-3-5|mogao-7b|bagel|all
 STEP="generate"  # encode|generate|both
 NUM_SPLITS=100
 
@@ -30,4 +31,6 @@ scripts/generate_images_models.sh \
     --models "$MODEL" \
     --num-splits "$NUM_SPLITS" \
     --split-id "$SLURM_ARRAY_TASK_ID" \
+    --device-map "balanced" \
+    --encode-device-map "none" \
     --skip-existing

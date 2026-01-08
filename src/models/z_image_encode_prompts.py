@@ -3,7 +3,7 @@ import json
 import os
 
 import torch
-from diffusers import AutoPipelineForText2Image, DiffusionPipeline
+from diffusers import DiffusionPipeline
 from tqdm import tqdm
 
 
@@ -64,12 +64,12 @@ def normalize_embeddings(encoded):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Encode prompts to embeddings for T2I generation")
+    parser = argparse.ArgumentParser(description="Encode prompts to embeddings for Z-Image")
     parser.add_argument("--model_id", type=str, required=True, help="Hugging Face model ID or local path")
     parser.add_argument("--data_path", type=str, default=DEFAULT_DATA_PATH, help="Path to prompts JSON file")
     parser.add_argument("--embeddings_dir", type=str, default=DEFAULT_EMBEDDINGS_DIR, help="Directory to save embeddings")
     parser.add_argument("--prompt_key", type=str, default="prompt", help="JSON key containing the prompt text")
-    parser.add_argument("--device-map", type=str, default="balanced", help="Device map for model parallelism (e.g., balanced, auto, sequential, none)")
+    parser.add_argument("--device-map", type=str, default="balanced", help="Device map for model parallelism")
     parser.add_argument("--start_idx", type=int, default=None, help="Start index for processing (overrides split params)")
     parser.add_argument("--end_idx", type=int, default=None, help="End index for processing (overrides split params)")
     parser.add_argument("--num_splits", type=int, default=1, help="Total number of splits for parallel processing")
@@ -81,7 +81,6 @@ def main():
     dtype = torch.float16 if device == "cuda" else torch.float32
     print(f"Using device: {device}")
 
-    print(f"Loading model: {args.model_id}")
     device_map = args.device_map
     if device_map == "none":
         device_map = None
@@ -94,40 +93,23 @@ def main():
             if module is not None:
                 module.to(device)
 
-    def load_pipeline():
-        if device_map:
-            return AutoPipelineForText2Image.from_pretrained(
-                args.model_id,
-                torch_dtype=dtype,
-                device_map=device_map
-            )
-        pipeline = AutoPipelineForText2Image.from_pretrained(
+    print(f"Loading Z-Image model: {args.model_id}")
+    if device_map:
+        pipeline = DiffusionPipeline.from_pretrained(
+            args.model_id,
+            torch_dtype=dtype,
+            device_map=device_map
+        )
+    else:
+        pipeline = DiffusionPipeline.from_pretrained(
             args.model_id,
             torch_dtype=dtype
         )
         move_text_encoders(pipeline)
-        return pipeline
 
-    try:
-        pipeline = load_pipeline()
-    except ValueError:
-        if device_map:
-            pipeline = DiffusionPipeline.from_pretrained(
-                args.model_id,
-                torch_dtype=dtype,
-                device_map=device_map
-            )
-        else:
-            pipeline = DiffusionPipeline.from_pretrained(
-                args.model_id,
-                torch_dtype=dtype
-            )
-            move_text_encoders(pipeline)
-        if not hasattr(pipeline, "encode_prompt"):
-            raise ValueError(
-                "Loaded pipeline does not support encode_prompt; "
-                "please provide a model with a text-to-image pipeline that exposes encode_prompt."
-            )
+    if not hasattr(pipeline, "encode_prompt"):
+        raise ValueError("Z-Image pipeline does not expose encode_prompt; cannot pre-encode prompts.")
+
     execution_device = getattr(pipeline, "_execution_device", device)
 
     with open(args.data_path, "r") as f:
@@ -156,7 +138,6 @@ def main():
             encoded = pipeline.encode_prompt(
                 prompt=prompt,
                 device=execution_device,
-                num_images_per_prompt=1,
                 do_classifier_free_guidance=True,
             )
         embeddings = normalize_embeddings(encoded)

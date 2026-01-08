@@ -10,9 +10,8 @@ BASE_IMAGES_DIR="/fs/nexus-projects/scene_graph_sd/DGE-T2I/data/images"
 LOCAL_MODELS_DIR="/fs/nexus-projects/scene_graph_sd/DGE-T2I/data/models"
 NUM_GENERATIONS=5
 SEED=44
-GUIDANCE_SCALE=7.5
-NEGATIVE_PROMPT=""
 DEVICE_MAP="balanced"
+ENCODE_DEVICE_MAP=""
 
 # Model IDs (update if your repo IDs differ)
 SDXL_MODEL_ID="stabilityai/stable-diffusion-xl-base-1.0"
@@ -26,8 +25,7 @@ BAGEL_MODEL_ID="BAGEL/BAGEL-7B"
 
 # Runtime options
 STEP="both"  # encode|generate|both
-MODEL="all"  # sdxl|sd15|flux2|z-image|qwen-image-2512|emu-3-5|mogao-7b|bagel|all
-MODELS=""
+MODELS="" # sdxl|sd15|flux2|z-image|qwen-image-2512|emu-3-5|mogao-7b|bagel|all
 START_IDX=0
 END_IDX=""
 NUM_SPLITS=1
@@ -36,10 +34,6 @@ SKIP_EXISTING="false"
 
 while [[ $# -gt 0 ]]; do
     case $1 in
-        --model)
-            MODEL="$2"
-            shift 2
-            ;;
         --models)
             MODELS="$2"
             shift 2
@@ -76,12 +70,8 @@ while [[ $# -gt 0 ]]; do
             DEVICE_MAP="$2"
             shift 2
             ;;
-        --guidance-scale)
-            GUIDANCE_SCALE="$2"
-            shift 2
-            ;;
-        --negative-prompt)
-            NEGATIVE_PROMPT="$2"
+        --encode-device-map)
+            ENCODE_DEVICE_MAP="$2"
             shift 2
             ;;
         --skip-existing)
@@ -101,9 +91,8 @@ while [[ $# -gt 0 ]]; do
             echo "  --split-id NUM"
             echo "  --num-generations NUM"
             echo "  --seed NUM"
-            echo "  --guidance-scale NUM"
-            echo "  --negative-prompt TEXT"
             echo "  --device-map [balanced|auto|sequential|none]"
+            echo "  --encode-device-map [balanced|auto|sequential|none]"
             echo "  --skip-existing"
             echo "  --help"
             echo ""
@@ -112,6 +101,7 @@ while [[ $# -gt 0 ]]; do
             echo "  $0 --step generate --model sdxl"
             echo "  $0 --step both --model all --start-idx 0 --end-idx 100"
             echo "  $0 --step generate --model sdxl --num-splits 100 --split-id 0"
+            echo "  $0 --step encode --model sdxl --encode-device-map none"
             echo "  $0 --step generate --models \"sdxl,flux2,bagel\""
             exit 0
             ;;
@@ -123,25 +113,17 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
-if [ -n "$MODELS" ]; then
-    MODEL="all"
-fi
-
 has_model() {
     local key="$1"
-    if [ "$MODEL" = "all" ]; then
+    if [ "$MODELS" = "all" ]; then
         return 0
     fi
-    if [ "$MODEL" = "$key" ]; then
+    local needle=",$key,"
+    local haystack=",$MODELS,"
+    if [ "${haystack#*$needle}" != "$haystack" ]; then
         return 0
     fi
-    if [ -n "$MODELS" ]; then
-        local needle=",$key,"
-        local haystack=",$MODELS,"
-        if [ "${haystack#*$needle}" != "$haystack" ]; then
-            return 0
-        fi
-    fi
+    # fi
     return 1
 }
 
@@ -241,10 +223,11 @@ sys.exit(0)
 PY
 }
 
-encode_model() {
-    local model_key="$1"
-    local model_id="$2"
-    local embeddings_dir="$3"
+run_encode() {
+    local script_path="$1"
+    local model_key="$2"
+    local model_id="$3"
+    local embeddings_dir="$4"
 
     echo "========================================="
     echo "Encoding: $model_key"
@@ -252,15 +235,18 @@ encode_model() {
     echo "Output: $embeddings_dir"
     echo "========================================="
 
-    CMD="python /fs/nexus-projects/scene_graph_sd/DGE-T2I/src/models/encode_prompts.py \
+    local encode_device_map="$DEVICE_MAP"
+    if [ -n "$ENCODE_DEVICE_MAP" ]; then
+        encode_device_map="$ENCODE_DEVICE_MAP"
+    fi
+
+    CMD="python $script_path \
         --model_id $model_id \
         --data_path $DATA_PATH \
         --embeddings_dir $embeddings_dir \
-        --guidance_scale $GUIDANCE_SCALE \
-        --negative_prompt \"$NEGATIVE_PROMPT\" \
-        --device-map $DEVICE_MAP \
         --num_splits $NUM_SPLITS \
         --split_id $SPLIT_ID \
+        --device-map $encode_device_map \
         --start_idx $START_IDX"
 
     if [ -n "$END_IDX" ]; then
@@ -274,11 +260,12 @@ encode_model() {
     echo ""
 }
 
-generate_model() {
-    local model_key="$1"
-    local model_id="$2"
-    local embeddings_dir="$3"
-    local images_dir="$4"
+run_generate() {
+    local script_path="$1"
+    local model_key="$2"
+    local model_id="$3"
+    local embeddings_dir="$4"
+    local images_dir="$5"
 
     echo "========================================="
     echo "Generating: $model_key"
@@ -286,17 +273,16 @@ generate_model() {
     echo "Output: $images_dir"
     echo "========================================="
 
-    CMD="python /fs/nexus-projects/scene_graph_sd/DGE-T2I/src/models/generate_images_from_embeddings.py \
+    CMD="python $script_path \
         --model_id $model_id \
         --data_path $DATA_PATH \
         --embeddings_dir $embeddings_dir \
         --images_dir $images_dir \
         --num_generations $NUM_GENERATIONS \
         --seed $SEED \
-        --guidance_scale $GUIDANCE_SCALE \
-        --device-map $DEVICE_MAP \
         --num_splits $NUM_SPLITS \
         --split_id $SPLIT_ID \
+        --device-map $DEVICE_MAP \
         --start_idx $START_IDX"
 
     if [ -n "$END_IDX" ]; then
@@ -309,6 +295,11 @@ generate_model() {
     eval $CMD
     echo ""
 }
+
+ENCODE_SCRIPT="/fs/nexus-projects/scene_graph_sd/DGE-T2I/src/models/encode_prompts.py"
+GENERATE_SCRIPT="/fs/nexus-projects/scene_graph_sd/DGE-T2I/src/models/generate_images_from_embeddings.py"
+Z_ENCODE_SCRIPT="/fs/nexus-projects/scene_graph_sd/DGE-T2I/src/models/z_image_encode_prompts.py"
+Z_GENERATE_SCRIPT="/fs/nexus-projects/scene_graph_sd/DGE-T2I/src/models/z_image_generate_from_embeddings.py"
 
 if has_model "sdxl"; then
     SKIP_MODEL="false"
@@ -325,10 +316,10 @@ if has_model "sdxl"; then
     if [ "$SKIP_MODEL" = "false" ]; then
         MODEL_PATH=$(resolve_model_path "$SDXL_MODEL_ID" "$LOCAL_MODELS_DIR/sdxl")
         if [ "$STEP" = "both" ] || [ "$STEP" = "encode" ]; then
-            encode_model "SDXL" "$MODEL_PATH" "$BASE_EMBEDDINGS_DIR/sdxl"
+            run_encode "$ENCODE_SCRIPT" "SDXL" "$MODEL_PATH" "$BASE_EMBEDDINGS_DIR/sdxl"
         fi
         if [ "$STEP" = "both" ] || [ "$STEP" = "generate" ]; then
-            generate_model "SDXL" "$MODEL_PATH" \
+            run_generate "$GENERATE_SCRIPT" "SDXL" "$MODEL_PATH" \
                 "$BASE_EMBEDDINGS_DIR/sdxl" "$BASE_IMAGES_DIR/sdxl"
         fi
     fi
@@ -349,10 +340,10 @@ if has_model "sd15"; then
     if [ "$SKIP_MODEL" = "false" ]; then
         MODEL_PATH=$(resolve_model_path "$SD15_MODEL_ID" "$LOCAL_MODELS_DIR/sd15")
         if [ "$STEP" = "both" ] || [ "$STEP" = "encode" ]; then
-            encode_model "SD-1.5" "$MODEL_PATH" "$BASE_EMBEDDINGS_DIR/sd15"
+            run_encode "$ENCODE_SCRIPT" "SD-1.5" "$MODEL_PATH" "$BASE_EMBEDDINGS_DIR/sd15"
         fi
         if [ "$STEP" = "both" ] || [ "$STEP" = "generate" ]; then
-            generate_model "SD-1.5" "$MODEL_PATH" \
+            run_generate "$GENERATE_SCRIPT" "SD-1.5" "$MODEL_PATH" \
                 "$BASE_EMBEDDINGS_DIR/sd15" "$BASE_IMAGES_DIR/sd15"
         fi
     fi
@@ -373,10 +364,10 @@ if has_model "flux2"; then
     if [ "$SKIP_MODEL" = "false" ]; then
         MODEL_PATH=$(resolve_model_path "$FLUX2_MODEL_ID" "$LOCAL_MODELS_DIR/flux2")
         if [ "$STEP" = "both" ] || [ "$STEP" = "encode" ]; then
-            encode_model "FLUX2.0" "$MODEL_PATH" "$BASE_EMBEDDINGS_DIR/flux2"
+            run_encode "$ENCODE_SCRIPT" "FLUX2.0" "$MODEL_PATH" "$BASE_EMBEDDINGS_DIR/flux2"
         fi
         if [ "$STEP" = "both" ] || [ "$STEP" = "generate" ]; then
-            generate_model "FLUX2.0" "$MODEL_PATH" \
+            run_generate "$GENERATE_SCRIPT" "FLUX2.0" "$MODEL_PATH" \
                 "$BASE_EMBEDDINGS_DIR/flux2" "$BASE_IMAGES_DIR/flux2"
         fi
     fi
@@ -397,10 +388,10 @@ if has_model "z-image"; then
     if [ "$SKIP_MODEL" = "false" ]; then
         MODEL_PATH=$(resolve_model_path "$Z_IMAGE_MODEL_ID" "$LOCAL_MODELS_DIR/z-image")
         if [ "$STEP" = "both" ] || [ "$STEP" = "encode" ]; then
-            encode_model "Z-Image" "$MODEL_PATH" "$BASE_EMBEDDINGS_DIR/z-image"
+            run_encode "$Z_ENCODE_SCRIPT" "Z-Image" "$MODEL_PATH" "$BASE_EMBEDDINGS_DIR/z-image"
         fi
         if [ "$STEP" = "both" ] || [ "$STEP" = "generate" ]; then
-            generate_model "Z-Image" "$MODEL_PATH" \
+            run_generate "$Z_GENERATE_SCRIPT" "Z-Image" "$MODEL_PATH" \
                 "$BASE_EMBEDDINGS_DIR/z-image" "$BASE_IMAGES_DIR/z-image"
         fi
     fi
@@ -421,10 +412,10 @@ if has_model "qwen-image-2512"; then
     if [ "$SKIP_MODEL" = "false" ]; then
         MODEL_PATH=$(resolve_model_path "$QWEN_IMAGE_MODEL_ID" "$LOCAL_MODELS_DIR/qwen-image-2512")
         if [ "$STEP" = "both" ] || [ "$STEP" = "encode" ]; then
-            encode_model "Qwen-Image-2512" "$MODEL_PATH" "$BASE_EMBEDDINGS_DIR/qwen-image-2512"
+            run_encode "$ENCODE_SCRIPT" "Qwen-Image-2512" "$MODEL_PATH" "$BASE_EMBEDDINGS_DIR/qwen-image-2512"
         fi
         if [ "$STEP" = "both" ] || [ "$STEP" = "generate" ]; then
-            generate_model "Qwen-Image-2512" "$MODEL_PATH" \
+            run_generate "$GENERATE_SCRIPT" "Qwen-Image-2512" "$MODEL_PATH" \
                 "$BASE_EMBEDDINGS_DIR/qwen-image-2512" "$BASE_IMAGES_DIR/qwen-image-2512"
         fi
     fi
@@ -445,10 +436,10 @@ if has_model "emu-3-5"; then
     if [ "$SKIP_MODEL" = "false" ]; then
         MODEL_PATH=$(resolve_model_path "$EMU_35_MODEL_ID" "$LOCAL_MODELS_DIR/emu-3-5")
         if [ "$STEP" = "both" ] || [ "$STEP" = "encode" ]; then
-            encode_model "Emu 3.5" "$MODEL_PATH" "$BASE_EMBEDDINGS_DIR/emu-3-5"
+            run_encode "$ENCODE_SCRIPT" "Emu 3.5" "$MODEL_PATH" "$BASE_EMBEDDINGS_DIR/emu-3-5"
         fi
         if [ "$STEP" = "both" ] || [ "$STEP" = "generate" ]; then
-            generate_model "Emu 3.5" "$MODEL_PATH" \
+            run_generate "$GENERATE_SCRIPT" "Emu 3.5" "$MODEL_PATH" \
                 "$BASE_EMBEDDINGS_DIR/emu-3-5" "$BASE_IMAGES_DIR/emu-3-5"
         fi
     fi
@@ -469,10 +460,10 @@ if has_model "mogao-7b"; then
     if [ "$SKIP_MODEL" = "false" ]; then
         MODEL_PATH=$(resolve_model_path "$MOGAO_7B_MODEL_ID" "$LOCAL_MODELS_DIR/mogao-7b")
         if [ "$STEP" = "both" ] || [ "$STEP" = "encode" ]; then
-            encode_model "Mogao-7B" "$MODEL_PATH" "$BASE_EMBEDDINGS_DIR/mogao-7b"
+            run_encode "$ENCODE_SCRIPT" "Mogao-7B" "$MODEL_PATH" "$BASE_EMBEDDINGS_DIR/mogao-7b"
         fi
         if [ "$STEP" = "both" ] || [ "$STEP" = "generate" ]; then
-            generate_model "Mogao-7B" "$MODEL_PATH" \
+            run_generate "$GENERATE_SCRIPT" "Mogao-7B" "$MODEL_PATH" \
                 "$BASE_EMBEDDINGS_DIR/mogao-7b" "$BASE_IMAGES_DIR/mogao-7b"
         fi
     fi
@@ -493,10 +484,10 @@ if has_model "bagel"; then
     if [ "$SKIP_MODEL" = "false" ]; then
         MODEL_PATH=$(resolve_model_path "$BAGEL_MODEL_ID" "$LOCAL_MODELS_DIR/bagel")
         if [ "$STEP" = "both" ] || [ "$STEP" = "encode" ]; then
-            encode_model "BAGEL" "$MODEL_PATH" "$BASE_EMBEDDINGS_DIR/bagel"
+            run_encode "$ENCODE_SCRIPT" "BAGEL" "$MODEL_PATH" "$BASE_EMBEDDINGS_DIR/bagel"
         fi
         if [ "$STEP" = "both" ] || [ "$STEP" = "generate" ]; then
-            generate_model "BAGEL" "$MODEL_PATH" \
+            run_generate "$GENERATE_SCRIPT" "BAGEL" "$MODEL_PATH" \
                 "$BASE_EMBEDDINGS_DIR/bagel" "$BASE_IMAGES_DIR/bagel"
         fi
     fi
