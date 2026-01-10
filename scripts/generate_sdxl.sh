@@ -4,7 +4,7 @@
 #SBATCH --job-name=t2i_models
 #SBATCH --cpus-per-task=4
 #SBATCH --mem=32gb
-#SBATCH --gres=gpu:4
+#SBATCH --gres=gpu:1
 #SBATCH --array=0-99
 #SBATCH --partition=scavenger
 #SBATCH --account=scavenger
@@ -14,14 +14,13 @@
 #SBATCH --error=logs/%A/t2i_models_%a.err
 
 . /usr/share/Modules/init/bash
-source ~/.bashrc
-conda activate dge-t2i-env
-module load cuda/12.6.3
+source /fs/nexus-scratch/chuonghm/miniconda3/bin/activate
+conda activate compbench
+module load cuda/12.4.1
 
-export HF_HOME="/scratch1/chuonghm/huggingface"
 ROOT_DIR="/fs/nexus-projects/scene_graph_sd/DGE-T2I"
-MODEL="sdxl"  # sdxl|sd15|flux2|z-image|qwen-image-2512|emu-3-5|mogao-7b|bagel|all
-STEP="generate"  # encode|generate|both
+MODEL="sdxl"
+STEP="both"
 NUM_SPLITS=100
 
 cd "$ROOT_DIR"

@@ -3,7 +3,7 @@ import json
 import os
 
 import torch
-from diffusers import ZImagePipeline
+from diffusers import DiffusionPipeline
 from tqdm import tqdm
 
 
@@ -32,13 +32,26 @@ def resolve_indices(data_len, start_idx, end_idx, num_splits, split_id):
 
     return start_idx, end_idx
 
+
+def unpack_prompt_embeddings(encoded):
+    if isinstance(encoded, dict):
+        return encoded.get("prompt_embeds"), encoded.get("pooled_prompt_embeds")
+    if isinstance(encoded, tuple):
+        if len(encoded) >= 4:
+            return encoded[0], encoded[2]
+        if len(encoded) == 2:
+            return encoded[0], encoded[1]
+        if len(encoded) == 1:
+            return encoded[0], None
+    return encoded, None
+
+
 def main():
-    parser = argparse.ArgumentParser(description="Encode prompts to embeddings for Z-Image")
+    parser = argparse.ArgumentParser(description="Encode prompts to embeddings for T2I generation")
     parser.add_argument("--model_id", type=str, required=True, help="Hugging Face model ID or local path")
     parser.add_argument("--data_path", type=str, default=DEFAULT_DATA_PATH, help="Path to prompts JSON file")
     parser.add_argument("--embeddings_dir", type=str, default=DEFAULT_EMBEDDINGS_DIR, help="Directory to save embeddings")
-    parser.add_argument("--prompt_key", type=str, default="prompt", help="JSON key containing the prompt text")
-    parser.add_argument("--device-map", type=str, default="balanced", help="Device map for model parallelism")
+    parser.add_argument("--device-map", type=str, default="balanced", help="Device map for model parallelism (e.g., balanced, auto, sequential, none)")
     parser.add_argument("--start_idx", type=int, default=None, help="Start index for processing (overrides split params)")
     parser.add_argument("--end_idx", type=int, default=None, help="End index for processing (overrides split params)")
     parser.add_argument("--num_splits", type=int, default=1, help="Total number of splits for parallel processing")
@@ -47,33 +60,27 @@ def main():
     args = parser.parse_args()
 
     device = "cuda" if torch.cuda.is_available() else "cpu"
-    dtype = torch.float16 if device == "cuda" else torch.float32
     print(f"Using device: {device}")
+    
 
+    print(f"Loading model: {args.model_id}")
     device_map = args.device_map
     if device_map == "none":
         device_map = None
     if torch.cuda.device_count() < 2:
         device_map = None
 
-    pipe = ZImagePipeline.from_pretrained(
-        args.model_id,
-        torch_dtype=torch.bfloat16,
-        low_cpu_mem_usage=False,
-        device_map=device_map
-    )
 
-    # [Optional] Attention Backend
-    # Diffusers uses SDPA by default. Switch to Flash Attention for better efficiency if supported:
-    pipe.transformer.set_attention_backend("flash")    # Enable Flash-Attention-2
-    # pipe.transformer.set_attention_backend("_flash_3") # Enable Flash-Attention-3
-    pipe.transformer.compile()
-    pipe.enable_model_cpu_offload()
+    pipeline = DiffusionPipeline.from_pretrained(args.model_id, 
+                torch_dtype=torch.float16, 
+                use_safetensors=True, 
+                variant="fp16",
+                device_map=device_map
+                )
 
     if not device_map:
-        pipe.to(device)
-        pipe.text_encoder.to(device)
-        
+        pipeline = pipeline.to(device)
+
     with open(args.data_path, "r") as f:
         data = json.load(f)
 
@@ -87,7 +94,7 @@ def main():
 
     for idx in tqdm(range(start_idx, end_idx)):
         item = data[idx]
-        prompt = item.get(args.prompt_key)
+        prompt = item.get("prompt")
         if not prompt:
             continue
 
@@ -97,12 +104,13 @@ def main():
             continue
 
         with torch.inference_mode():
-            prompt_embeds, negative_prompt_embeds = pipe.encode_prompt(
+            prompt_embeds, negative_prompt_embeds, pooled_prompt_embeds, negative_pooled_prompt_embeds = pipeline.encode_prompt(
                 prompt=prompt,
                 device=device,
+                num_images_per_prompt=1,
                 do_classifier_free_guidance=True,
             )
-        
+
         def to_cpu(value):
             if value is None:
                 return None
@@ -112,9 +120,11 @@ def main():
 
         save_payload = {
             "prompt_embeds": to_cpu(prompt_embeds),
-            "negative_prompt_embeds":to_cpu(negative_prompt_embeds)
+            "negative_prompt_embeds":to_cpu(negative_prompt_embeds),
+            "pooled_prompt_embeds":to_cpu(pooled_prompt_embeds),
+            "negative_pooled_prompt_embeds":to_cpu(negative_pooled_prompt_embeds),
+            "pooled_prompt_embeds": to_cpu(pooled_prompt_embeds),
         }
-
         torch.save(save_payload, out_path)
 
     print(f"Encoding complete. Embeddings saved to {args.embeddings_dir}")

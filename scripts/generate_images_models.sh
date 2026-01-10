@@ -296,10 +296,22 @@ run_generate() {
     echo ""
 }
 
-ENCODE_SCRIPT="/fs/nexus-projects/scene_graph_sd/DGE-T2I/src/models/encode_prompts.py"
-GENERATE_SCRIPT="/fs/nexus-projects/scene_graph_sd/DGE-T2I/src/models/generate_images_from_embeddings.py"
+SDXL_ENCODE_SCRIPT="/fs/nexus-projects/scene_graph_sd/DGE-T2I/src/models/sdxl_encode_prompts.py"
+SDXL_GENERATE_SCRIPT="/fs/nexus-projects/scene_graph_sd/DGE-T2I/src/models/sdxl_generate_from_embeddings.py"
+SD15_ENCODE_SCRIPT="/fs/nexus-projects/scene_graph_sd/DGE-T2I/src/models/sd15_encode_prompts.py"
+SD15_GENERATE_SCRIPT="/fs/nexus-projects/scene_graph_sd/DGE-T2I/src/models/sd15_generate_from_embeddings.py"
+FLUX2_ENCODE_SCRIPT="/fs/nexus-projects/scene_graph_sd/DGE-T2I/src/models/flux2_encode_prompts.py"
+FLUX2_GENERATE_SCRIPT="/fs/nexus-projects/scene_graph_sd/DGE-T2I/src/models/flux2_generate_from_embeddings.py"
 Z_ENCODE_SCRIPT="/fs/nexus-projects/scene_graph_sd/DGE-T2I/src/models/z_image_encode_prompts.py"
 Z_GENERATE_SCRIPT="/fs/nexus-projects/scene_graph_sd/DGE-T2I/src/models/z_image_generate_from_embeddings.py"
+QWEN_IMAGE_2512_ENCODE_SCRIPT="/fs/nexus-projects/scene_graph_sd/DGE-T2I/src/models/qwen_image_2512_encode_prompts.py"
+QWEN_IMAGE_2512_GENERATE_SCRIPT="/fs/nexus-projects/scene_graph_sd/DGE-T2I/src/models/qwen_image_2512_generate_from_embeddings.py"
+EMU_3_5_ENCODE_SCRIPT="/fs/nexus-projects/scene_graph_sd/DGE-T2I/src/models/emu_3_5_encode_prompts.py"
+EMU_3_5_GENERATE_SCRIPT="/fs/nexus-projects/scene_graph_sd/DGE-T2I/src/models/emu_3_5_generate_from_embeddings.py"
+MOGAO_7B_ENCODE_SCRIPT="/fs/nexus-projects/scene_graph_sd/DGE-T2I/src/models/mogao_7b_encode_prompts.py"
+MOGAO_7B_GENERATE_SCRIPT="/fs/nexus-projects/scene_graph_sd/DGE-T2I/src/models/mogao_7b_generate_from_embeddings.py"
+BAGEL_ENCODE_SCRIPT="/fs/nexus-projects/scene_graph_sd/DGE-T2I/src/models/bagel_encode_prompts.py"
+BAGEL_GENERATE_SCRIPT="/fs/nexus-projects/scene_graph_sd/DGE-T2I/src/models/bagel_generate_from_embeddings.py"
 
 if has_model "sdxl"; then
     SKIP_MODEL="false"
@@ -316,10 +328,10 @@ if has_model "sdxl"; then
     if [ "$SKIP_MODEL" = "false" ]; then
         MODEL_PATH=$(resolve_model_path "$SDXL_MODEL_ID" "$LOCAL_MODELS_DIR/sdxl")
         if [ "$STEP" = "both" ] || [ "$STEP" = "encode" ]; then
-            run_encode "$ENCODE_SCRIPT" "SDXL" "$MODEL_PATH" "$BASE_EMBEDDINGS_DIR/sdxl"
+            run_encode "$SDXL_ENCODE_SCRIPT" "SDXL" "$MODEL_PATH" "$BASE_EMBEDDINGS_DIR/sdxl"
         fi
         if [ "$STEP" = "both" ] || [ "$STEP" = "generate" ]; then
-            run_generate "$GENERATE_SCRIPT" "SDXL" "$MODEL_PATH" \
+            run_generate "$SDXL_GENERATE_SCRIPT" "SDXL" "$MODEL_PATH" \
                 "$BASE_EMBEDDINGS_DIR/sdxl" "$BASE_IMAGES_DIR/sdxl"
         fi
     fi
@@ -340,10 +352,10 @@ if has_model "sd15"; then
     if [ "$SKIP_MODEL" = "false" ]; then
         MODEL_PATH=$(resolve_model_path "$SD15_MODEL_ID" "$LOCAL_MODELS_DIR/sd15")
         if [ "$STEP" = "both" ] || [ "$STEP" = "encode" ]; then
-            run_encode "$ENCODE_SCRIPT" "SD-1.5" "$MODEL_PATH" "$BASE_EMBEDDINGS_DIR/sd15"
+            run_encode "$SD15_ENCODE_SCRIPT" "SD-1.5" "$MODEL_PATH" "$BASE_EMBEDDINGS_DIR/sd15"
         fi
         if [ "$STEP" = "both" ] || [ "$STEP" = "generate" ]; then
-            run_generate "$GENERATE_SCRIPT" "SD-1.5" "$MODEL_PATH" \
+            run_generate "$SD15_GENERATE_SCRIPT" "SD-1.5" "$MODEL_PATH" \
                 "$BASE_EMBEDDINGS_DIR/sd15" "$BASE_IMAGES_DIR/sd15"
         fi
     fi
@@ -364,10 +376,10 @@ if has_model "flux2"; then
     if [ "$SKIP_MODEL" = "false" ]; then
         MODEL_PATH=$(resolve_model_path "$FLUX2_MODEL_ID" "$LOCAL_MODELS_DIR/flux2")
         if [ "$STEP" = "both" ] || [ "$STEP" = "encode" ]; then
-            run_encode "$ENCODE_SCRIPT" "FLUX2.0" "$MODEL_PATH" "$BASE_EMBEDDINGS_DIR/flux2"
+            run_encode "$FLUX2_ENCODE_SCRIPT" "FLUX2.0" "$MODEL_PATH" "$BASE_EMBEDDINGS_DIR/flux2"
         fi
         if [ "$STEP" = "both" ] || [ "$STEP" = "generate" ]; then
-            run_generate "$GENERATE_SCRIPT" "FLUX2.0" "$MODEL_PATH" \
+            run_generate "$FLUX2_GENERATE_SCRIPT" "FLUX2.0" "$MODEL_PATH" \
                 "$BASE_EMBEDDINGS_DIR/flux2" "$BASE_IMAGES_DIR/flux2"
         fi
     fi
@@ -412,10 +424,10 @@ if has_model "qwen-image-2512"; then
     if [ "$SKIP_MODEL" = "false" ]; then
         MODEL_PATH=$(resolve_model_path "$QWEN_IMAGE_MODEL_ID" "$LOCAL_MODELS_DIR/qwen-image-2512")
         if [ "$STEP" = "both" ] || [ "$STEP" = "encode" ]; then
-            run_encode "$ENCODE_SCRIPT" "Qwen-Image-2512" "$MODEL_PATH" "$BASE_EMBEDDINGS_DIR/qwen-image-2512"
+            run_encode "$QWEN_IMAGE_2512_ENCODE_SCRIPT" "Qwen-Image-2512" "$MODEL_PATH" "$BASE_EMBEDDINGS_DIR/qwen-image-2512"
         fi
         if [ "$STEP" = "both" ] || [ "$STEP" = "generate" ]; then
-            run_generate "$GENERATE_SCRIPT" "Qwen-Image-2512" "$MODEL_PATH" \
+            run_generate "$QWEN_IMAGE_2512_GENERATE_SCRIPT" "Qwen-Image-2512" "$MODEL_PATH" \
                 "$BASE_EMBEDDINGS_DIR/qwen-image-2512" "$BASE_IMAGES_DIR/qwen-image-2512"
         fi
     fi
@@ -436,10 +448,10 @@ if has_model "emu-3-5"; then
     if [ "$SKIP_MODEL" = "false" ]; then
         MODEL_PATH=$(resolve_model_path "$EMU_35_MODEL_ID" "$LOCAL_MODELS_DIR/emu-3-5")
         if [ "$STEP" = "both" ] || [ "$STEP" = "encode" ]; then
-            run_encode "$ENCODE_SCRIPT" "Emu 3.5" "$MODEL_PATH" "$BASE_EMBEDDINGS_DIR/emu-3-5"
+            run_encode "$EMU_3_5_ENCODE_SCRIPT" "Emu 3.5" "$MODEL_PATH" "$BASE_EMBEDDINGS_DIR/emu-3-5"
         fi
         if [ "$STEP" = "both" ] || [ "$STEP" = "generate" ]; then
-            run_generate "$GENERATE_SCRIPT" "Emu 3.5" "$MODEL_PATH" \
+            run_generate "$EMU_3_5_GENERATE_SCRIPT" "Emu 3.5" "$MODEL_PATH" \
                 "$BASE_EMBEDDINGS_DIR/emu-3-5" "$BASE_IMAGES_DIR/emu-3-5"
         fi
     fi
@@ -460,10 +472,10 @@ if has_model "mogao-7b"; then
     if [ "$SKIP_MODEL" = "false" ]; then
         MODEL_PATH=$(resolve_model_path "$MOGAO_7B_MODEL_ID" "$LOCAL_MODELS_DIR/mogao-7b")
         if [ "$STEP" = "both" ] || [ "$STEP" = "encode" ]; then
-            run_encode "$ENCODE_SCRIPT" "Mogao-7B" "$MODEL_PATH" "$BASE_EMBEDDINGS_DIR/mogao-7b"
+            run_encode "$MOGAO_7B_ENCODE_SCRIPT" "Mogao-7B" "$MODEL_PATH" "$BASE_EMBEDDINGS_DIR/mogao-7b"
         fi
         if [ "$STEP" = "both" ] || [ "$STEP" = "generate" ]; then
-            run_generate "$GENERATE_SCRIPT" "Mogao-7B" "$MODEL_PATH" \
+            run_generate "$MOGAO_7B_GENERATE_SCRIPT" "Mogao-7B" "$MODEL_PATH" \
                 "$BASE_EMBEDDINGS_DIR/mogao-7b" "$BASE_IMAGES_DIR/mogao-7b"
         fi
     fi
@@ -484,10 +496,10 @@ if has_model "bagel"; then
     if [ "$SKIP_MODEL" = "false" ]; then
         MODEL_PATH=$(resolve_model_path "$BAGEL_MODEL_ID" "$LOCAL_MODELS_DIR/bagel")
         if [ "$STEP" = "both" ] || [ "$STEP" = "encode" ]; then
-            run_encode "$ENCODE_SCRIPT" "BAGEL" "$MODEL_PATH" "$BASE_EMBEDDINGS_DIR/bagel"
+            run_encode "$BAGEL_ENCODE_SCRIPT" "BAGEL" "$MODEL_PATH" "$BASE_EMBEDDINGS_DIR/bagel"
         fi
         if [ "$STEP" = "both" ] || [ "$STEP" = "generate" ]; then
-            run_generate "$GENERATE_SCRIPT" "BAGEL" "$MODEL_PATH" \
+            run_generate "$BAGEL_GENERATE_SCRIPT" "BAGEL" "$MODEL_PATH" \
                 "$BASE_EMBEDDINGS_DIR/bagel" "$BASE_IMAGES_DIR/bagel"
         fi
     fi

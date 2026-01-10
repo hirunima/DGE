@@ -3,7 +3,7 @@ import json
 import os
 
 import torch
-from diffusers import ZImagePipeline
+from diffusers import AutoPipelineForText2Image, DiffusionPipeline
 from tqdm import tqdm
 
 
@@ -52,14 +52,15 @@ def repeat_embeds(embeds, count):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Generate images from Z-Image embeddings")
+    parser = argparse.ArgumentParser(description="Generate images from pre-encoded embeddings")
     parser.add_argument("--model_id", type=str, required=True, help="Hugging Face model ID or local path")
     parser.add_argument("--data_path", type=str, default=DEFAULT_DATA_PATH, help="Path to prompts JSON file")
     parser.add_argument("--embeddings_dir", type=str, default=DEFAULT_EMBEDDINGS_DIR, help="Directory containing embeddings")
     parser.add_argument("--images_dir", type=str, default=DEFAULT_IMAGES_DIR, help="Directory to save generated images")
     parser.add_argument("--num_generations", type=int, default=5, help="Number of images per prompt")
     parser.add_argument("--seed", type=int, default=DEFAULT_SEED, help="Random seed")
-    parser.add_argument("--device-map", type=str, default="balanced", help="Device map for model parallelism")
+    parser.add_argument("--device-map", type=str, default="balanced", help="Device map for model parallelism (e.g., balanced, auto, sequential, none)")
+    parser.add_argument("--keep-text-encoders", action="store_true", help="Keep text encoders loaded (default: skip)")
     parser.add_argument("--start_idx", type=int, default=None, help="Start index for processing (overrides split params)")
     parser.add_argument("--end_idx", type=int, default=None, help="End index for processing (overrides split params)")
     parser.add_argument("--num_splits", type=int, default=1, help="Total number of splits for parallel processing")
@@ -71,36 +72,44 @@ def main():
     dtype = torch.float16 if device == "cuda" else torch.float32
     print(f"Using device: {device}")
 
+    print(f"Loading model: {args.model_id}")
     device_map = args.device_map
     if device_map == "none":
         device_map = None
     if torch.cuda.device_count() < 2:
         device_map = None
 
-    pipe = ZImagePipeline.from_pretrained(
-        args.model_id,
-        torch_dtype=torch.bfloat16,
-        low_cpu_mem_usage=False,
-        device_map=device_map
-    )
+    skip_text_encoders = not args.keep_text_encoders
+    pipeline_kwargs = {"torch_dtype": dtype}
+    if device_map:
+        pipeline_kwargs["device_map"] = device_map
+    if skip_text_encoders:
+        pipeline_kwargs.update(
+            {
+                "text_encoder": None,
+                "text_encoder_2": None,
+                "tokenizer": None,
+                "tokenizer_2": None,
+            }
+        )
 
-    pipe.text_encoder = None
+    try:
+        pipeline = AutoPipelineForText2Image.from_pretrained(args.model_id, **pipeline_kwargs)
+    except (TypeError, ValueError):
+        for key in ("text_encoder_2", "tokenizer_2", "text_encoder", "tokenizer"):
+            pipeline_kwargs.pop(key, None)
+        pipeline = DiffusionPipeline.from_pretrained(args.model_id, **pipeline_kwargs)
 
     if not device_map:
-        pipe.to(device)
+        pipeline = pipeline.to(device)
+    if hasattr(pipeline, "enable_vae_slicing"):
+        pipeline.enable_vae_slicing()
 
-    # [Optional] Attention Backend
-    # Diffusers uses SDPA by default. Switch to Flash Attention for better efficiency if supported:
-    pipe.transformer.set_attention_backend("flash")    # Enable Flash-Attention-2
-    pipe.transformer.set_attention_backend("_flash_3") # Enable Flash-Attention-3
-
-    # [Optional] Model Compilation
-    # Compiling the DiT model accelerates inference, but the first run will take longer to compile.
-    pipe.transformer.compile()
-
-    # [Optional] CPU Offloading
-    # Enable CPU offloading for memory-constrained devices.
-    pipe.enable_model_cpu_offload()
+    if skip_text_encoders:
+        for attr in ("text_encoder", "text_encoder_2", "tokenizer", "tokenizer_2"):
+            if hasattr(pipeline, attr):
+                setattr(pipeline, attr, None)
+    execution_device = getattr(pipeline, "_execution_device", device)
 
     with open(args.data_path, "r") as f:
         data = json.load(f)
@@ -127,22 +136,33 @@ def main():
             continue
 
         payload = torch.load(embedding_path, map_location=execution_device)
+        prompt_embeds = payload.get("prompt_embeds")
+        pooled_prompt_embeds = payload.get("pooled_prompt_embeds")
 
-        def to_device(value, target_device):
-            if value is None:
-                return None
-            if isinstance(value, (list, tuple)):
-                return [to_device(v, target_device) for v in value]
-            return value.to(target_device)
+        if prompt_embeds is None:
+            continue
 
-        for e in payload: 
-            payload[e] = to_device(payload[e]) if payload[e] != None else None
+        prompt_embeds = prompt_embeds.to(execution_device)
+        pooled_prompt_embeds = pooled_prompt_embeds.to(execution_device) if pooled_prompt_embeds is not None else None
 
+        prompt_embeds = repeat_embeds(prompt_embeds, args.num_generations)
+        pooled_prompt_embeds = repeat_embeds(pooled_prompt_embeds, args.num_generations)
+
+        generator_device = execution_device
+        if isinstance(execution_device, torch.device) and execution_device.type != "cuda":
+            generator_device = "cpu"
+        generator = torch.Generator(device=generator_device).manual_seed(args.seed + idx)
         call_kwargs = {
-            **payload, 
-            "num_images_per_prompt": args.num_generations,
+            "prompt_embeds": prompt_embeds,
+            "num_images_per_prompt": 1,
             "generator": generator,
         }
+        if pooled_prompt_embeds is not None:
+            call_kwargs["pooled_prompt_embeds"] = pooled_prompt_embeds
+        if skip_text_encoders:
+            call_kwargs["negative_prompt_embeds"] = torch.zeros_like(prompt_embeds)
+            if pooled_prompt_embeds is not None:
+                call_kwargs["negative_pooled_prompt_embeds"] = torch.zeros_like(pooled_prompt_embeds)
 
         images = pipeline(**call_kwargs).images
 
