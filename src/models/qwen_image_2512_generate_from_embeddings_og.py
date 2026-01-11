@@ -5,7 +5,8 @@ import os
 import torch
 from diffusers import DiffusionPipeline
 from tqdm import tqdm
-
+import os
+os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
 
 DEFAULT_DATA_PATH = "/fs/nexus-projects/scene_graph_sd/DGE-T2I/data/raw/qwen8b_t2i_prompts_aug_v1.json"
 DEFAULT_EMBEDDINGS_DIR = "/fs/nexus-projects/scene_graph_sd/DGE-T2I/data/embeddings"
@@ -74,21 +75,39 @@ def main():
         device_map = None
 
 
-    base = DiffusionPipeline.from_pretrained(args.model_id, 
-                torch_dtype=torch.bfloat16,
-                use_safetensors=True, 
-                device_map=None
-                )
+     # Load the model with standard Diffusers components
+    base = DiffusionPipeline.from_pretrained(
+        args.model_id, 
+        torch_dtype=torch.bfloat16,
+        use_safetensors=True, 
+        device_map=None, #device_map,
+    )
 
-    base.transformer.set_attention_backend("flash") 
-    base.text_encoder = None   
-    base.enable_sequential_cpu_offload()
+    if not device_map:
+        base = base.to(device)
 
-    # if not device_map:
-    #     base = base.to(device)
-    # base.enable_layerwise_casting(storage_dtype=torch.float8_e4m3fn, compute_dtype=torch.bfloat16)
+    # REPLACEMENT FOR THE FA3 LINE:
+    torch._inductor.config.conv_1x1_as_mm = True
+    torch._inductor.config.coordinate_descent_tuning = True
+    torch._inductor.config.epilogue_fusion = False
+    torch._inductor.config.coordinate_descent_check_all_directions = True
+    base.transformer = torch.compile(base.transformer, mode="max-autotune", fullgraph=True)
+
+    # Use 'model_cpu_offload' instead of 'sequential_cpu_offload' 
+    # as it is compatible with torch.compile.
+    base.enable_group_offload(
+        onload_device=torch.device("cuda"),
+        offload_device=torch.device("cpu"),
+        offload_type="leaf_level",
+        use_stream=True
+    )
+    base.enable_layerwise_casting(storage_dtype=torch.float8_e4m3fn, compute_dtype=torch.bfloat16)
+    # base.enable_sequential_cpu_offload()
+    # base.enable_model_cpu_offload()
     base.enable_vae_slicing()
     base.enable_vae_tiling()
+    base.text_encoder = None
+
 
     with open(args.data_path, "r") as f:
         data = json.load(f)
@@ -119,7 +138,7 @@ def main():
         for e in payload: 
             payload[e] = payload[e].to(device) if payload[e] != None else None
 
-        generator = torch.Generator(device=device).manual_seed(args.seed + idx)
+        generator = torch.Generator(device="cpu").manual_seed(args.seed + idx)
         call_kwargs = {
             **payload, 
             "num_images_per_prompt": args.num_generations,

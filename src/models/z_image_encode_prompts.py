@@ -63,11 +63,8 @@ def main():
         device_map=device_map
     )
 
-    # [Optional] Attention Backend
-    # Diffusers uses SDPA by default. Switch to Flash Attention for better efficiency if supported:
-    pipe.transformer.set_attention_backend("flash")    # Enable Flash-Attention-2
-    # pipe.transformer.set_attention_backend("_flash_3") # Enable Flash-Attention-3
-    pipe.transformer.compile()
+    pipe.transformer.set_attention_backend("flash")    
+    # pipe.transformer.compile()
     pipe.enable_model_cpu_offload()
 
     if not device_map:

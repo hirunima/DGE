@@ -83,6 +83,29 @@ def main():
 
     if not device_map:
         pipeline.text_encoder.to(device)
+    
+    # torch._inductor.config.conv_1x1_as_mm = True
+    # torch._inductor.config.coordinate_descent_tuning = True
+    # torch._inductor.config.epilogue_fusion = False
+    # torch._inductor.config.coordinate_descent_check_all_directions = True
+
+    # pipeline.vae.decode = torch.compile(
+    #     pipeline.vae.decode,
+    #     mode="max-autotune",
+    #     fullgraph=True
+    # )
+
+    # pipeline.enable_vae_slicing()
+    # pipeline.transformer.compile()
+    pipeline.enable_group_offload(
+        onload_device=torch.device("cuda"),
+        offload_device=torch.device("cpu"),
+        offload_type="leaf_level",
+        use_stream=True
+    )
+    # # pipeline.enable_model_cpu_offload()
+    # transformer.enable_layerwise_casting(storage_dtype=torch.float8_e4m3fn, compute_dtype=torch.bfloat16)
+
 
     with open(args.data_path, "r") as f:
         data = json.load(f)

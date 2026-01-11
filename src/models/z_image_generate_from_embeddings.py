@@ -86,21 +86,12 @@ def main():
 
     pipe.text_encoder = None
 
+    pipe.transformer.set_attention_backend("flash")    
+    # pipe.transformer.compile()
+    pipe.enable_model_cpu_offload()
+
     if not device_map:
         pipe.to(device)
-
-    # [Optional] Attention Backend
-    # Diffusers uses SDPA by default. Switch to Flash Attention for better efficiency if supported:
-    pipe.transformer.set_attention_backend("flash")    # Enable Flash-Attention-2
-    pipe.transformer.set_attention_backend("_flash_3") # Enable Flash-Attention-3
-
-    # [Optional] Model Compilation
-    # Compiling the DiT model accelerates inference, but the first run will take longer to compile.
-    pipe.transformer.compile()
-
-    # [Optional] CPU Offloading
-    # Enable CPU offloading for memory-constrained devices.
-    pipe.enable_model_cpu_offload()
 
     with open(args.data_path, "r") as f:
         data = json.load(f)
@@ -126,7 +117,7 @@ def main():
         if not os.path.exists(embedding_path):
             continue
 
-        payload = torch.load(embedding_path, map_location=execution_device)
+        payload = torch.load(embedding_path, map_location=device)
 
         def to_device(value, target_device):
             if value is None:
@@ -136,15 +127,16 @@ def main():
             return value.to(target_device)
 
         for e in payload: 
-            payload[e] = to_device(payload[e]) if payload[e] != None else None
+            payload[e] = to_device(payload[e], device) if payload[e] is not None else None
 
+        generator = torch.Generator(device=device).manual_seed(args.seed + idx)
         call_kwargs = {
             **payload, 
             "num_images_per_prompt": args.num_generations,
             "generator": generator,
         }
 
-        images = pipeline(**call_kwargs).images
+        images = pipe(**call_kwargs).images
 
         for i, img in enumerate(images):
             img.save(os.path.join(args.images_dir, f"{example_id}-{i+1}.png"))
