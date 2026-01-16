@@ -1,15 +1,46 @@
-import argparse
-import json
-import os
+# Copyright 2025 Bytedance Ltd. and/or its affiliates.
+# SPDX-License-Identifier: Apache-2.0
 
-import torch
-from diffusers import AutoPipelineForText2Image, DiffusionPipeline
+import os
+import sys
+import json
+import argparse
+import gc  # <--- FIX 1: Import Garbage Collection
+from safetensors.torch import load_file
 from tqdm import tqdm
 
+import torch
 
-DEFAULT_DATA_PATH = "/fs/nexus-projects/scene_graph_sd/DGE-T2I/data/raw/qwen8b_t2i_prompts_aug_v1.json"
-DEFAULT_EMBEDDINGS_DIR = "/fs/nexus-projects/scene_graph_sd/DGE-T2I/data/embeddings"
+# Allow running this file directly by adding the BAGEL package root to sys.path.
+BAGEL_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "BAGEL"))
+if BAGEL_ROOT not in sys.path:
+    sys.path.insert(0, BAGEL_ROOT)
+from data.data_utils import add_special_tokens
+from modeling.bagel import (
+    BagelConfig, Bagel, Qwen2Config, Qwen2ForCausalLM, SiglipVisionConfig, SiglipVisionModel
+)
+from modeling.qwen2 import Qwen2Tokenizer
+from modeling.autoencoder import load_ae
 
+from PIL import Image
+from modeling.bagel.qwen2_navit import NaiveCache
+
+os.environ["PYTORCH_ALLOC_CONF"] = "expandable_segments:True"
+
+
+def resolve_compute_dtype(device):
+    if device.startswith("cuda") and torch.cuda.is_available():
+        if torch.cuda.is_bf16_supported():
+            return torch.bfloat16
+        return torch.float16
+    return torch.float32
+
+def move_generation_input_to_device(generation_input, device):
+    # Utility to move all tensors in generation_input to device
+    for k, v in generation_input.items():
+        if isinstance(v, torch.Tensor):
+            generation_input[k] = v.to(device)
+    return generation_input
 
 def resolve_indices(data_len, start_idx, end_idx, num_splits, split_id):
     if start_idx is not None and end_idx is not None:
@@ -33,145 +64,185 @@ def resolve_indices(data_len, start_idx, end_idx, num_splits, split_id):
     return start_idx, end_idx
 
 
-def normalize_embeddings(encoded):
-    prompt_embeds = None
-    pooled_prompt_embeds = None
+def get_kv_and_latent(prompt, num_timesteps=50, cfg_scale=10.0, cfg_interval=[0, 1.0], cfg_renorm_min=0., timestep_shift=1.0, num_images=4, resolution=512, device=None):
+    if device is None:
+        device = "cuda" if torch.cuda.is_available() else "cpu"
+    
+    # Ensure gen_model is accessible
+    if 'gen_model' not in globals():
+        raise RuntimeError("gen_model is not defined in global scope")
 
-    if isinstance(encoded, dict):
-        prompt_embeds = encoded.get("prompt_embeds")
-        pooled_prompt_embeds = encoded.get("pooled_prompt_embeds")
-        return {
-            "prompt_embeds": prompt_embeds,
-            "pooled_prompt_embeds": pooled_prompt_embeds,
-        }
+    past_key_values = NaiveCache(gen_model.config.llm_config.num_hidden_layers)
+    newlens = [0] * num_images
+    new_rope = [0] * num_images
 
-    if isinstance(encoded, tuple):
-        if len(encoded) >= 2:
-            prompt_embeds = encoded[0]
-            pooled_prompt_embeds = encoded[1]
-        elif len(encoded) == 1:
-            prompt_embeds = encoded[0]
-        else:
-            prompt_embeds = encoded[0]
-            pooled_prompt_embeds = encoded[2] if len(encoded) > 2 else None
-    else:
-        prompt_embeds = encoded
+    generation_input, newlens, new_rope = gen_model.prepare_prompts(
+        curr_kvlens=newlens,
+        curr_rope=new_rope, 
+        prompts=[prompt] * num_images,
+        tokenizer=tokenizer, 
+        new_token_ids=new_token_ids,
+    )
+    generation_input = move_generation_input_to_device(generation_input, device)
 
-    return {
-        "prompt_embeds": prompt_embeds,
-        "pooled_prompt_embeds": pooled_prompt_embeds,
-    }
+    with torch.no_grad():
+        with torch.amp.autocast("cuda", enabled=True, dtype=torch.float16):
+            past_key_values = gen_model.forward_cache_update_text(past_key_values, **generation_input)
 
+    generation_input = gen_model.prepare_vae_latent(
+        curr_kvlens=newlens,
+        curr_rope=new_rope, 
+        image_sizes=[(resolution, resolution)] * num_images, 
+        new_token_ids=new_token_ids,
+    )
+    generation_input = move_generation_input_to_device(generation_input, device)
 
-def main():
-    parser = argparse.ArgumentParser(description="Encode prompts to embeddings for T2I generation")
-    parser.add_argument("--model_id", type=str, required=True, help="Hugging Face model ID or local path")
-    parser.add_argument("--data_path", type=str, default=DEFAULT_DATA_PATH, help="Path to prompts JSON file")
-    parser.add_argument("--embeddings_dir", type=str, default=DEFAULT_EMBEDDINGS_DIR, help="Directory to save embeddings")
-    parser.add_argument("--prompt_key", type=str, default="prompt", help="JSON key containing the prompt text")
-    parser.add_argument("--device-map", type=str, default="balanced", help="Device map for model parallelism (e.g., balanced, auto, sequential, none)")
-    parser.add_argument("--start_idx", type=int, default=None, help="Start index for processing (overrides split params)")
-    parser.add_argument("--end_idx", type=int, default=None, help="End index for processing (overrides split params)")
-    parser.add_argument("--num_splits", type=int, default=1, help="Total number of splits for parallel processing")
-    parser.add_argument("--split_id", type=int, default=0, help="Split ID for this process (0-indexed)")
-    parser.add_argument("--skip_existing", action="store_true", help="Skip prompts with existing embeddings")
-    args = parser.parse_args()
-
-    device = "cuda" if torch.cuda.is_available() else "cpu"
-    dtype = torch.float16 if device == "cuda" else torch.float32
-    print(f"Using device: {device}")
-
-    print(f"Loading model: {args.model_id}")
-    device_map = args.device_map
-    if device_map == "none":
-        device_map = None
-    if torch.cuda.device_count() < 2:
-        device_map = None
-
-    def move_text_encoders(pipeline):
-        for name in ("text_encoder", "text_encoder_2"):
-            module = getattr(pipeline, name, None)
-            if module is not None:
-                module.to(device)
-
-    def load_pipeline():
-        if device_map:
-            return AutoPipelineForText2Image.from_pretrained(
-                args.model_id,
-                torch_dtype=dtype,
-                device_map=device_map
-            )
-        pipeline = AutoPipelineForText2Image.from_pretrained(
-            args.model_id,
-            torch_dtype=dtype
-        )
-        move_text_encoders(pipeline)
-        return pipeline
-
-    try:
-        pipeline = load_pipeline()
-    except ValueError:
-        if device_map:
-            pipeline = DiffusionPipeline.from_pretrained(
-                args.model_id,
-                torch_dtype=dtype,
-                device_map=device_map
-            )
-        else:
-            pipeline = DiffusionPipeline.from_pretrained(
-                args.model_id,
-                torch_dtype=dtype
-            )
-            move_text_encoders(pipeline)
-        if not hasattr(pipeline, "encode_prompt"):
-            raise ValueError(
-                "Loaded pipeline does not support encode_prompt; "
-                "please provide a model with a text-to-image pipeline that exposes encode_prompt."
-            )
-    execution_device = getattr(pipeline, "_execution_device", device)
-
-    with open(args.data_path, "r") as f:
-        data = json.load(f)
-
-    if not isinstance(data, list):
-        raise ValueError("Expected data to be a list of prompt items")
-
-    start_idx, end_idx = resolve_indices(len(data), args.start_idx, args.end_idx, args.num_splits, args.split_id)
-    print(f"Encoding prompts {start_idx} to {end_idx - 1}")
-
-    os.makedirs(args.embeddings_dir, exist_ok=True)
-
-    for idx in tqdm(range(start_idx, end_idx)):
-        item = data[idx]
-        prompt = item.get(args.prompt_key)
-        if not prompt:
-            continue
-
-        example_id = f"{idx:04d}"
-        out_path = os.path.join(args.embeddings_dir, f"{example_id}.pt")
-        if args.skip_existing and os.path.exists(out_path):
-            continue
-
-        with torch.inference_mode():
-            encoded = pipeline.encode_prompt(
-                prompt=prompt,
-                device=execution_device,
-                num_images_per_prompt=1,
-                do_classifier_free_guidance=True,
-            )
-        embeddings = normalize_embeddings(encoded)
-        def to_cpu(value):
-            if value is None:
-                return None
-            if isinstance(value, (list, tuple)):
-                return [to_cpu(v) for v in value]
-            return value.detach().cpu()
-
-        save_payload = {k: to_cpu(v) for k, v in embeddings.items()}
-        torch.save(save_payload, out_path)
-
-    print(f"Encoding complete. Embeddings saved to {args.embeddings_dir}")
+    return past_key_values, generation_input
 
 
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser(description="Generate images using Bagel model.")
+    parser.add_argument("--output_dir", type=str, default=None, help="Directory to save generated images (legacy mode).")
+    parser.add_argument("--data_path", type=str, default=None, help="JSON file containing prompt items.")
+    parser.add_argument("--images_dir", type=str, default=None, help="Directory to save generated images.")
+    parser.add_argument("--embeddings_dir", type=str, default=None, help="Unused (compatibility with job scripts).")
+    parser.add_argument("--prompt_key", type=str, default="prompt", help="JSON key containing the prompt text.")
+    parser.add_argument("--num_generations", type=int, default=None, help="Number of images per prompt.")
+    parser.add_argument("--cfg_scale", type=float, default=4)
+    parser.add_argument("--resolution", type=int, default=1024)
+    parser.add_argument("--max_latent_size", type=int, default=64)
+    parser.add_argument("--model_id", type=str, default=None, help="Model local path.")
+    parser.add_argument("--device-map", type=str, default="none", help="Unused (compatibility with job scripts).")
+    parser.add_argument("--seed", type=int, default=42, help="Random seed.")
+    parser.add_argument("--start_idx", type=int, default=None, help="Start index for processing (overrides split params).")
+    parser.add_argument("--end_idx", type=int, default=None, help="End index for processing (overrides split params).")
+    parser.add_argument("--num_splits", type=int, default=1, help="Total number of splits for parallel processing.")
+    parser.add_argument("--split_id", type=int, default=0, help="Split ID for this process (0-indexed).")
+    parser.add_argument("--skip_existing", action="store_true", help="Skip prompts that already have images.")
+    args = parser.parse_args()
+    
+    seed = 42
+    if seed is not None:
+        import random
+        import numpy as np
+        random.seed(seed)
+        torch.manual_seed(seed)
+        if torch.cuda.is_available():
+            torch.cuda.manual_seed(seed)
+            torch.cuda.manual_seed_all(seed)
+        torch.backends.cudnn.deterministic = True
+        torch.backends.cudnn.benchmark = False
+    
+    # --- FIX 2: Define Device BEFORE loading model ---
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+    print(f"Running on device: {device}")
+
+    llm_config = Qwen2Config.from_json_file(os.path.join(args.model_id, "llm_config.json"))
+    llm_config.qk_norm = True
+    llm_config.tie_word_embeddings = False
+    llm_config.layer_module = "Qwen2MoTDecoderLayer"
+
+    vit_config = SiglipVisionConfig.from_json_file(os.path.join(args.model_id, "vit_config.json"))
+    vit_config.rope = False
+    vit_config.num_hidden_layers = vit_config.num_hidden_layers - 1
+
+    vae_model, vae_config = load_ae(local_path=os.path.join(args.model_id, "ae.safetensors"))
+
+    config = BagelConfig(
+        visual_gen=True,
+        visual_und=True,
+        llm_config=llm_config, 
+        vit_config=vit_config,
+        vae_config=vae_config,
+        vit_max_num_patch_per_side=70,
+        connector_act='gelu_pytorch_tanh',
+        latent_patch_size=2,
+        max_latent_size=args.max_latent_size,
+    )
+    language_model = Qwen2ForCausalLM(llm_config)
+    
+    model = Bagel(language_model, None, config)
+    
+    # Move empty model to device first
+    model = model.to(device)
+
+    tokenizer = Qwen2Tokenizer.from_pretrained(args.model_id)
+    tokenizer, new_token_ids, _ = add_special_tokens(tokenizer)
+
+    print("Loading model weights...")
+    model_state_dict_path = os.path.join(args.model_id, "ema.safetensors")
+    
+    # Load weights directly to target device to save CPU RAM
+    model_state_dict = load_file(model_state_dict_path, device=device)
+    msg = model.load_state_dict(model_state_dict, strict=False)
+    print(msg)
+    
+    # Cleanup weights immediately
+    del model_state_dict
+    gc.collect() 
+    if device == "cuda":
+        torch.cuda.empty_cache()
+
+    model = model.eval()
+    vae_model = vae_model.to(device).eval()
+    gen_model = model
+
+    cfg_scale = args.cfg_scale
+    cfg_interval = [0, 1.0]
+    timestep_shift = 3.0
+    num_timesteps = 50
+    cfg_renorm_min = 0.0
+
+    with open(args.data_path, "r", encoding="utf-8") as fp:
+        data = json.load(fp)
+    
+    os.makedirs(args.embeddings_dir, exist_ok=True)
+
+    start, end = resolve_indices(len(data), args.start_idx, args.end_idx, args.num_splits, args.split_id)
+    
+    print(f"Processing items {start} to {end}...")
+
+    # Using tqdm for progress bar
+    for idx in tqdm(range(start, end)):
+        try:
+            entry = data[idx]
+            prompt = entry['prompt']
+            example_id = f"{idx:04d}"
+
+            if args.skip_existing and os.path.exists(os.path.join(args.embeddings_dir,  f"{example_id}.pt" )):
+                continue
+
+            kv, latent_info = get_kv_and_latent(
+                prompt=prompt,
+                cfg_scale=cfg_scale, 
+                cfg_interval=cfg_interval, 
+                cfg_renorm_min=cfg_renorm_min,
+                timestep_shift=timestep_shift, 
+                num_timesteps=num_timesteps,
+                num_images=1,
+                resolution=args.resolution,
+                device=device,
+            )
+            
+            # Save the file
+            save_path = os.path.join(args.embeddings_dir, f"{example_id}.pt")
+            torch.save({"kv": kv, "latent_info": latent_info}, save_path)
+            
+            # --- FIX 3: CRITICAL LOOP CLEANUP ---
+            # Python holds these variables in memory unless explicitly deleted, 
+            # causing RAM usage to grow with every loop iteration.
+            del kv
+            del latent_info
+            
+            # Force Python to actually free the memory NOW, not later.
+            gc.collect() 
+            
+        except Exception as e:
+            print(f"Error processing index {idx}: {e}")
+            # Ensure cleanup happens even on error
+            if 'kv' in locals(): del kv
+            if 'latent_info' in locals(): del latent_info
+            gc.collect()
+            continue
+
+    print(f"Completed tasks.")

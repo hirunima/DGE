@@ -1,5 +1,6 @@
 import argparse
 
+
 def main():
     parser = argparse.ArgumentParser(description="Encode prompts to embeddings for T2I generation")
     parser.add_argument("--model_id", type=str, required=True, help="Hugging Face model ID or local path")
@@ -13,9 +14,8 @@ def main():
     parser.add_argument("--split_id", type=int, default=0, help="Split ID for this process (0-indexed)")
     parser.add_argument("--skip_existing", action="store_true", help="Skip prompts with existing embeddings")
     args = parser.parse_args()
-
-    print(f"Encoding not implemented.")
-
+    
+    print("Encoding not implemented.")
 
 if __name__ == "__main__":
     main()

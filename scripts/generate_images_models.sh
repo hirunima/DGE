@@ -12,13 +12,14 @@ NUM_GENERATIONS=5
 SEED=44
 DEVICE_MAP="balanced"
 ENCODE_DEVICE_MAP=""
+TORCHRUN_NPROC="${TORCHRUN_NPROC:-}"
 
 # Model IDs (update if your repo IDs differ)
 SDXL_MODEL_ID="stabilityai/stable-diffusion-xl-base-1.0"
 SD15_MODEL_ID="stable-diffusion-v1-5/stable-diffusion-v1-5"
 FLUX2_MODEL_ID="black-forest-labs/FLUX.2"
 Z_IMAGE_MODEL_ID="zai-org/Z-Image"
-QWEN_IMAGE_MODEL_ID="Qwen/Qwen-Image-2512"
+QWEN_IMAGE_MODEL_ID="Qwen/Qwen-Image"
 EMU_35_MODEL_ID="BAAI/Emu3-Gen"
 MOGAO_7B_MODEL_ID="Mogao/Mogao-7B"
 BAGEL_MODEL_ID="BAGEL/BAGEL-7B"
@@ -266,6 +267,22 @@ run_generate() {
     local model_id="$3"
     local embeddings_dir="$4"
     local images_dir="$5"
+    local use_torchrun="false"
+    local nproc_per_node="1"
+
+    if [ -n "$TORCHRUN_NPROC" ]; then
+        nproc_per_node="$TORCHRUN_NPROC"
+    elif [ -n "$CUDA_VISIBLE_DEVICES" ]; then
+        nproc_per_node="$(awk -F',' '{print NF}' <<< "$CUDA_VISIBLE_DEVICES")"
+    fi
+
+    if [ "$model_key" = "bagel" ] && [ "$nproc_per_node" -gt 1 ]; then
+        use_torchrun="true"
+        echo "Using torchrun for BAGEL (nproc_per_node=$nproc_per_node)."
+        if [ -n "$END_IDX" ] || [ "$START_IDX" != "0" ] || [ "$NUM_SPLITS" -gt 1 ] || [ "$SPLIT_ID" -ne 0 ]; then
+            echo "Note: ignoring --start-idx/--end-idx/--num-splits/--split-id for BAGEL torchrun runs."
+        fi
+    fi
 
     echo "========================================="
     echo "Generating: $model_key"
@@ -273,7 +290,17 @@ run_generate() {
     echo "Output: $images_dir"
     echo "========================================="
 
-    CMD="python $script_path \
+    if [ "$use_torchrun" = "true" ]; then
+        CMD="torchrun --nproc_per_node $nproc_per_node $script_path \
+        --model_id $model_id \
+        --data_path $DATA_PATH \
+        --embeddings_dir $embeddings_dir \
+        --images_dir $images_dir \
+        --num_generations $NUM_GENERATIONS \
+        --seed $SEED \
+        --device-map $DEVICE_MAP"
+    else
+        CMD="python $script_path \
         --model_id $model_id \
         --data_path $DATA_PATH \
         --embeddings_dir $embeddings_dir \
@@ -284,8 +311,9 @@ run_generate() {
         --split_id $SPLIT_ID \
         --device-map $DEVICE_MAP \
         --start_idx $START_IDX"
+    fi
 
-    if [ -n "$END_IDX" ]; then
+    if [ "$use_torchrun" = "false" ] && [ -n "$END_IDX" ]; then
         CMD="$CMD --end_idx $END_IDX"
     fi
     if [ "$SKIP_EXISTING" = "true" ]; then
@@ -304,14 +332,14 @@ FLUX2_ENCODE_SCRIPT="/fs/nexus-projects/scene_graph_sd/DGE-T2I/src/models/flux2_
 FLUX2_GENERATE_SCRIPT="/fs/nexus-projects/scene_graph_sd/DGE-T2I/src/models/flux2_generate_from_embeddings.py"
 Z_ENCODE_SCRIPT="/fs/nexus-projects/scene_graph_sd/DGE-T2I/src/models/z_image_encode_prompts.py"
 Z_GENERATE_SCRIPT="/fs/nexus-projects/scene_graph_sd/DGE-T2I/src/models/z_image_generate_from_embeddings.py"
-QWEN_IMAGE_2512_ENCODE_SCRIPT="/fs/nexus-projects/scene_graph_sd/DGE-T2I/src/models/qwen_image_2512_encode_prompts.py"
-QWEN_IMAGE_2512_GENERATE_SCRIPT="/fs/nexus-projects/scene_graph_sd/DGE-T2I/src/models/qwen_image_2512_generate_from_embeddings.py"
+QWEN_IMAGE_ENCODE_SCRIPT="/fs/nexus-projects/scene_graph_sd/DGE-T2I/src/models/qwen_image_encode_prompts.py"
+QWEN_IMAGE_GENERATE_SCRIPT="/fs/nexus-projects/scene_graph_sd/DGE-T2I/src/models/qwen_image_generate_from_embeddings.py"
 EMU_3_5_ENCODE_SCRIPT="/fs/nexus-projects/scene_graph_sd/DGE-T2I/src/models/emu_3_5_encode_prompts.py"
 EMU_3_5_GENERATE_SCRIPT="/fs/nexus-projects/scene_graph_sd/DGE-T2I/src/models/emu_3_5_generate_from_embeddings.py"
 MOGAO_7B_ENCODE_SCRIPT="/fs/nexus-projects/scene_graph_sd/DGE-T2I/src/models/mogao_7b_encode_prompts.py"
 MOGAO_7B_GENERATE_SCRIPT="/fs/nexus-projects/scene_graph_sd/DGE-T2I/src/models/mogao_7b_generate_from_embeddings.py"
 BAGEL_ENCODE_SCRIPT="/fs/nexus-projects/scene_graph_sd/DGE-T2I/src/models/bagel_encode_prompts.py"
-BAGEL_GENERATE_SCRIPT="/fs/nexus-projects/scene_graph_sd/DGE-T2I/src/models/bagel_generate_from_embeddings.py"
+BAGEL_GENERATE_SCRIPT="/fs/nexus-projects/scene_graph_sd/DGE-T2I/src/models/BAGEL/eval/gen/generate.py"
 
 if has_model "sdxl"; then
     SKIP_MODEL="false"
@@ -409,26 +437,26 @@ if has_model "z-image"; then
     fi
 fi
 
-if has_model "qwen-image-2512"; then
+if has_model "qwen-image"; then
     SKIP_MODEL="false"
-    if [ "$STEP" = "encode" ] && embeddings_complete "$BASE_EMBEDDINGS_DIR/qwen-image-2512"; then
-        echo "Qwen-Image-2512 embeddings already complete; skipping download and steps."
+    if [ "$STEP" = "encode" ] && embeddings_complete "$BASE_EMBEDDINGS_DIR/qwen-image"; then
+        echo "Qwen-Image embeddings already complete; skipping download and steps."
         SKIP_MODEL="true"
-    elif [ "$STEP" = "generate" ] && images_complete "$BASE_IMAGES_DIR/qwen-image-2512"; then
-        echo "Qwen-Image-2512 images already complete; skipping download and steps."
+    elif [ "$STEP" = "generate" ] && images_complete "$BASE_IMAGES_DIR/qwen-image"; then
+        echo "Qwen-Image images already complete; skipping download and steps."
         SKIP_MODEL="true"
-    elif [ "$STEP" = "both" ] && embeddings_complete "$BASE_EMBEDDINGS_DIR/qwen-image-2512" && images_complete "$BASE_IMAGES_DIR/qwen-image-2512"; then
-        echo "Qwen-Image-2512 embeddings and images already complete; skipping download and steps."
+    elif [ "$STEP" = "both" ] && embeddings_complete "$BASE_EMBEDDINGS_DIR/qwen-image" && images_complete "$BASE_IMAGES_DIR/qwen-image"; then
+        echo "Qwen-Image embeddings and images already complete; skipping download and steps."
         SKIP_MODEL="true"
     fi
     if [ "$SKIP_MODEL" = "false" ]; then
-        MODEL_PATH=$(resolve_model_path "$QWEN_IMAGE_MODEL_ID" "$LOCAL_MODELS_DIR/qwen-image-2512")
+        MODEL_PATH=$(resolve_model_path "$QWEN_IMAGE_MODEL_ID" "$LOCAL_MODELS_DIR/qwen-image")
         if [ "$STEP" = "both" ] || [ "$STEP" = "encode" ]; then
-            run_encode "$QWEN_IMAGE_2512_ENCODE_SCRIPT" "Qwen-Image-2512" "$MODEL_PATH" "$BASE_EMBEDDINGS_DIR/qwen-image-2512"
+            run_encode "$QWEN_IMAGE_ENCODE_SCRIPT" "Qwen-Image" "$MODEL_PATH" "$BASE_EMBEDDINGS_DIR/qwen-image"
         fi
         if [ "$STEP" = "both" ] || [ "$STEP" = "generate" ]; then
-            run_generate "$QWEN_IMAGE_2512_GENERATE_SCRIPT" "Qwen-Image-2512" "$MODEL_PATH" \
-                "$BASE_EMBEDDINGS_DIR/qwen-image-2512" "$BASE_IMAGES_DIR/qwen-image-2512"
+            run_generate "$QWEN_IMAGE_GENERATE_SCRIPT" "Qwen-Image" "$MODEL_PATH" \
+                "$BASE_EMBEDDINGS_DIR/qwen-image" "$BASE_IMAGES_DIR/qwen-image"
         fi
     fi
 fi

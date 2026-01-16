@@ -1,9 +1,14 @@
 import argparse
+
 import json
 import os
 
 import torch
-from diffusers import DiffusionPipeline
+import gc
+from diffusers import QwenImagePipeline
+
+from nunchaku.models.transformers.transformer_qwenimage import NunchakuQwenImageTransformer2DModel
+from nunchaku.utils import get_gpu_memory
 from tqdm import tqdm
 
 
@@ -43,6 +48,14 @@ def resolve_indices(data_len, start_idx, end_idx, num_splits, split_id):
     return start_idx, end_idx
 
 
+def repeat_embeds(embeds, count):
+    if embeds is None or count <= 1:
+        return embeds
+    if embeds.shape[0] == count:
+        return embeds
+    return embeds.repeat_interleave(count, dim=0)
+
+
 def main():
     parser = argparse.ArgumentParser(description="Generate images from pre-encoded embeddings")
     parser.add_argument("--model_id", type=str, required=True, help="Hugging Face model ID or local path")
@@ -51,10 +64,8 @@ def main():
     parser.add_argument("--images_dir", type=str, default=DEFAULT_IMAGES_DIR, help="Directory to save generated images")
     parser.add_argument("--num_generations", type=int, default=5, help="Number of images per prompt")
     parser.add_argument("--seed", type=int, default=DEFAULT_SEED, help="Random seed")
-    # parser.add_argument("--num_inference_steps", type=int, default=40, help="Number of diffusion steps")
-    # parser.add_argument("--high_noise_frac", type=float, default=0.8, help="Fraction of steps to run in base model")
-    # parser.add_argument("--refiner_model_id", type=str, default="", help="Optional SDXL refiner model ID or local path")
     parser.add_argument("--device-map", type=str, default="balanced", help="Device map for model parallelism (e.g., balanced, auto, sequential, none)")
+    parser.add_argument("--keep-text-encoders", action="store_true", help="Keep text encoders loaded (default: skip)")
     parser.add_argument("--start_idx", type=int, default=None, help="Start index for processing (overrides split params)")
     parser.add_argument("--end_idx", type=int, default=None, help="End index for processing (overrides split params)")
     parser.add_argument("--num_splits", type=int, default=1, help="Total number of splits for parallel processing")
@@ -62,38 +73,29 @@ def main():
     parser.add_argument("--skip_existing", action="store_true", help="Skip prompts that already have images")
     args = parser.parse_args()
 
-    device = "cuda" if torch.cuda.is_available() else "cpu"
-    dtype = torch.float16 if device == "cuda" else torch.float32
-    print(f"Using device: {device}")
+    rank = 128  # you can also use rank=128 model to improve the quality
+    precision = "int4"
 
-    print(f"Loading model: {args.model_id}")
-    device_map = args.device_map
-    if device_map == "none":
-        device_map = None
-    if torch.cuda.device_count() < 2:
-        device_map = None
+    # Load the model
+    transformer = NunchakuQwenImageTransformer2DModel.from_pretrained(
+        "/fs/nexus-projects/scene_graph_sd/DGE-T2I/data/models/nunchaku-qwen-image/svdq-int4_r128-qwen-image.safetensors"
+    )
 
+    pipe = QwenImagePipeline.from_pretrained(args.model_id, transformer=transformer, torch_dtype=torch.bfloat16, low_cpu_mem_usage=True)
 
-    base = DiffusionPipeline.from_pretrained(args.model_id, 
-                torch_dtype=torch.bfloat16,
-                use_safetensors=True, 
-                device_map=None
-                )
+    if get_gpu_memory() > 18:
+        pipe.enable_model_cpu_offload()
+    else:
+        print("enabling per layer offloading")
+        # use per-layer offloading for low VRAM. This only requires 3-4GB of VRAM.
+        transformer.set_offload(
+            True, use_pin_memory=False, num_blocks_on_gpu=1
+        )  # increase num_blocks_on_gpu if you have more VRAM
+        pipe._exclude_from_cpu_offload.append("transformer")
+        pipe.enable_sequential_cpu_offload()
 
-    base.transformer.set_attention_backend("flash") 
-    base.text_encoder = None   
-    base.transformer.set_offload(
-        True, use_pin_memory=False, num_blocks_on_gpu=1
-    ) 
-    base._exclude_from_cpu_offload.append("transformer")
-    base.enable_sequential_cpu_offload()
-
-    # if not device_map:
-    #     base = base.to(device)
-    # base.enable_layerwise_casting(storage_dtype=torch.float8_e4m3fn, compute_dtype=torch.bfloat16)
-    base.enable_vae_slicing()
-    base.enable_vae_tiling()
-
+    negative_prompt = " "  # using an empty string if you do not have specific concept to remove
+    
     with open(args.data_path, "r") as f:
         data = json.load(f)
 
@@ -109,33 +111,33 @@ def main():
     generated_count = 0
 
     for idx in tqdm(range(start_idx, end_idx)):
+        item = data[idx]
+        prompt = item.get("prompt")
+        if not prompt:
+            continue
+
         example_id = f"{idx:04d}"
-        if args.skip_existing and check_images_exist(example_id, args.images_dir, args.num_generations):
+        if args.skip_existing and os.path.exists(os.path.join(args.images_dir, f"{example_id}-{args.num_generations}.png")):
             skipped_count += 1
             continue
+        
+        for i in range(args.num_generations):
+            img = pipe(
+                prompt=prompt,
+                negative_prompt=negative_prompt,
+                width=1664,
+                height=928,
+                num_inference_steps=50,
+                true_cfg_scale=4.0,
+                num_images_per_prompt=1
+            ).images[0]
 
-        embedding_path = os.path.join(args.embeddings_dir, f"{example_id}.pt")
-        if not os.path.exists(embedding_path):
-            continue
-
-        payload = torch.load(embedding_path, map_location=device)
-
-        for e in payload: 
-            payload[e] = payload[e].to(device) if payload[e] != None else None
-
-        generator = torch.Generator(device=device).manual_seed(args.seed + idx)
-        call_kwargs = {
-            **payload, 
-            "num_images_per_prompt": args.num_generations,
-            "generator": generator
-        }
-
-        images = base(**call_kwargs).images
-
-        for i, img in enumerate(images):
             img.save(os.path.join(args.images_dir, f"{example_id}-{i+1}.png"))
+            generated_count += 1
 
-        generated_count += 1
+            # Optional: Force memory cleanup after each image
+            gc.collect()
+            torch.cuda.empty_cache()
 
     print(f"Generation complete. Images saved to {args.images_dir}")
     if args.skip_existing:

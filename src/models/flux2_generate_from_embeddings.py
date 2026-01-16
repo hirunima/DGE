@@ -3,7 +3,7 @@ import json
 import os
 
 import torch
-from diffusers import AutoPipelineForText2Image, DiffusionPipeline
+from diffusers import Flux2Pipeline
 from tqdm import tqdm
 
 
@@ -72,50 +72,16 @@ def main():
     dtype = torch.float16 if device == "cuda" else torch.float32
     print(f"Using device: {device}")
 
-    print(f"Loading model: {args.model_id}")
-    device_map = args.device_map
-    if device_map == "none":
-        device_map = None
-    if torch.cuda.device_count() < 2:
-        device_map = None
-
-    skip_text_encoders = not args.keep_text_encoders
-    pipeline_kwargs = {"torch_dtype": dtype}
-    if device_map:
-        pipeline_kwargs["device_map"] = device_map
-    if skip_text_encoders:
-        pipeline_kwargs.update(
-            {
-                "text_encoder": None,
-                "text_encoder_2": None,
-                "tokenizer": None,
-                "tokenizer_2": None,
-            }
-        )
-
-    try:
-        pipeline = AutoPipelineForText2Image.from_pretrained(args.model_id, **pipeline_kwargs)
-    except (TypeError, ValueError):
-        for key in ("text_encoder_2", "tokenizer_2", "text_encoder", "tokenizer"):
-            pipeline_kwargs.pop(key, None)
-        pipeline = DiffusionPipeline.from_pretrained(args.model_id, **pipeline_kwargs)
-
-    if not device_map:
-        pipeline = pipeline.to(device)
-    if hasattr(pipeline, "enable_vae_slicing"):
-        pipeline.enable_vae_slicing()
-
-    if skip_text_encoders:
-        for attr in ("text_encoder", "text_encoder_2", "tokenizer", "tokenizer_2"):
-            if hasattr(pipeline, attr):
-                setattr(pipeline, attr, None)
-    execution_device = getattr(pipeline, "_execution_device", device)
+    pipe = Flux2Pipeline.from_pretrained(
+        args.model_id, text_encoder=None, torch_dtype=torch.bfloat16,
+    ).to(device) 
 
     with open(args.data_path, "r") as f:
         data = json.load(f)
 
-    if not isinstance(data, list):
-        raise ValueError("Expected data to be a list of prompt items")
+    pipe.transformer.set_attention_backend("flash")    
+    # pipe.transformer.compile()
+    pipe.enable_model_cpu_offload()
 
     start_idx, end_idx = resolve_indices(len(data), args.start_idx, args.end_idx, args.num_splits, args.split_id)
     print(f"Generating images for prompts {start_idx} to {end_idx - 1}")
@@ -154,7 +120,7 @@ def main():
         generator = torch.Generator(device=generator_device).manual_seed(args.seed + idx)
         call_kwargs = {
             "prompt_embeds": prompt_embeds,
-            "num_images_per_prompt": 1,
+            "num_images_per_prompt": args.num_generations,
             "generator": generator,
         }
         if pooled_prompt_embeds is not None:
