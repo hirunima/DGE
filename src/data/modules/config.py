@@ -11,7 +11,7 @@ DATA_RAW_DIR = os.path.join(PROJECT_ROOT, "data", "raw")
 # Configuration constants
 DEFAULT_INPUT_FILE = "/fs/nexus-projects/scene_graph_sd/ovad/validated_scene_graphs.jsonl"
 DEFAULT_COUNTS_FILE = "/fs/nexus-projects/scene_graph_sd/DGE-T2I/reports/figures/freq_dist_aug_v1.png"
-DEFAULT_OUTPUT_FILE = os.path.join(DATA_RAW_DIR, "qwen8b_t2i_prompts_aug_v1.json")
+DEFAULT_OUTPUT_FILE = os.path.join(DATA_RAW_DIR, "qwen8b_t2i_prompts_aug_test.json")
 DEFAULT_SEED = 42
 
 # Model configuration
