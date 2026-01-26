@@ -6,7 +6,7 @@ from .config import (
     DEFAULT_PROMPTS_FILE,
     MAX_TOKENS,
 )
-from .model import initialize_model
+# from .model import initialize_model
 from .pipeline import main_pipeline
 
 __all__ = [
@@ -14,6 +14,6 @@ __all__ = [
     "DEFAULT_OUTPUT_DIR",
     "DEFAULT_PROMPTS_FILE",
     "MAX_TOKENS",
-    "initialize_model",
+    # "initialize_model",
     "main_pipeline",
 ]

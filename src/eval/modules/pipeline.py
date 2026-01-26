@@ -32,7 +32,13 @@ def main_pipeline(args: Any, model: Any, sampling_params: Any) -> None:
 
     sampling_params.max_tokens = args.max_tokens
 
-    prompts_data = load_json_or_jsonl(args.prompts_file)
+    if not args.sg_file: 
+        try:
+            prompts_data = load_json_or_jsonl(args.prompts_file)
+        except Exception as e:
+            raise Exception("Got no scene graph file and couldn't load prompts file.") 
+    else: 
+        sgs = load_json_or_jsonl(args.sg_file)
 
     os.makedirs(args.output_dir, exist_ok=True)
     results_path = os.path.join(args.output_dir, f"{args.model}_eval_results.json") 
@@ -42,7 +48,10 @@ def main_pipeline(args: Any, model: Any, sampling_params: Any) -> None:
             results = json.load(f)
 
     start_idx = args.start_idx
-    end_idx = args.end_idx if args.end_idx is not None else len(prompts_data)
+    if args.prompts_file:
+        end_idx = args.end_idx if args.end_idx is not None else len(prompts_data)
+    else:
+        end_idx = args.end_idx if args.end_idx is not None else len(sgs)
     total = end_idx - start_idx
     if args.limit is not None:
         total = min(total, args.limit)
@@ -51,19 +60,26 @@ def main_pipeline(args: Any, model: Any, sampling_params: Any) -> None:
     pending_prompts = []
     pending_meta = []
 
-    images_dir = os.path.join(PROJECT_ROOT, "data", "images", args.model)
+    images_dir = os.path.join(args.images_dir, args.model)
 
     for idx in tqdm(range(start_idx, end_idx)):
-        entry = prompts_data[idx]
-        scene_graph = extract_scene_graph(entry["meta_prompt"]["prompt"]) if "meta_prompt" in entry else None
+        if args.prompts_file: 
+            entry = prompts_data[idx]
+            scene_graph = extract_scene_graph(entry["meta_prompt"]["prompt"]) if "meta_prompt" in entry else None
+        else: 
+            scene_graph = sgs[idx]
         if str(idx) in results or scene_graph is None or "error" in scene_graph:
             continue
 
         results[idx] = {"data": [], "label": ["good" for _ in range(args.generation)]}
 
         for i in range(args.generation):
-            image_path = image_path_from_pattern(args.image_pattern, images_dir, idx, i + 1)
+            if args.prompts_file:
+                image_path = image_path_from_pattern(args.image_pattern, images_dir, idx, i + 1)
+            else: 
+                image_path = os.path.join(images_dir, scene_graph["filename"])
             if not os.path.exists(image_path):
+                print("Warning: didn't find image at path ", image_path)
                 continue
 
             with Image.open(image_path) as img:
@@ -77,7 +93,7 @@ def main_pipeline(args: Any, model: Any, sampling_params: Any) -> None:
                 "prompt_index": idx,
                 "generation_index": i, 
                 "image_path": image_path,
-                "prompt": entry.get("prompt"),
+                "prompt": entry.get("prompt") if args.prompts_file else scene_graph["filename"].split("_", 2)[2].rsplit(".", 1)[0],
                 # "scene_graph": {"entities": entities, "relations": relations},
                 "evaluation": {"objects": [], "attributes": [], "relations": []},
                 # "raw_responses": {"objects": [], "attributes": [], "relations": []},

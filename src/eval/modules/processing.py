@@ -287,16 +287,49 @@ def summarize_results(results: Dict[int, Dict[str, Any]]) -> Dict[str, Any]:
     import numpy as np
     from modules.config import LABEL_THRESHOLD
 
+    all_scores = {}
     summary = {
-        "prompts_total": len(results),
+        "prompts_total": 0,
         "prompts_correct": 0,
+        "image_scores": all_scores,
         # "parse_failures": 0,
         "accuracy": None
     }
 
-    for res in results.values():
-        if (np.array(res["label"]) == "good").mean() > LABEL_THRESHOLD: 
-            summary["prompts_correct"] += 1
+    def get_subscore(eval_res, category, key, value):
+        score = 0
+        
+        for entry in eval_res[category]: 
+            if entry[key] == value: 
+                score += 1
+
+        if len(eval_res[category]) > 0: score = score / len(eval_res[category])
+
+        return score
+
+    for idx, res in results.items():
+        if len(res["data"]) > 0: 
+            scores = []
+            for d in res["data"]:
+                scores.append({
+                    "objects": get_subscore(d["evaluation"], "objects", "visible", True), 
+                    "attributes": get_subscore(d["evaluation"], "attributes", "satisfies", "yes"),
+                    "relations": get_subscore(d["evaluation"], "relations", "satisfies", "yes")
+                })
+                scores[-1]["overall"] = (scores[-1]["objects"] + scores[-1]["attributes"] + scores[-1]["relations"]) / 3
             
-    if len(results) > 0: summary["accuracy"] = summary["prompts_correct"] / summary["prompts_total"]
+            prompt_score = sum([score["overall"] for score in scores]) / len(scores)
+            all_scores[idx] = {
+                            "average": prompt_score, 
+                            "scores": scores
+            }
+
+            if prompt_score > LABEL_THRESHOLD: 
+                summary["prompts_correct"] += 1
+        # if (np.array(res["label"]) == "good").mean() > LABEL_THRESHOLD: 
+        #     summary["prompts_correct"] += 1
+    
+    summary["prompts_total"] = len(all_scores)
+            
+    if summary["prompts_total"] > 0: summary["accuracy"] = summary["prompts_correct"] / summary["prompts_total"]
     return summary

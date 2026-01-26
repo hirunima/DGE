@@ -7,6 +7,7 @@ import argparse
 from modules.config import (
     DEFAULT_OUTPUT_DIR,
     DEFAULT_PROMPTS_FILE,
+    DEFAULT_IMAGES_DIR,
     MAX_TOKENS,
 )
 
@@ -15,7 +16,9 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Evaluate generated images against scene graphs with Qwen3-VL.")
     parser.add_argument("--model", type=str, required=True)
     parser.add_argument("--prompts_file", type=str, default=DEFAULT_PROMPTS_FILE)
+    parser.add_argument("--sg_file", type=str, default=None)
     parser.add_argument("--output_dir", type=str, default=DEFAULT_OUTPUT_DIR)
+    parser.add_argument("--images_dir", type=str, default=DEFAULT_IMAGES_DIR)
     parser.add_argument("--image_pattern", type=str, default="{index:04d}-{generation}.png")
     parser.add_argument("--generation", type=int, default=5)
     parser.add_argument("--start_idx", type=int, default=0)
@@ -28,6 +31,8 @@ def main() -> None:
 
     from modules.model import initialize_model
     from modules.pipeline import main_pipeline
+
+    if args.prompts_file == "None": args.prompts_file = None
 
     model, sampling_params = initialize_model(args.seed)
     main_pipeline(args, model, sampling_params)
