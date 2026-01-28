@@ -73,6 +73,23 @@ def load_dsg_scores(path: Path) -> Dict[str, float]:
     return scores
 
 
+def load_vqa_scores(path: Path) -> Dict[str, float]:
+    scores: Dict[str, float] = {}
+    with path.open() as f:
+        for line in f:
+            line = line.strip()
+            if not line:
+                continue
+            entry = json.loads(line)
+            image_path = entry.get("image")
+            score = entry.get("score")
+            if not image_path or score is None:
+                continue
+            filename = os.path.basename(image_path)
+            scores[filename] = float(score)
+    return scores
+
+
 def kendall_tau_b(xs: List[float], ys: List[float], eps: float = 1e-12) -> Optional[float]:
     n = len(xs)
     if n < 2:
@@ -143,7 +160,9 @@ def main() -> None:
     parser.add_argument("--models2", type=Path, default=Path("data/images/survey_samples/image2/models.json"))
     parser.add_argument("--eval_dir", type=Path, default=Path("data/raw/eval_v1"))
     parser.add_argument("--dsg_results", type=Path, default=Path("/fs/nexus-projects/scene_graph_sd/DSG/evaluation_results_dge.json"))
+    parser.add_argument("--vqa_results", type=Path, default=Path("/fs/nexus-projects/scene_graph_sd/t2v_metrics/results/survey_samples_vqa_scores.jsonl"))
     parser.add_argument("--output_csv", type=Path, default=Path("data/images/survey_samples/pair_preferences.csv"))
+    parser.add_argument("--metrics_json", type=Path, default=Path("reports/pair_metrics.json"))
     args = parser.parse_args()
 
     counts = load_question_counts(args.counts_csv)
@@ -151,14 +170,18 @@ def main() -> None:
     image2_map, image2_models = load_models(args.models2)
     eval_summaries = load_eval_summaries(args.eval_dir)
     dsg_scores = load_dsg_scores(args.dsg_results)
+    vqa_scores = load_vqa_scores(args.vqa_results)
 
     rows = []
     survey_prefs_eval = []
     eval_prefs = []
     survey_prefs_dsg = []
     dsg_prefs = []
+    survey_prefs_vqa = []
+    vqa_prefs = []
     missing_eval = 0
     missing_dsg = 0
+    missing_vqa = 0
 
     for idx, entry in counts.items():
         image1_files = image1_map.get(idx, [])
@@ -192,6 +215,15 @@ def main() -> None:
             denom = dsg_score1 + dsg_score2
             dsg_pref = dsg_score1 / denom if denom else 0.5
 
+        vqa_score1 = vqa_scores.get(image1_file)
+        vqa_score2 = vqa_scores.get(image2_file)
+        if vqa_score1 is None or vqa_score2 is None:
+            missing_vqa += 1
+            vqa_pref = None
+        else:
+            denom = vqa_score1 + vqa_score2
+            vqa_pref = vqa_score1 / denom if denom else 0.5
+
         rows.append(
             {
                 "id": idx,
@@ -209,6 +241,9 @@ def main() -> None:
                 "dsg_score_model1": dsg_score1,
                 "dsg_score_model2": dsg_score2,
                 "dsg_pref_model1": dsg_pref,
+                "vqa_score_model1": vqa_score1,
+                "vqa_score_model2": vqa_score2,
+                "vqa_pref_model1": vqa_pref,
             }
         )
 
@@ -218,6 +253,9 @@ def main() -> None:
         if dsg_pref is not None:
             survey_prefs_dsg.append(survey_pref)
             dsg_prefs.append(dsg_pref)
+        if vqa_pref is not None:
+            survey_prefs_vqa.append(survey_pref)
+            vqa_prefs.append(vqa_pref)
 
     if rows:
         args.output_csv.parent.mkdir(parents=True, exist_ok=True)
@@ -226,10 +264,19 @@ def main() -> None:
             writer.writeheader()
             writer.writerows(rows)
 
+    metrics = {"eval_v1": None, "dsg": None}
+
     if eval_prefs:
         eval_pearson = pearson(survey_prefs_eval, eval_prefs)
         eval_kendall = kendall_tau_b(survey_prefs_eval, eval_prefs)
         eval_acc, eval_total, eval_ties = pairwise_accuracy(survey_prefs_eval, eval_prefs)
+        metrics["eval_v1"] = {
+            "pearson": eval_pearson,
+            "kendall_tau_b": eval_kendall,
+            "pairwise_accuracy": eval_acc,
+            "n": eval_total,
+            "survey_ties": eval_ties,
+        }
         print("Eval v1 vs survey:")
         print(f"  pearson={eval_pearson}")
         print(f"  kendall_tau_b={eval_kendall}")
@@ -241,6 +288,13 @@ def main() -> None:
         dsg_pearson = pearson(survey_prefs_dsg, dsg_prefs)
         dsg_kendall = kendall_tau_b(survey_prefs_dsg, dsg_prefs)
         dsg_acc, dsg_total, dsg_ties = pairwise_accuracy(survey_prefs_dsg, dsg_prefs)
+        metrics["dsg"] = {
+            "pearson": dsg_pearson,
+            "kendall_tau_b": dsg_kendall,
+            "pairwise_accuracy": dsg_acc,
+            "n": dsg_total,
+            "survey_ties": dsg_ties,
+        }
         print("DSG vs survey:")
         print(f"  pearson={dsg_pearson}")
         print(f"  kendall_tau_b={dsg_kendall}")
@@ -248,10 +302,33 @@ def main() -> None:
     else:
         print("DSG vs survey: no overlapping pairs.")
 
+    if vqa_prefs:
+        vqa_pearson = pearson(survey_prefs_vqa, vqa_prefs)
+        vqa_kendall = kendall_tau_b(survey_prefs_vqa, vqa_prefs)
+        vqa_acc, vqa_total, vqa_ties = pairwise_accuracy(survey_prefs_vqa, vqa_prefs)
+        metrics["vqa"] = {
+            "pearson": vqa_pearson,
+            "kendall_tau_b": vqa_kendall,
+            "pairwise_accuracy": vqa_acc,
+            "n": vqa_total,
+            "survey_ties": vqa_ties,
+        }
+        print("VQA vs survey:")
+        print(f"  pearson={vqa_pearson}")
+        print(f"  kendall_tau_b={vqa_kendall}")
+        print(f"  pairwise_accuracy={vqa_acc} (n={vqa_total}, survey_ties={vqa_ties})")
+    else:
+        print("VQA vs survey: no overlapping pairs.")
+
     print(f"Missing eval_v1 pairs: {missing_eval}")
     print(f"Missing DSG pairs: {missing_dsg}")
+    print(f"Missing VQA pairs: {missing_vqa}")
     if rows:
         print(f"Wrote per-pair data to {args.output_csv}")
+    args.metrics_json.parent.mkdir(parents=True, exist_ok=True)
+    with args.metrics_json.open("w") as f:
+        json.dump(metrics, f, indent=2)
+    print(f"Wrote metrics to {args.metrics_json}")
 
 
 if __name__ == "__main__":
