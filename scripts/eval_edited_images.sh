@@ -5,6 +5,8 @@ module load cuda/12.8.1
 module load gcc/11.2.0
 export VLLM_WORKER_MULTIPROC_METHOD=spawn
 
-model=flux_2
+models=(bagel flux_2 flux_knotex hi_dream omni qwen step1x)
 
-srun python src/eval/scene_graph_eval.py --prompts_file None --model $model --sg_file data/raw/prompts/edit/add_easy_dataset.jsonl --images_dir /fs/nexus-projects/scene_graph_sd/edited_images_filtered/add
+for model in "${models[@]}"; do
+  srun python src/eval/scene_graph_eval.py --prompts_file None --model "$model" --sg_file data/raw/prompts/edit/remove_easy_dataset.jsonl --images_dir /fs/nexus-projects/scene_graph_sd/edited_images_filtered/remove
+done

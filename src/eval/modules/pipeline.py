@@ -153,7 +153,7 @@ def main_pipeline(args: Any, model: Any, sampling_params: Any) -> None:
             results[idx]["data"].append(image_result)
 
         if args.batch_size and len(pending_prompts) >= args.batch_size:
-            outputs = model.generate(pending_prompts, sampling_params=sampling_params, use_tqdm=True)
+            outputs = model.generate(pending_prompts, sampling_params=sampling_params, use_tqdm=False)
             apply_batch_results(outputs, pending_meta, results)
             with open(results_path, "w") as f:
                 json.dump(results, f, indent=2)
