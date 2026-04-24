@@ -33,6 +33,7 @@ from src.eval.ablation import (
     normalize_weights,
     parse_stage1_localization,
     prepare_square_crop,
+    resolve_siglip_model_path,
     run_ablation_experiment,
     union_bbox,
     write_experiment_outputs,
@@ -229,6 +230,19 @@ def test_missing_label_file_skip():
     assert_equal(report, None, "Missing label data should skip correlation")
 
 
+def test_siglip_jax_path_resolution():
+    with tempfile.TemporaryDirectory() as tmpdir:
+        base = Path(tmpdir)
+        jax_dir = base / "siglip2-giant-opt-patch16-384-jax"
+        pt_dir = base / "siglip2-giant-opt-patch16-384"
+        jax_dir.mkdir()
+        pt_dir.mkdir()
+        (jax_dir / "weights.npz").write_text("x", encoding="utf-8")
+        (pt_dir / "config.json").write_text("{}", encoding="utf-8")
+        resolved = resolve_siglip_model_path(str(jax_dir))
+        assert_equal(resolved, str(pt_dir), "JAX-only path should resolve to sibling Transformers checkpoint")
+
+
 def test_reporting_and_smoke_integration():
     with tempfile.TemporaryDirectory() as tmpdir:
         tmp = Path(tmpdir)
@@ -310,6 +324,7 @@ def main():
         test_crop_and_markers,
         test_relation_swap,
         test_missing_label_file_skip,
+        test_siglip_jax_path_resolution,
         test_reporting_and_smoke_integration,
         test_cli_config_parsing,
     ]

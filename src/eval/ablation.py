@@ -8,7 +8,6 @@ import hashlib
 import json
 import math
 import os
-import statistics
 import time
 from abc import ABC, abstractmethod
 from dataclasses import asdict, dataclass
@@ -75,6 +74,21 @@ def load_json_or_jsonl(path: str) -> List[Dict[str, Any]]:
     if text[0] == "[":
         return json.loads(text)
     return [json.loads(line) for line in text.splitlines() if line.strip()]
+
+
+def resolve_siglip_model_path(model_path: str) -> str:
+    path = Path(model_path)
+    if path.is_dir() and (path / "config.json").exists():
+        return str(path)
+    if path.is_dir() and any(path.glob("*.npz")):
+        sibling = path.parent / path.name.replace("-jax", "")
+        if sibling.exists() and (sibling / "config.json").exists():
+            return str(sibling)
+        raise ValueError(
+            f"SigLIP path {model_path} only contains JAX weights. "
+            f"Download a Transformers-compatible checkpoint such as {sibling}."
+        )
+    return model_path
 
 
 @dataclass(frozen=True)
@@ -208,6 +222,726 @@ class UnavailableRelationScorer(RelationScorerBackend):
         raise NotImplementedError(
             f"Backend {self.backend_id} is configured as '{self.spec.kind}' but acquisition is not implemented yet."
         )
+
+
+class _TransformersBackendMixin:
+    def _import_torch(self) -> Any:
+        import torch
+
+        return torch
+
+    def _load_transformers_components(self) -> Tuple[Any, Any]:
+        from transformers import AutoModel, AutoModelForImageTextToText, AutoModelForZeroShotObjectDetection, AutoProcessor
+
+        return AutoProcessor, AutoModel, AutoModelForImageTextToText, AutoModelForZeroShotObjectDetection
+
+    def _ensure_model_path(self) -> str:
+        if not self.spec.model_path:
+            raise ValueError(f"Backend {self.backend_id} requires --model-path input for kind '{self.spec.kind}'.")
+        return self.spec.model_path
+
+    def _move_batch_to_device(self, batch: Mapping[str, Any], device: Any) -> Dict[str, Any]:
+        moved = {}
+        for key, value in batch.items():
+            if hasattr(value, "to"):
+                moved[key] = value.to(device)
+            else:
+                moved[key] = value
+        return moved
+
+    def _extract_device(self, model: Any) -> Any:
+        device = getattr(model, "device", None)
+        if device is not None:
+            return device
+        return next(model.parameters()).device
+
+    def _load_processor_and_model(
+        self,
+        model_loader: Any,
+        extra_model_kwargs: Optional[Dict[str, Any]] = None,
+    ) -> Tuple[Any, Any]:
+        torch = self._import_torch()
+        AutoProcessor, _, _, _ = self._load_transformers_components()
+        model_path = self._ensure_model_path()
+        load_start = time.perf_counter()
+        processor = AutoProcessor.from_pretrained(model_path, trust_remote_code=True)
+        model_kwargs = {
+            "trust_remote_code": True,
+            "torch_dtype": "auto",
+            "device_map": "auto" if torch.cuda.is_available() else None,
+            "low_cpu_mem_usage": True,
+        }
+        if extra_model_kwargs:
+            model_kwargs.update(extra_model_kwargs)
+        if model_kwargs.get("device_map") is None:
+            model_kwargs.pop("device_map")
+        model = model_loader.from_pretrained(model_path, **model_kwargs)
+        self._maybe_load_checkpoint(model)
+        model.eval()
+        self.model_load_time_ms = (time.perf_counter() - load_start) * 1000.0
+        return processor, model
+
+    def _maybe_load_checkpoint(self, model: Any) -> None:
+        if not self.spec.checkpoint_path:
+            return
+        torch = self._import_torch()
+        checkpoint = torch.load(self.spec.checkpoint_path, map_location="cpu")
+        if isinstance(checkpoint, dict) and "state_dict" in checkpoint:
+            checkpoint = checkpoint["state_dict"]
+        if not isinstance(checkpoint, dict):
+            raise ValueError(f"Checkpoint {self.spec.checkpoint_path} does not contain a state dict.")
+        cleaned = {}
+        for key, value in checkpoint.items():
+            cleaned[key.replace("module.", "", 1)] = value
+        missing, unexpected = model.load_state_dict(cleaned, strict=False)
+        model._ablation_checkpoint_info = {
+            "checkpoint_path": self.spec.checkpoint_path,
+            "missing_keys": list(missing),
+            "unexpected_keys": list(unexpected),
+        }
+
+
+class GroundingNodeDetector(NodeDetectorBackend, _TransformersBackendMixin):
+    def __init__(self, backend_id: str, spec: BackendSpec, config: ExperimentConfig) -> None:
+        super().__init__(backend_id, spec, config)
+        _, _, _, AutoModelForZeroShotObjectDetection = self._load_transformers_components()
+        self.processor, self.model = self._load_processor_and_model(AutoModelForZeroShotObjectDetection)
+
+    def _normalize_label(self, label: Any) -> str:
+        if isinstance(label, str):
+            return label.strip().lower()
+        if isinstance(label, int):
+            id2label = getattr(getattr(self.model, "config", None), "id2label", {})
+            return str(id2label.get(label, label)).strip().lower()
+        return str(label).strip().lower()
+
+    def _run_detector(self, image: Image.Image, text: str) -> List[Dict[str, Any]]:
+        torch = self._import_torch()
+        inputs = self.processor(images=image, text=text, return_tensors="pt")
+        inputs = self._move_batch_to_device(inputs, self._extract_device(self.model))
+        with torch.inference_mode():
+            outputs = self.model(**inputs)
+        if not hasattr(self.processor, "post_process_grounded_object_detection"):
+            raise NotImplementedError(
+                f"Processor for {self.spec.model_path} does not expose post_process_grounded_object_detection."
+            )
+        target_sizes = torch.tensor([[image.size[1], image.size[0]]], device=self._extract_device(self.model))
+        processed = self.processor.post_process_grounded_object_detection(
+            outputs,
+            inputs.get("input_ids"),
+            threshold=self.config.node_confidence_threshold,
+            target_sizes=target_sizes,
+        )[0]
+        boxes = processed.get("boxes", [])
+        scores = processed.get("scores", [])
+        labels = processed.get("labels", [])
+        detections = []
+        for box, score, label in zip(boxes, scores, labels):
+            bbox = clamp_bbox(box.detach().float().cpu().tolist(), image.size[0], image.size[1])
+            detections.append(
+                {
+                    "bbox": bbox,
+                    "confidence": float(score.detach().float().cpu().item()),
+                    "label": self._normalize_label(label),
+                }
+            )
+        return detections
+
+    def detect_nodes(self, image: Image.Image, item: ExperimentItem) -> Dict[str, Any]:
+        entity_names = [entity.get("name", "") for entity in item.scene_graph.get("objects", [])]
+        detection_prompt = " . ".join(name.strip() for name in entity_names if name and name.strip())
+        detections = self._run_detector(image, detection_prompt)
+        nodes = []
+        for entity in item.scene_graph.get("objects", []):
+            entity_name = str(entity.get("name", "")).strip().lower()
+            candidates = [
+                det
+                for det in detections
+                if entity_name == det["label"] or entity_name in det["label"] or det["label"] in entity_name
+            ]
+            best = max(candidates, key=lambda row: row["confidence"], default=None)
+            passed = bool(best and best["confidence"] >= self.config.node_confidence_threshold)
+            nodes.append(
+                {
+                    "id": entity.get("id"),
+                    "name": entity.get("name"),
+                    "bbox": best["bbox"] if passed else None,
+                    "confidence": best["confidence"] if best else 0.0,
+                    "passed": passed,
+                    "score": 1.0 if passed else 0.0,
+                    "raw_output": best,
+                }
+            )
+        return {
+            "backend": self.backend_id,
+            "thresholds": {
+                "confidence": self.config.node_confidence_threshold,
+                "nms": self.config.node_nms_threshold,
+            },
+            "detections": detections,
+            "nodes": nodes,
+            "fidelity_score": safe_mean(entry["score"] for entry in nodes),
+        }
+
+
+class EupeNodeDetector(NodeDetectorBackend):
+    def __init__(self, backend_id: str, spec: BackendSpec, config: ExperimentConfig) -> None:
+        super().__init__(backend_id, spec, config)
+        self.repo_dir = self._resolve_repo_dir()
+        self.checkpoint_path = self._resolve_checkpoint_path()
+        self.model = self._load_model()
+
+    def _resolve_repo_dir(self) -> str:
+        if self.spec.model_path and Path(self.spec.model_path).is_dir() and (Path(self.spec.model_path) / "hubconf.py").exists():
+            return self.spec.model_path
+        default_repo = Path("/fs/nexus-projects/scene_graph_sd/eval_checkpoints/facebook/eupe_repo")
+        if default_repo.exists():
+            return str(default_repo)
+        raise ValueError(
+            f"EUPE backend requires the cloned facebookresearch/eupe repo. "
+            f"Pass --eupe-model-path pointing at the repo checkout."
+        )
+
+    def _resolve_checkpoint_path(self) -> str:
+        if self.spec.checkpoint_path and Path(self.spec.checkpoint_path).exists():
+            return self.spec.checkpoint_path
+        if self.spec.model_path:
+            candidate = Path(self.spec.model_path)
+            if candidate.is_file():
+                return str(candidate)
+            if candidate.is_dir():
+                pt_files = sorted(candidate.glob("*.pt"))
+                if pt_files:
+                    return str(pt_files[0])
+        default_ckpt = Path("/fs/nexus-projects/scene_graph_sd/eval_checkpoints/facebook/EUPE-ViT-B/EUPE-ViT-B.pt")
+        if default_ckpt.exists():
+            return str(default_ckpt)
+        raise ValueError(
+            f"EUPE backend requires a .pt checkpoint. Pass --eupe-checkpoint-path or a directory containing the checkpoint."
+        )
+
+    def _load_model(self) -> Any:
+        import sys
+        import torch
+
+        load_start = time.perf_counter()
+        if self.repo_dir not in sys.path:
+            sys.path.insert(0, self.repo_dir)
+        from eupe.hub.backbones import eupe_vitb16
+
+        model = eupe_vitb16(pretrained=False)
+        checkpoint = torch.load(self.checkpoint_path, map_location="cpu")
+        if isinstance(checkpoint, dict) and "state_dict" in checkpoint:
+            checkpoint = checkpoint["state_dict"]
+        if not isinstance(checkpoint, dict):
+            raise ValueError(f"EUPE checkpoint {self.checkpoint_path} does not contain a state dict.")
+        cleaned = {key.replace("module.", "", 1): value for key, value in checkpoint.items()}
+        model.load_state_dict(cleaned, strict=False)
+        model.eval()
+        self.model_load_time_ms = (time.perf_counter() - load_start) * 1000.0
+        return model
+
+    def detect_nodes(self, image: Image.Image, item: ExperimentItem) -> Dict[str, Any]:
+        raise NotImplementedError(
+            "facebook/EUPE-ViT-B loads successfully as a vision backbone, but it is not a text-grounded detector. "
+            "This exact checkpoint cannot perform Stage 1 node localization by itself. "
+            "Use a grounding-capable checkpoint for E1 or change the experiment design."
+        )
+
+
+class _VisionLanguageBackend(_TransformersBackendMixin):
+    def __init__(self, backend_id: str, spec: BackendSpec, config: ExperimentConfig) -> None:
+        self.backend_id = backend_id
+        self.spec = spec
+        self.config = config
+        self.model_load_time_ms = 0.0
+        _, _, AutoModelForImageTextToText, _ = self._load_transformers_components()
+        self.processor, self.model = self._load_processor_and_model(AutoModelForImageTextToText)
+
+    def _build_messages(self, image: Image.Image, prompt: str) -> List[Dict[str, Any]]:
+        return [
+            {
+                "role": "user",
+                "content": [
+                    {"type": "image", "image": image},
+                    {"type": "text", "text": prompt},
+                ],
+            }
+        ]
+
+    def _prepare_chat_inputs(self, image: Image.Image, prompt: str) -> Dict[str, Any]:
+        messages = self._build_messages(image, prompt)
+        if not hasattr(self.processor, "apply_chat_template"):
+            raise NotImplementedError(f"Processor for {self.spec.model_path} does not expose apply_chat_template.")
+        batch = self.processor.apply_chat_template(
+            messages,
+            tokenize=True,
+            add_generation_prompt=True,
+            return_dict=True,
+            return_tensors="pt",
+        )
+        return self._move_batch_to_device(batch, self._extract_device(self.model))
+
+    def generate_text(self, image: Image.Image, prompt: str, max_new_tokens: int = 128) -> str:
+        torch = self._import_torch()
+        batch = self._prepare_chat_inputs(image, prompt)
+        with torch.inference_mode():
+            outputs = self.model.generate(
+                **batch,
+                max_new_tokens=max_new_tokens,
+                do_sample=False,
+            )
+        generated = outputs[:, batch["input_ids"].shape[1] :]
+        return self.processor.batch_decode(generated, skip_special_tokens=True)[0].strip()
+
+    def yes_no_score(self, image: Image.Image, prompt: str) -> Tuple[float, Dict[str, Any]]:
+        torch = self._import_torch()
+        batch = self._prepare_chat_inputs(image, prompt)
+        with torch.inference_mode():
+            outputs = self.model.generate(
+                **batch,
+                max_new_tokens=1,
+                do_sample=False,
+                return_dict_in_generate=True,
+                output_scores=True,
+            )
+        logits = outputs.scores[0][0]
+        yes_token = self.processor.tokenizer.encode("Yes", add_special_tokens=False)[0]
+        no_token = self.processor.tokenizer.encode("No", add_special_tokens=False)[0]
+        selected = torch.stack([logits[yes_token], logits[no_token]])
+        probs = torch.softmax(selected, dim=0).detach().float().cpu().tolist()
+        return float(probs[0]), {"yes_prob": float(probs[0]), "no_prob": float(probs[1])}
+
+
+class QwenNodeDetector(NodeDetectorBackend, _VisionLanguageBackend):
+    def __init__(self, backend_id: str, spec: BackendSpec, config: ExperimentConfig) -> None:
+        NodeDetectorBackend.__init__(self, backend_id, spec, config)
+        _VisionLanguageBackend.__init__(self, backend_id, spec, config)
+
+    def _localization_prompt(self, entity: Mapping[str, Any], image: Image.Image) -> str:
+        return (
+            "Return JSON only.\n"
+            "Locate the requested object in the image.\n"
+            "Use normalized coordinates in [0,1000].\n"
+            "If the object is absent, return {\"boxes\": [], \"confidence\": 0.0}.\n"
+            "Otherwise return {\"boxes\": [[x1, y1, x2, y2]], \"confidence\": 1.0}.\n"
+            f"Image size: width={image.size[0]}, height={image.size[1]}.\n"
+            f"Object: {entity.get('name')}\n"
+            f"Attributes: {json.dumps(entity.get('attributes') or [])}\n"
+        )
+
+    def detect_nodes(self, image: Image.Image, item: ExperimentItem) -> Dict[str, Any]:
+        nodes = []
+        for entity in item.scene_graph.get("objects", []):
+            raw_text = self.generate_text(image, self._localization_prompt(entity, image), max_new_tokens=128)
+            try:
+                parsed = json.loads(raw_text[raw_text.find("{") : raw_text.rfind("}") + 1]) if "{" in raw_text else {}
+            except json.JSONDecodeError:
+                parsed = {}
+            boxes = parse_stage1_localization(json.dumps(parsed if parsed else {"boxes": []}), image.size)
+            confidence = float(parsed.get("confidence", 1.0 if boxes else 0.0))
+            passed = bool(boxes) and confidence >= self.config.node_confidence_threshold
+            nodes.append(
+                {
+                    "id": entity.get("id"),
+                    "name": entity.get("name"),
+                    "bbox": boxes[0] if passed else None,
+                    "confidence": confidence,
+                    "passed": passed,
+                    "score": 1.0 if passed else 0.0,
+                    "raw_output": raw_text,
+                }
+            )
+        return {
+            "backend": self.backend_id,
+            "thresholds": {
+                "confidence": self.config.node_confidence_threshold,
+                "nms": self.config.node_nms_threshold,
+            },
+            "nodes": nodes,
+            "fidelity_score": safe_mean(entry["score"] for entry in nodes),
+        }
+
+
+class SigLIPAttributeScorer(AttributeScorerBackend, _TransformersBackendMixin):
+    def __init__(self, backend_id: str, spec: BackendSpec, config: ExperimentConfig) -> None:
+        super().__init__(backend_id, spec, config)
+        if self.spec.model_path:
+            self.spec = BackendSpec(self.spec.kind, resolve_siglip_model_path(self.spec.model_path), self.spec.checkpoint_path)
+        _, AutoModel, _, _ = self._load_transformers_components()
+        self.processor, self.model = self._load_processor_and_model(AutoModel)
+
+    def _image_text_similarity(self, image: Image.Image, text: str) -> float:
+        torch = self._import_torch()
+        batch = self.processor(images=image, text=[text], return_tensors="pt", padding=True)
+        batch = self._move_batch_to_device(batch, self._extract_device(self.model))
+        with torch.inference_mode():
+            if hasattr(self.model, "get_image_features") and hasattr(self.model, "get_text_features"):
+                image_features = self.model.get_image_features(pixel_values=batch["pixel_values"])
+                text_features = self.model.get_text_features(
+                    input_ids=batch["input_ids"],
+                    attention_mask=batch.get("attention_mask"),
+                )
+            else:
+                outputs = self.model(**batch)
+                image_features = outputs.image_embeds
+                text_features = outputs.text_embeds
+        image_features = torch.nn.functional.normalize(image_features, dim=-1)
+        text_features = torch.nn.functional.normalize(text_features, dim=-1)
+        similarity = (image_features @ text_features.transpose(0, 1))[0, 0]
+        return float(similarity.detach().float().cpu().item())
+
+    def score_attributes(
+        self,
+        image: Image.Image,
+        item: ExperimentItem,
+        stage1_result: Dict[str, Any],
+    ) -> Dict[str, Any]:
+        node_map = {node["id"]: node for node in stage1_result.get("nodes", [])}
+        results = []
+        for entity in item.scene_graph.get("objects", []):
+            for attribute in entity.get("attributes") or []:
+                node_result = node_map.get(entity.get("id"))
+                if not node_result or not node_result.get("passed") or not node_result.get("bbox"):
+                    results.append(
+                        {
+                            "id": entity.get("id"),
+                            "name": entity.get("name"),
+                            "attribute": attribute,
+                            "score": None,
+                            "calibrated_score": None,
+                            "skipped": True,
+                            "skip_reason": "node_not_localized",
+                        }
+                    )
+                    continue
+                crop = prepare_square_crop(image, node_result["bbox"], self.config.stage2_crop_size)
+                text = f"A photo of a {attribute} {entity.get('name')}"
+                raw_score = self._image_text_similarity(crop, text)
+                score = calibrate_score(
+                    raw_score,
+                    self.config.stage2_calibration,
+                    self.config.stage2_calibration_scale,
+                    self.config.stage2_calibration_bias,
+                )
+                results.append(
+                    {
+                        "id": entity.get("id"),
+                        "name": entity.get("name"),
+                        "attribute": attribute,
+                        "score": raw_score,
+                        "calibrated_score": score,
+                        "skipped": False,
+                        "skip_reason": None,
+                        "bbox": node_result["bbox"],
+                    }
+                )
+        return {
+            "backend": self.backend_id,
+            "crop_size": self.config.stage2_crop_size,
+            "calibration": {
+                "name": self.config.stage2_calibration,
+                "scale": self.config.stage2_calibration_scale,
+                "bias": self.config.stage2_calibration_bias,
+            },
+            "attributes": results,
+            "binding_score": safe_mean(entry["calibrated_score"] for entry in results if not entry.get("skipped")),
+            "skipped_count": sum(1 for entry in results if entry.get("skipped")),
+        }
+
+
+class LlavaAttributeScorer(AttributeScorerBackend, _VisionLanguageBackend):
+    def __init__(self, backend_id: str, spec: BackendSpec, config: ExperimentConfig) -> None:
+        AttributeScorerBackend.__init__(self, backend_id, spec, config)
+        _VisionLanguageBackend.__init__(self, backend_id, spec, config)
+
+    def score_attributes(
+        self,
+        image: Image.Image,
+        item: ExperimentItem,
+        stage1_result: Dict[str, Any],
+    ) -> Dict[str, Any]:
+        node_map = {node["id"]: node for node in stage1_result.get("nodes", [])}
+        results = []
+        for entity in item.scene_graph.get("objects", []):
+            for attribute in entity.get("attributes") or []:
+                node_result = node_map.get(entity.get("id"))
+                if not node_result or not node_result.get("passed") or not node_result.get("bbox"):
+                    results.append(
+                        {
+                            "id": entity.get("id"),
+                            "name": entity.get("name"),
+                            "attribute": attribute,
+                            "score": None,
+                            "calibrated_score": None,
+                            "skipped": True,
+                            "skip_reason": "node_not_localized",
+                        }
+                    )
+                    continue
+                crop = prepare_square_crop(image, node_result["bbox"], self.config.stage2_crop_size)
+                prompt = (
+                    "Answer strictly with Yes or No.\n"
+                    f"Does the highlighted crop contain a {entity.get('name')} with attribute '{attribute}'?"
+                )
+                yes_score, probs = self.yes_no_score(crop, prompt)
+                results.append(
+                    {
+                        "id": entity.get("id"),
+                        "name": entity.get("name"),
+                        "attribute": attribute,
+                        "score": yes_score,
+                        "calibrated_score": yes_score,
+                        "token_probs": probs,
+                        "skipped": False,
+                        "skip_reason": None,
+                        "bbox": node_result["bbox"],
+                    }
+                )
+        return {
+            "backend": self.backend_id,
+            "crop_size": self.config.stage2_crop_size,
+            "attributes": results,
+            "binding_score": safe_mean(entry["calibrated_score"] for entry in results if not entry.get("skipped")),
+            "skipped_count": sum(1 for entry in results if entry.get("skipped")),
+        }
+
+
+class QwenAttributeScorer(AttributeScorerBackend, _VisionLanguageBackend):
+    def __init__(self, backend_id: str, spec: BackendSpec, config: ExperimentConfig) -> None:
+        AttributeScorerBackend.__init__(self, backend_id, spec, config)
+        _VisionLanguageBackend.__init__(self, backend_id, spec, config)
+
+    def score_attributes(
+        self,
+        image: Image.Image,
+        item: ExperimentItem,
+        stage1_result: Dict[str, Any],
+    ) -> Dict[str, Any]:
+        node_map = {node["id"]: node for node in stage1_result.get("nodes", [])}
+        results = []
+        for entity in item.scene_graph.get("objects", []):
+            for attribute in entity.get("attributes") or []:
+                node_result = node_map.get(entity.get("id"))
+                if not node_result or not node_result.get("passed") or not node_result.get("bbox"):
+                    results.append(
+                        {
+                            "id": entity.get("id"),
+                            "name": entity.get("name"),
+                            "attribute": attribute,
+                            "score": None,
+                            "calibrated_score": None,
+                            "skipped": True,
+                            "skip_reason": "node_not_localized",
+                        }
+                    )
+                    continue
+                crop = prepare_square_crop(image, node_result["bbox"], self.config.stage2_crop_size)
+                prompt = (
+                    "Answer strictly with Yes or No.\n"
+                    f"Does this crop show a {entity.get('name')} with attribute '{attribute}'?"
+                )
+                yes_score, probs = self.yes_no_score(crop, prompt)
+                results.append(
+                    {
+                        "id": entity.get("id"),
+                        "name": entity.get("name"),
+                        "attribute": attribute,
+                        "score": yes_score,
+                        "calibrated_score": yes_score,
+                        "token_probs": probs,
+                        "skipped": False,
+                        "skip_reason": None,
+                        "bbox": node_result["bbox"],
+                    }
+                )
+        return {
+            "backend": self.backend_id,
+            "crop_size": self.config.stage2_crop_size,
+            "attributes": results,
+            "binding_score": safe_mean(entry["calibrated_score"] for entry in results if not entry.get("skipped")),
+            "skipped_count": sum(1 for entry in results if entry.get("skipped")),
+        }
+
+
+class SigLIPRelationScorer(RelationScorerBackend, _TransformersBackendMixin):
+    def __init__(self, backend_id: str, spec: BackendSpec, config: ExperimentConfig) -> None:
+        super().__init__(backend_id, spec, config)
+        if self.spec.model_path:
+            self.spec = BackendSpec(self.spec.kind, resolve_siglip_model_path(self.spec.model_path), self.spec.checkpoint_path)
+        _, AutoModel, _, _ = self._load_transformers_components()
+        self.processor, self.model = self._load_processor_and_model(AutoModel)
+
+    def _image_text_similarity(self, image: Image.Image, text: str) -> float:
+        torch = self._import_torch()
+        batch = self.processor(images=image, text=[text], return_tensors="pt", padding=True)
+        batch = self._move_batch_to_device(batch, self._extract_device(self.model))
+        with torch.inference_mode():
+            if hasattr(self.model, "get_image_features") and hasattr(self.model, "get_text_features"):
+                image_features = self.model.get_image_features(pixel_values=batch["pixel_values"])
+                text_features = self.model.get_text_features(
+                    input_ids=batch["input_ids"],
+                    attention_mask=batch.get("attention_mask"),
+                )
+            else:
+                outputs = self.model(**batch)
+                image_features = outputs.image_embeds
+                text_features = outputs.text_embeds
+        image_features = torch.nn.functional.normalize(image_features, dim=-1)
+        text_features = torch.nn.functional.normalize(text_features, dim=-1)
+        similarity = (image_features @ text_features.transpose(0, 1))[0, 0]
+        return float(similarity.detach().float().cpu().item())
+
+    def score_relations(
+        self,
+        image: Image.Image,
+        item: ExperimentItem,
+        stage1_result: Dict[str, Any],
+    ) -> Dict[str, Any]:
+        node_map = {node["id"]: node for node in stage1_result.get("nodes", [])}
+        entity_map = {entity["id"]: entity for entity in item.scene_graph.get("objects", [])}
+        results = []
+        for relation in item.scene_graph.get("relations", []):
+            subj = node_map.get(relation.get("subject"))
+            obj = node_map.get(relation.get("object"))
+            if not subj or not obj or not subj.get("bbox") or not obj.get("bbox"):
+                results.append(
+                    {
+                        "subject": relation.get("subject"),
+                        "relation": relation.get("relation"),
+                        "object": relation.get("object"),
+                        "original_score": None,
+                        "swapped_score": None,
+                        "delta": None,
+                        "swap_correct": None,
+                        "skipped": True,
+                        "skip_reason": "missing_localization",
+                    }
+                )
+                continue
+            crop_box = union_bbox(subj["bbox"], obj["bbox"], self.config.stage3_margin_ratio, image.size)
+            crop = image.crop(tuple(crop_box))
+            subj_name = entity_map.get(relation.get("subject"), {}).get("name", "subject")
+            obj_name = entity_map.get(relation.get("object"), {}).get("name", "object")
+            original_text = f"{subj_name} {relation.get('relation')} {obj_name}"
+            swapped_text = f"{obj_name} {relation.get('relation')} {subj_name}"
+            original_score = calibrate_score(
+                self._image_text_similarity(crop, original_text),
+                self.config.stage2_calibration,
+                self.config.stage2_calibration_scale,
+                self.config.stage2_calibration_bias,
+            )
+            swapped_score = calibrate_score(
+                self._image_text_similarity(crop, swapped_text),
+                self.config.stage2_calibration,
+                self.config.stage2_calibration_scale,
+                self.config.stage2_calibration_bias,
+            )
+            results.append(
+                {
+                    "subject": relation.get("subject"),
+                    "relation": relation.get("relation"),
+                    "object": relation.get("object"),
+                    "swapped_subject": relation.get("object"),
+                    "swapped_object": relation.get("subject"),
+                    "original_score": original_score,
+                    "swapped_score": swapped_score,
+                    "delta": original_score - swapped_score,
+                    "swap_correct": original_score > swapped_score,
+                    "skipped": False,
+                    "skip_reason": None,
+                    "union_bbox": crop_box,
+                }
+            )
+        return {
+            "backend": self.backend_id,
+            "margin_ratio": self.config.stage3_margin_ratio,
+            "relations": results,
+            "relation_score": safe_mean(entry["original_score"] for entry in results if not entry.get("skipped")),
+            "swap_accuracy": safe_mean(
+                1.0 if entry.get("swap_correct") else 0.0 for entry in results if entry.get("swap_correct") is not None
+            ),
+            "swap_delta_mean": safe_mean(entry["delta"] for entry in results if entry.get("delta") is not None),
+        }
+
+
+class QwenRelationScorer(RelationScorerBackend, _VisionLanguageBackend):
+    def __init__(self, backend_id: str, spec: BackendSpec, config: ExperimentConfig) -> None:
+        RelationScorerBackend.__init__(self, backend_id, spec, config)
+        _VisionLanguageBackend.__init__(self, backend_id, spec, config)
+
+    def score_relations(
+        self,
+        image: Image.Image,
+        item: ExperimentItem,
+        stage1_result: Dict[str, Any],
+    ) -> Dict[str, Any]:
+        node_map = {node["id"]: node for node in stage1_result.get("nodes", [])}
+        entity_map = {entity["id"]: entity for entity in item.scene_graph.get("objects", [])}
+        results = []
+        for relation in item.scene_graph.get("relations", []):
+            subj = node_map.get(relation.get("subject"))
+            obj = node_map.get(relation.get("object"))
+            if not subj or not obj or not subj.get("bbox") or not obj.get("bbox"):
+                results.append(
+                    {
+                        "subject": relation.get("subject"),
+                        "relation": relation.get("relation"),
+                        "object": relation.get("object"),
+                        "original_score": None,
+                        "swapped_score": None,
+                        "delta": None,
+                        "swap_correct": None,
+                        "skipped": True,
+                        "skip_reason": "missing_localization",
+                    }
+                )
+                continue
+            marked = draw_relation_markers(image, subj["bbox"], obj["bbox"])
+            subj_name = entity_map.get(relation.get("subject"), {}).get("name", "subject")
+            obj_name = entity_map.get(relation.get("object"), {}).get("name", "object")
+            original_prompt = (
+                "Answer strictly with Yes or No.\n"
+                "The red box marks the subject and the blue box marks the object.\n"
+                f"Is the relation true: {subj_name} {relation.get('relation')} {obj_name}?"
+            )
+            swapped_prompt = (
+                "Answer strictly with Yes or No.\n"
+                "The red box marks the subject and the blue box marks the object.\n"
+                f"Is the relation true: {obj_name} {relation.get('relation')} {subj_name}?"
+            )
+            original_score, original_probs = self.yes_no_score(marked, original_prompt)
+            swapped_score, swapped_probs = self.yes_no_score(marked, swapped_prompt)
+            results.append(
+                {
+                    "subject": relation.get("subject"),
+                    "relation": relation.get("relation"),
+                    "object": relation.get("object"),
+                    "swapped_subject": relation.get("object"),
+                    "swapped_object": relation.get("subject"),
+                    "original_score": original_score,
+                    "swapped_score": swapped_score,
+                    "delta": original_score - swapped_score,
+                    "swap_correct": original_score > swapped_score,
+                    "skipped": False,
+                    "skip_reason": None,
+                    "token_probs": {
+                        "original": original_probs,
+                        "swapped": swapped_probs,
+                    },
+                    "marker_mode": marked.mode,
+                }
+            )
+        return {
+            "backend": self.backend_id,
+            "margin_ratio": self.config.stage3_margin_ratio,
+            "relations": results,
+            "relation_score": safe_mean(entry["original_score"] for entry in results if not entry.get("skipped")),
+            "swap_accuracy": safe_mean(
+                1.0 if entry.get("swap_correct") else 0.0 for entry in results if entry.get("swap_correct") is not None
+            ),
+            "swap_delta_mean": safe_mean(entry["delta"] for entry in results if entry.get("delta") is not None),
+        }
 
 
 def _stable_unit(*parts: Any) -> float:
@@ -413,16 +1147,33 @@ class MockRelationScorer(RelationScorerBackend):
 
 
 def build_backend(backend_id: str, spec: BackendSpec, config: ExperimentConfig) -> Any:
+    kind = spec.kind.lower()
     if backend_id in STAGE1_VARIANTS:
-        if spec.kind == "mock":
+        if kind == "mock":
             return MockNodeDetector(backend_id, spec, config)
+        if backend_id == "E1" and kind in {"eupe"}:
+            return EupeNodeDetector(backend_id, spec, config)
+        if backend_id == "E1" and kind in {"grounding", "grounding-dino", "hf-grounding"}:
+            return GroundingNodeDetector(backend_id, spec, config)
+        if backend_id == "V1" and kind in {"qwen", "qwen-vl", "qwen3-vl", "transformers-qwen-vl"}:
+            return QwenNodeDetector(backend_id, spec, config)
         return UnavailableNodeDetector(backend_id, spec, config)
     if backend_id in STAGE2_VARIANTS:
-        if spec.kind == "mock":
+        if kind == "mock":
             return MockAttributeScorer(backend_id, spec, config)
+        if backend_id == "E2" and kind in {"siglip", "siglip2", "hf-siglip"}:
+            return SigLIPAttributeScorer(backend_id, spec, config)
+        if backend_id == "V2" and kind in {"llava", "llava-next", "llava_next"}:
+            return LlavaAttributeScorer(backend_id, spec, config)
+        if backend_id == "V2" and kind in {"qwen", "qwen-vl", "qwen3-vl", "transformers-qwen-vl"}:
+            return QwenAttributeScorer(backend_id, spec, config)
         return UnavailableAttributeScorer(backend_id, spec, config)
-    if spec.kind == "mock":
+    if kind == "mock":
         return MockRelationScorer(backend_id, spec, config)
+    if backend_id == "E3" and kind in {"siglip", "siglip2", "hf-siglip"}:
+        return SigLIPRelationScorer(backend_id, spec, config)
+    if backend_id == "V3" and kind in {"qwen", "qwen-vl", "qwen3-vl", "transformers-qwen-vl"}:
+        return QwenRelationScorer(backend_id, spec, config)
     return UnavailableRelationScorer(backend_id, spec, config)
 
 
