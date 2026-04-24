@@ -65,11 +65,10 @@ def load_dsg_scores(path: Path) -> Dict[str, float]:
         image_path = entry.get("image_path")
         if not image_path:
             continue
-        filename = os.path.basename(image_path)
         score = entry.get("final_dsg_score")
         if score is None:
             continue
-        scores[filename] = float(score)
+        scores[os.path.abspath(image_path)] = float(score)
     return scores
 
 
@@ -85,8 +84,7 @@ def load_vqa_scores(path: Path) -> Dict[str, float]:
             score = entry.get("score")
             if not image_path or score is None:
                 continue
-            filename = os.path.basename(image_path)
-            scores[filename] = float(score)
+            scores[os.path.abspath(image_path)] = float(score)
     return scores
 
 
@@ -132,6 +130,30 @@ def pearson(xs: List[float], ys: List[float]) -> Optional[float]:
     if den_x == 0 or den_y == 0:
         return None
     return num / (den_x * den_y)
+
+
+def rankdata(values: List[float], eps: float = 1e-12) -> List[float]:
+    indexed = list(enumerate(values))
+    indexed.sort(key=lambda item: item[1])
+    ranks = [0.0] * len(values)
+    i = 0
+    while i < len(indexed):
+        j = i + 1
+        while j < len(indexed) and abs(indexed[j][1] - indexed[i][1]) < eps:
+            j += 1
+        avg_rank = (i + 1 + j) / 2.0
+        for k in range(i, j):
+            ranks[indexed[k][0]] = avg_rank
+        i = j
+    return ranks
+
+
+def spearman(xs: List[float], ys: List[float]) -> Optional[float]:
+    if len(xs) < 2:
+        return None
+    rx = rankdata(xs)
+    ry = rankdata(ys)
+    return pearson(rx, ry)
 
 
 def pairwise_accuracy(xs: List[float], ys: List[float], eps: float = 1e-12) -> Tuple[Optional[float], int, int]:
@@ -206,8 +228,10 @@ def main() -> None:
             denom = eval_score1 + eval_score2
             eval_pref = eval_score1 / denom if denom else 0.5
 
-        dsg_score1 = dsg_scores.get(image1_file)
-        dsg_score2 = dsg_scores.get(image2_file)
+        image1_path = os.path.abspath(str(Path("data/images/survey_samples/image1") / image1_file))
+        image2_path = os.path.abspath(str(Path("data/images/survey_samples/image2") / image2_file))
+        dsg_score1 = dsg_scores.get(image1_path)
+        dsg_score2 = dsg_scores.get(image2_path)
         if dsg_score1 is None or dsg_score2 is None:
             missing_dsg += 1
             dsg_pref = None
@@ -215,8 +239,8 @@ def main() -> None:
             denom = dsg_score1 + dsg_score2
             dsg_pref = dsg_score1 / denom if denom else 0.5
 
-        vqa_score1 = vqa_scores.get(image1_file)
-        vqa_score2 = vqa_scores.get(image2_file)
+        vqa_score1 = vqa_scores.get(image1_path)
+        vqa_score2 = vqa_scores.get(image2_path)
         if vqa_score1 is None or vqa_score2 is None:
             missing_vqa += 1
             vqa_pref = None
@@ -268,10 +292,12 @@ def main() -> None:
 
     if eval_prefs:
         eval_pearson = pearson(survey_prefs_eval, eval_prefs)
+        eval_spearman = spearman(survey_prefs_eval, eval_prefs)
         eval_kendall = kendall_tau_b(survey_prefs_eval, eval_prefs)
         eval_acc, eval_total, eval_ties = pairwise_accuracy(survey_prefs_eval, eval_prefs)
         metrics["eval_v1"] = {
             "pearson": eval_pearson,
+            "spearman": eval_spearman,
             "kendall_tau_b": eval_kendall,
             "pairwise_accuracy": eval_acc,
             "n": eval_total,
@@ -279,6 +305,7 @@ def main() -> None:
         }
         print("Eval v1 vs survey:")
         print(f"  pearson={eval_pearson}")
+        print(f"  spearman={eval_spearman}")
         print(f"  kendall_tau_b={eval_kendall}")
         print(f"  pairwise_accuracy={eval_acc} (n={eval_total}, survey_ties={eval_ties})")
     else:
@@ -286,10 +313,12 @@ def main() -> None:
 
     if dsg_prefs:
         dsg_pearson = pearson(survey_prefs_dsg, dsg_prefs)
+        dsg_spearman = spearman(survey_prefs_dsg, dsg_prefs)
         dsg_kendall = kendall_tau_b(survey_prefs_dsg, dsg_prefs)
         dsg_acc, dsg_total, dsg_ties = pairwise_accuracy(survey_prefs_dsg, dsg_prefs)
         metrics["dsg"] = {
             "pearson": dsg_pearson,
+            "spearman": dsg_spearman,
             "kendall_tau_b": dsg_kendall,
             "pairwise_accuracy": dsg_acc,
             "n": dsg_total,
@@ -297,6 +326,7 @@ def main() -> None:
         }
         print("DSG vs survey:")
         print(f"  pearson={dsg_pearson}")
+        print(f"  spearman={dsg_spearman}")
         print(f"  kendall_tau_b={dsg_kendall}")
         print(f"  pairwise_accuracy={dsg_acc} (n={dsg_total}, survey_ties={dsg_ties})")
     else:
@@ -304,10 +334,12 @@ def main() -> None:
 
     if vqa_prefs:
         vqa_pearson = pearson(survey_prefs_vqa, vqa_prefs)
+        vqa_spearman = spearman(survey_prefs_vqa, vqa_prefs)
         vqa_kendall = kendall_tau_b(survey_prefs_vqa, vqa_prefs)
         vqa_acc, vqa_total, vqa_ties = pairwise_accuracy(survey_prefs_vqa, vqa_prefs)
         metrics["vqa"] = {
             "pearson": vqa_pearson,
+            "spearman": vqa_spearman,
             "kendall_tau_b": vqa_kendall,
             "pairwise_accuracy": vqa_acc,
             "n": vqa_total,
@@ -315,6 +347,7 @@ def main() -> None:
         }
         print("VQA vs survey:")
         print(f"  pearson={vqa_pearson}")
+        print(f"  spearman={vqa_spearman}")
         print(f"  kendall_tau_b={vqa_kendall}")
         print(f"  pairwise_accuracy={vqa_acc} (n={vqa_total}, survey_ties={vqa_ties})")
     else:

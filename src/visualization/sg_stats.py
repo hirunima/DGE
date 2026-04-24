@@ -84,14 +84,34 @@ dpg_prompts = [json.loads(line)['prompt'] for line in open('/fs/nexus-projects/s
 
 our_prompts = [obj['prompt'] for obj in json.load(open('/fs/nexus-projects/scene_graph_sd/DGE-T2I/data/raw/qwen8b_t2i_prompts_aug_v1.json'))]
 
+# --- T2I-CompBench++ ---
+# https://huggingface.co/datasets/NinaKarine/t2i-compbench
+# Parquet files per category, each with a "text" column; concatenate all val splits.
+import glob as _glob
+_t2i_files = _glob.glob('/fs/nexus-projects/scene_graph_sd/T2I-CompBench/**/*val*.parquet', recursive=True)
+t2i_compbench_prompts = pd.concat([pd.read_parquet(f) for f in _t2i_files])['text'].dropna().unique().tolist()
+
+# --- GenAI-Bench ---
+# https://huggingface.co/datasets/BaiqiL/GenAI-Bench-1600
+# JSON dict keyed by id, each entry has a "prompt" field.
+genai_bench_prompts = [v['prompt'] for v in json.load(open('/fs/nexus-projects/scene_graph_sd/GenAI-Bench/genai_image.json')).values()]
+
+# --- GECKONUM ---
+# https://github.com/google-deepmind/geckonum_benchmark_t2i
+# CSV with a "prompt" column.
+geckonum_prompts = pd.read_csv('/fs/nexus-projects/scene_graph_sd/GECKONUM/prompts.csv')['prompt'].dropna().tolist()
+
 # 3. Execution & Comparison
 # (Dummy list for demonstration; replace with actual loaded lists)
 benchmarks = {
-    "TIIF-Bench": tiif_bench_prompts, 
-    "TIIF-Bench (long)": tiif_bench_prompts_l, 
-    "DPGBench": dpg_prompts, 
-    # "GenEval": geneval_prompts, 
-    "Ours": our_prompts, 
+    "TIIF-Bench": tiif_bench_prompts,
+    "TIIF-Bench (long)": tiif_bench_prompts_l,
+    "DPGBench": dpg_prompts,
+    # "GenEval": geneval_prompts,
+    "T2I-CompBench++": t2i_compbench_prompts,
+    "GenAI-Bench": genai_bench_prompts,
+    "GECKONUM": geckonum_prompts,
+    "Ours": our_prompts,
 }
 
 results = []
