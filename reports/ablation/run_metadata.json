@@ -1,0 +1,65 @@
+{
+  "config": {
+    "output_dir": "./reports/ablation",
+    "prompts_file": "./data/raw/qwen8b_t2i_prompts_sg.json",
+    "sg_file": null,
+    "images_dir": "./data/images/split/train/qwen-image",
+    "image_pattern": "{index:04d}-{generation}.png",
+    "generation": 1,
+    "start_idx": 0,
+    "end_idx": null,
+    "limit": null,
+    "weights": {
+      "node": 0.3,
+      "attribute": 0.3,
+      "relation": 0.3
+    },
+    "node_confidence_threshold": 0.5,
+    "node_nms_threshold": 0.3,
+    "stage2_crop_size": 384,
+    "stage2_calibration": "clip",
+    "stage2_calibration_scale": 1.0,
+    "stage2_calibration_bias": 0.0,
+    "stage3_margin_ratio": 0.1,
+    "include_model_load_time": false,
+    "label_config": {
+      "path": null,
+      "key_field": "image_id",
+      "score_field": "score",
+      "result_key_field": "image_id"
+    },
+    "backend_specs": {
+      "E1": {
+        "kind": "grounding-dino",
+        "model_path": "IDEA-Research/grounding-dino-base",
+        "checkpoint_path": null
+      },
+      "V1": {
+        "kind": "qwen",
+        "model_path": "Qwen/Qwen-VL-Chat",
+        "checkpoint_path": null
+      },
+      "E2": {
+        "kind": "siglip",
+        "model_path": "google/siglip-base-patch16-224",
+        "checkpoint_path": null
+      },
+      "V2": {
+        "kind": "llava",
+        "model_path": "llava-hf/llava-1.5-7b-hf",
+        "checkpoint_path": null
+      },
+      "E3": {
+        "kind": "siglip",
+        "model_path": "google/siglip-base-patch16-224",
+        "checkpoint_path": null
+      },
+      "V3": {
+        "kind": "qwen",
+        "model_path": "Qwen/Qwen-VL-Chat",
+        "checkpoint_path": null
+      }
+    }
+  },
+  "items_total": 0
+}
