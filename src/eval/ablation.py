@@ -87,6 +87,11 @@ class ExperimentConfig:
     node_confidence_threshold: float; node_nms_threshold: float; stage2_crop_size: int
     stage2_calibration: str; stage2_calibration_scale: float; stage2_calibration_bias: float; stage3_margin_ratio: float
     include_model_load_time: bool; label_config: LabelConfig; backend_specs: Dict[str, BackendSpec]
+    selected_backends: Optional[set] = None; use_cpu: bool = False; low_vram: bool = False
+    max_text_length: int = 64; torch_cuda_mem_frac: float = 0.8
+
+    def __post_init__(self):
+        object.__setattr__(self, 'selected_backends', self.selected_backends or None)
 
 class StageBackend(ABC):
     def __init__(self, backend_id: str, spec: BackendSpec, config: ExperimentConfig):
@@ -139,8 +144,8 @@ class RelationScorerBackend(StageBackend):
 
 class _TransformersBackendMixin:
     def _load_components(self) -> Any:
-        from transformers import AutoModel, AutoModelForImageTextToText, AutoModelForZeroShotObjectDetection, AutoProcessor
-        return AutoProcessor, AutoModel, AutoModelForImageTextToText, AutoModelForZeroShotObjectDetection
+        from transformers import AutoModel, AutoModelForCausalLM, AutoModelForZeroShotObjectDetection, AutoProcessor
+        return AutoProcessor, AutoModel, AutoModelForCausalLM, AutoModelForZeroShotObjectDetection
 
     def _load_model(self, model_loader: Any, **extra) -> Tuple[Any, Any]:
         import torch
@@ -168,30 +173,39 @@ class DinoClipNodeDetector(NodeDetectorBackend, _TransformersBackendMixin):
         super().__init__(*args)
         import torch
         from transformers import AutoProcessor, AutoModelForZeroShotObjectDetection, CLIPProcessor, CLIPModel
-        
+
         start = time.perf_counter()
-        
+
+        # Determine device: respect --use-cpu flag, otherwise use auto placement
+        cuda_available = torch.cuda.is_available() and not self.config.use_cpu
+        device_map = "auto" if cuda_available else None
+
         # Load DINO for box proposals (falls back to generic DINO if no model_path specified)
         dino_path = self.spec.model_path or "IDEA-Research/grounding-dino-base"
         self.dino_proc = AutoProcessor.from_pretrained(dino_path)
-        self.dino_model = AutoModelForZeroShotObjectDetection.from_pretrained(dino_path)
+        # GroundingDINO is sensitive to dtype - use float32 for stability
+        dino_kwargs = {"trust_remote_code": True, "torch_dtype": torch.float32}
+        if device_map:
+            dino_kwargs["device_map"] = device_map
+        self.dino_model = AutoModelForZeroShotObjectDetection.from_pretrained(dino_path, **dino_kwargs)
 
         # Load CLIP for text/image matching
         clip_path = "openai/clip-vit-base-patch32"
         self.clip_proc = CLIPProcessor.from_pretrained(clip_path)
-        self.clip_model = CLIPModel.from_pretrained(clip_path)
+        clip_kwargs = {"torch_dtype": torch.float16 if cuda_available else torch.float32}
+        if device_map:
+            clip_kwargs["device_map"] = device_map
+        self.clip_model = CLIPModel.from_pretrained(clip_path, **clip_kwargs)
 
-        self.device = "cuda" if torch.cuda.is_available() else "cpu"
-        self.dino_model.to(self.device)
-        self.clip_model.to(self.device)
+        # Infer device from model placement
+        self.device = getattr(self.dino_model, "device", None) or ("cuda" if cuda_available else "cpu")
         self.dino_model.eval()
         self.clip_model.eval()
-        
+
         self.model_load_time_ms = (time.perf_counter() - start) * 1000.0
 
     def detect_nodes(self, image: Image.Image, item: ExperimentItem) -> Dict[str, Any]:
         import torch
-        # breakpoint()
         # 1. Propose bounding boxes using DINO (using a generic 'object' prompt to capture proposals)
         dino_inputs = self.dino_proc(images=image, text="object .", return_tensors="pt").to(self.device)
         with torch.inference_mode():
@@ -261,7 +275,54 @@ class DinoClipNodeDetector(NodeDetectorBackend, _TransformersBackendMixin):
 class _VisionLanguageMixin(_TransformersBackendMixin):
     def __init__(self, *args):
         super().__init__(*args)
-        self.proc, self.model = self._load_model(self._load_components()[2])
+        import torch
+        from transformers import AutoProcessor, Qwen3VLForConditionalGeneration
+
+        # Respect --use-cpu flag
+        cuda_available = torch.cuda.is_available() and not self.config.use_cpu
+        start = time.perf_counter()
+
+        # Qwen3-VL requires using Qwen3VLForConditionalGeneration directly since Qwen3VLConfig
+        # is not registered with AutoModel or AutoModelForCausalLM
+        proc = AutoProcessor.from_pretrained(self.spec.model_path, trust_remote_code=True)
+        kwargs = {"trust_remote_code": True, "torch_dtype": torch.float16 if cuda_available else torch.float32}
+        if cuda_available:
+            kwargs["device_map"] = "auto"
+        model = Qwen3VLForConditionalGeneration.from_pretrained(self.spec.model_path, **kwargs)
+        if self.spec.checkpoint_path:
+            ckpt = torch.load(self.spec.checkpoint_path, map_location="cpu")
+            model.load_state_dict({k.replace("module.", "", 1): v for k, v in (ckpt.get("state_dict", ckpt) if isinstance(ckpt, dict) else ckpt).items()}, strict=False)
+        model.eval()
+        self.model_load_time_ms = (time.perf_counter() - start) * 1000.0
+
+        self.proc = proc
+        self.model = model
+        self._cuda_available = cuda_available  # Store for inference methods
+
+    def _get_device(self):
+        """Get the device the model is on."""
+        if hasattr(self.model, "device"):
+            return self.model.device
+        return next(self.model.parameters()).device
+
+    def generate_text(self, image: Image.Image, prompt: str) -> str:
+        import torch
+        device = self._get_device()
+        batch = self.proc.apply_chat_template([{"role": "user", "content": [{"type": "image", "image": image}, {"type": "text", "text": prompt}]}], tokenize=True, add_generation_prompt=True, return_dict=True, return_tensors="pt")
+        batch = {k: v.to(device) if hasattr(v, "to") else v for k, v in batch.items()}
+        with torch.inference_mode(): gen = self.model.generate(**batch, max_new_tokens=128, do_sample=False)
+        return self.proc.batch_decode(gen[:, batch["input_ids"].shape[1]:], skip_special_tokens=True)[0].strip()
+
+    def yes_no_score(self, image: Image.Image, prompt: str) -> Tuple[float, dict]:
+        import torch
+        device = self._get_device()
+        batch = self.proc.apply_chat_template([{"role": "user", "content": [{"type": "image", "image": image}, {"type": "text", "text": prompt}]}], tokenize=True, add_generation_prompt=True, return_dict=True, return_tensors="pt")
+        batch = {k: v.to(device) if hasattr(v, "to") else v for k, v in batch.items()}
+        with torch.inference_mode(): out = self.model.generate(**batch, max_new_tokens=1, return_dict_in_generate=True, output_scores=True)
+        logits = out.scores[0][0]
+        y, n = self.proc.tokenizer.encode("Yes", add_special_tokens=False)[0], self.proc.tokenizer.encode("No", add_special_tokens=False)[0]
+        probs = torch.softmax(torch.stack([logits[y], logits[n]]), dim=0).tolist()
+        return probs[0], {"yes_prob": probs[0], "no_prob": probs[1]}
 
     def generate_text(self, image: Image.Image, prompt: str) -> str:
         import torch
@@ -287,7 +348,7 @@ class QwenNodeDetector( _VisionLanguageMixin, NodeDetectorBackend):
             raw = self.generate_text(image, prompt)
             try: parsed = json.loads(raw[raw.find("{"):raw.rfind("}")+1]) if "{" in raw else {}
             except json.JSONDecodeError: parsed = {}
-            boxes = parse_stage1_localization(json.dumps(parsed.get("boxes", [])), image.size)
+            boxes = parse_stage1_localization(parsed.get("boxes", []), image.size)
             conf = float(parsed.get("confidence", 1.0 if boxes else 0.0))
             passed = bool(boxes) and conf >= self.config.node_confidence_threshold
             nodes.append({"id": entity.get("id"), "name": entity.get("name"), "bbox": boxes[0] if passed else None, "confidence": conf, "passed": passed, "score": 1.0 if passed else 0.0})
@@ -297,17 +358,285 @@ class SigLIPMixin(_TransformersBackendMixin):
     def __init__(self, *args):
         super().__init__(*args)
         if self.spec.model_path: self.spec = BackendSpec(self.spec.kind, resolve_siglip_model_path(self.spec.model_path), self.spec.checkpoint_path)
-        self.proc, self.model = self._load_model(self._load_components()[1])
+
+        import torch
+        from transformers import AutoModel, AutoProcessor
+
+        start = time.perf_counter()
+        model_path = self.spec.model_path or "google/siglip2-so400m-patch14-384"
+        use_cuda = torch.cuda.is_available() and not self.config.use_cpu
+
+        # Check if this is a SigLIP 2 model (has text encoder) or vision-only
+        is_siglip2 = "siglip2" in model_path.lower()
+
+        if is_siglip2:
+            # SigLIP 2 has both image and text encoders
+            self.proc = AutoProcessor.from_pretrained(model_path)
+            self.model = AutoModel.from_pretrained(
+                model_path,
+                torch_dtype=torch.float16 if use_cuda else torch.float32,
+                device_map="auto" if use_cuda else None
+            )
+            self.use_siglip2 = True
+            self._device_map_used = use_cuda
+        else:
+            # Fall back to CLIP for vision-only SigLIP models
+            from transformers import CLIPProcessor, CLIPModel
+            self.proc = CLIPProcessor.from_pretrained("openai/clip-vit-base-patch32")
+            self.model = CLIPModel.from_pretrained(
+                "openai/clip-vit-base-patch32",
+                torch_dtype=torch.float16 if use_cuda else torch.float32,
+                device_map="auto" if use_cuda else None
+            )
+            self.use_siglip2 = False
+            self._device_map_used = use_cuda
+
+        # Move to GPU only if device_map wasn't used
+        if not self._device_map_used and use_cuda:
+            self.model.to("cuda")
+        self.model.eval()
+        self.model_load_time_ms = (time.perf_counter() - start) * 1000.0
+
+    @property
+    def device(self):
+        """Get the device the model is on."""
+        if hasattr(self.model, "device"):
+            return self.model.device
+        return next(self.model.parameters()).device  # Fallback for models without device attr
 
     def image_text_sim(self, image: Image.Image, text: str) -> float:
         import torch
-        batch = self._to_device(self.proc(images=image, text=[text], return_tensors="pt", padding=True), self.model)
-        with torch.inference_mode():
-            if hasattr(self.model, "get_image_features"):
-                img_f, txt_f = self.model.get_image_features(pixel_values=batch["pixel_values"]), self.model.get_text_features(input_ids=batch["input_ids"], attention_mask=batch.get("attention_mask"))
-            else:
-                out = self.model(**batch); img_f, txt_f = out.image_embeds, out.text_embeds
-        return float((torch.nn.functional.normalize(img_f, dim=-1) @ torch.nn.functional.normalize(txt_f, dim=-1).transpose(0, 1))[0, 0].item())
+
+        if self.use_siglip2:
+            # SigLIP 2: use separate image and text feature extraction
+            inputs_img = self.proc(images=image, return_tensors="pt")
+            inputs_txt = self.proc(text=[text], padding="max_length", max_length=64, return_tensors="pt")
+
+            inputs_img = {k: v.to(self.device) for k, v in inputs_img.items()}
+            inputs_txt = {k: v.to(self.device) for k, v in inputs_txt.items()}
+
+            with torch.inference_mode():
+                img_features = self.model.get_image_features(**inputs_img)
+                txt_features = self.model.get_text_features(**inputs_txt)
+
+                # Compute cosine similarity
+                img_features = torch.nn.functional.normalize(img_features, dim=-1)
+                txt_features = torch.nn.functional.normalize(txt_features, dim=-1)
+                similarity = (img_features @ txt_features.T)[0][0].item()
+                return float(similarity)
+        else:
+            # CLIP fallback
+            inputs = self.proc(text=[text], images=image, return_tensors="pt", padding=True)
+            inputs = {k: v.to(self.device) for k, v in inputs.items()}
+
+            with torch.inference_mode():
+                outputs = self.model(**inputs)
+                similarity = outputs.logits_per_image[0][0].item()
+                return float(1.0 / (1.0 + torch.exp(-similarity)))  # sigmoid to 0-1 range
+
+    def _to_device(self, batch: dict, model: Any = None) -> dict:
+        """Override to use our device property."""
+        return {k: v.to(self.device) if hasattr(v, "to") else v for k, v in batch.items()}
+
+    def image_text_sim(self, image: Image.Image, text: str) -> float:
+        import torch
+
+        if self.use_siglip2:
+            # SigLIP 2: use separate image and text feature extraction
+            inputs_img = self.proc(images=image, return_tensors="pt")
+            inputs_txt = self.proc(text=[text], padding="max_length", max_length=64, return_tensors="pt")
+
+            inputs_img = {k: v.to(self.model.device) for k, v in inputs_img.items()}
+            inputs_txt = {k: v.to(self.model.device) for k, v in inputs_txt.items()}
+
+            with torch.inference_mode():
+                img_out = self.model.get_image_features(**inputs_img)
+                txt_out = self.model.get_text_features(**inputs_txt)
+
+                # Extract pooled embeddings (not last_hidden_state which gives full sequence)
+                # Image features: typically [batch, hidden_dim] or [batch, patches, hidden_dim]
+                # Text features: typically [batch, hidden_dim] or [batch, seq_len, hidden_dim]
+                if hasattr(img_out, "image_embeds"):
+                    img_features = img_out.image_embeds  # Pooled image embedding
+                elif hasattr(img_out, "last_hidden_state"):
+                    img_features = img_out.last_hidden_state[:, 0, :]  # Take CLS token
+                else:
+                    img_features = img_out
+                    if img_features.dim() > 2:
+                        img_features = img_features[:, 0, :]  # Take first token/pool
+
+                if hasattr(txt_out, "text_embeds"):
+                    txt_features = txt_out.text_embeds  # Pooled text embedding
+                elif hasattr(txt_out, "last_hidden_state"):
+                    txt_features = txt_out.last_hidden_state[:, 0, :]  # Take CLS token
+                else:
+                    txt_features = txt_out
+                    if txt_features.dim() > 2:
+                        txt_features = txt_features[:, 0, :]  # Take first token/pool
+
+                # Ensure both are 2D tensors [batch, hidden_dim]
+                img_features = img_features.flatten(0, 1) if img_features.dim() > 2 else img_features
+                txt_features = txt_features.flatten(0, 1) if txt_features.dim() > 2 else txt_features
+
+                # Compute cosine similarity
+                img_features = torch.nn.functional.normalize(img_features, dim=-1)
+                txt_features = torch.nn.functional.normalize(txt_features, dim=-1)
+                similarity = (img_features @ txt_features.T)[0][0].item()
+                return float(similarity)
+        else:
+            # CLIP fallback
+            inputs = self.proc(text=[text], images=image, return_tensors="pt", padding=True)
+            inputs = {k: v.to(self.model.device) for k, v in inputs.items()}
+
+            with torch.inference_mode():
+                outputs = self.model(**inputs)
+                similarity = outputs.logits_per_image[0][0].item()
+                return float(1.0 / (1.0 + torch.exp(-similarity)))  # sigmoid to 0-1 range
+
+    def _to_device(self, batch: dict, model: Any = None) -> dict:
+        """Override to use our device property."""
+        return {k: v.to(self.device) if hasattr(v, "to") else v for k, v in batch.items()}
+
+
+class SigLIPAttributeScorer(SigLIPMixin, AttributeScorerBackend):
+    def _evaluate_attribute(self, crop, entity_name, attribute):
+        return self.image_text_sim(crop, f"A photo of a {attribute} {entity_name}"), {}
+
+class VLMAttributeScorer(_VisionLanguageMixin, AttributeScorerBackend):
+    def _evaluate_attribute(self, crop, entity_name, attribute):
+        score, probs = self.yes_no_score(crop, f"Answer strictly with Yes or No.\nDoes this crop show a {entity_name} with attribute '{attribute}'?")
+        return score, {"token_probs": probs}
+
+class SigLIPRelationScorer(SigLIPMixin, RelationScorerBackend):
+    def _evaluate_relation(self, image, subj_bbox, obj_bbox, relation, subj_name, obj_name):
+        crop = image.crop(tuple(union_bbox(subj_bbox, obj_bbox, self.config.stage3_margin_ratio, image.size)))
+        return self.image_text_sim(crop, f"{subj_name} {relation} {obj_name}"), self.image_text_sim(crop, f"{obj_name} {relation} {subj_name}"), {"union_bbox": crop.getbbox()}
+
+class VLMRelationScorer( _VisionLanguageMixin, RelationScorerBackend):
+    def _evaluate_relation(self, image, subj_bbox, obj_bbox, relation, subj_name, obj_name):
+        marked = draw_relation_markers(image, subj_bbox, obj_bbox)
+        prompt = "Answer strictly with Yes or No.\nThe red box marks the subject and the blue box marks the object.\nIs the relation true: {s} {r} {o}?"
+        orig_s, orig_p = self.yes_no_score(marked, prompt.format(s=subj_name, r=relation, o=obj_name))
+        swap_s, swap_p = self.yes_no_score(marked, prompt.format(s=obj_name, r=relation, o=subj_name))
+        return orig_s, swap_s, {"token_probs": {"original": orig_p, "swapped": swap_p}, "marker_mode": marked.mode}
+
+
+def clamp_bbox(bbox, img_w, img_h):
+    return [max(0, min(bbox[0], img_w)), max(0, min(bbox[1], img_h)),
+            max(0, min(bbox[2], img_w)), max(0, min(bbox[3], img_h))]
+
+
+def union_bbox(bbox1, bbox2, margin_ratio, img_size):
+    margin_x = int(margin_ratio * img_size[0])
+    margin_y = int(margin_ratio * img_size[1])
+    return [max(0, bbox1[0] - margin_x), max(0, bbox1[1] - margin_y),
+            min(img_size[0], bbox2[2] + margin_x), min(img_size[1], bbox2[3] + margin_y)]
+
+
+def parse_stage1_localization(boxes_str, img_size):
+    import json
+    try:
+        boxes = json.loads(boxes_str) if isinstance(boxes_str, str) else boxes_str
+        if isinstance(boxes, list) and len(boxes) > 0:
+            if isinstance(boxes[0], (int, float)):
+                return [boxes]  # Single box as flat list
+            return list(boxes)  # Multiple boxes
+    except:
+        pass
+    return []
+
+
+def draw_relation_markers(image, subj_bbox, obj_bbox):
+    import cv2
+    img_copy = image.copy()
+    img_array = cv2.cvtColor(np.array(img_copy), cv2.COLOR_RGB2BGR)
+    # Red box for subject (255, 0, 0 in BGR)
+    cv2.rectangle(img_array, (int(subj_bbox[0]), int(subj_bbox[1])), (int(subj_bbox[2]), int(subj_bbox[3])), (0, 0, 255), 2)
+    # Blue box for object (0, 0, 255 in BGR)
+    cv2.rectangle(img_array, (int(obj_bbox[0]), int(obj_bbox[1])), (int(obj_bbox[2]), int(obj_bbox[3])), (255, 0, 0), 2)
+    return Image.fromarray(cv2.cvtColor(img_array, cv2.COLOR_BGR2RGB))
+
+
+def safe_mean(values):
+    values = list(values)
+    return sum(values) / len(values) if values else None
+
+
+def calibrate_score(raw_score, calibration_type, scale, bias):
+    if calibration_type == "identity":
+        return raw_score
+    elif calibration_type == "clip":
+        return max(0.0, min(1.0, raw_score))
+    elif calibration_type == "sigmoid":
+        import math
+        return 1.0 / (1.0 + math.exp(-scale * (raw_score + bias)))
+    return raw_score
+
+
+def prepare_square_crop(image, bbox, crop_size):
+    img_w, img_h = image.size
+    center_x = (bbox[0] + bbox[2]) / 2
+    center_y = (bbox[1] + bbox[3]) / 2
+    half_w = (bbox[2] - bbox[0]) / 2
+    half_h = (bbox[3] - bbox[1]) / 2
+    half_size = max(half_w, half_h)
+    left = max(0, center_x - half_size)
+    top = max(0, center_y - half_size)
+    right = min(img_w, center_x + half_size)
+    bottom = min(img_h, center_y + half_size)
+    crop = image.crop((left, top, right, bottom))
+    return crop.resize((crop_size, crop_size), Image.LANCZOS)
+
+
+def extract_scene_graph(prompt_text: str) -> Dict[str, Any]:
+    text = prompt_text.split("Current Task:")[-1] if "Current Task:" in prompt_text else prompt_text
+    try:
+        obj_sec = text.split("Objects:", 1)[1].split("Relationships:", 1)[0]
+        rel_sec = text.split("Relationships:", 1)[1].split("[Step-by-Step Reasoning]", 1)[0]
+    except IndexError:
+        return {"error": "Could not find expected Objects or Relationships sections."}
+
+    objects, relations, current_obj = [], [], None
+    for line in obj_sec.strip().splitlines():
+        line = line.strip()
+        if not line: continue
+        if line.startswith("-") and "(object id" in line:
+            name = line[1:].split("(object id", 1)[0].strip().split(" ", 1)[-1].strip()
+            obj_id = int(line.split(":")[-1].split(")")[0].strip())
+            current_obj = {"id": obj_id, "name": name, "attributes": []}
+            objects.append(current_obj)
+        elif current_obj and line.startswith("-"):
+            current_obj["attributes"].append(line[1:].strip())
+
+    for line in rel_sec.strip().splitlines():
+        tokens = line.strip()[1:].strip().split()
+        if line.strip().startswith("- Object") and len(tokens) >= 5:
+            relations.append({"subject": int(tokens[1]), "relation": " ".join(tokens[2:-2]), "object": int(tokens[-1])})
+
+    return {"objects": objects, "relations": relations}
+
+
+def load_json_or_jsonl(path: str) -> List[Dict[str, Any]]:
+    text = Path(path).read_text(encoding="utf-8").strip()
+    return json.loads(text) if text.startswith("[") else [json.loads(l) for l in text.splitlines() if l.strip()]
+
+
+def resolve_siglip_model_path(model_path: str) -> str:
+    path = Path(model_path)
+    if path.is_dir() and (path / "config.json").exists(): return str(path)
+    if path.is_dir() and any(path.glob("*.npz")):
+        sibling = path.parent / path.name.replace("-jax", "")
+        if sibling.exists() and (sibling / "config.json").exists(): return str(sibling)
+        raise ValueError(f"Requires Transformers-compatible checkpoint, found JAX weights at {model_path}.")
+    return model_path
+
+def apply_batch_results(batch_results, all_results):
+    for item_id, result in batch_results.items():
+        all_results[item_id] = result
+
+
+def summarize_results(results):
+    pass
 
 class SigLIPAttributeScorer(SigLIPMixin, AttributeScorerBackend):
     def _evaluate_attribute(self, crop, entity_name, attribute):
@@ -370,7 +699,21 @@ def safe_mean(v: Iterable) -> Optional[float]:
 
 def clamp_bbox(b: Sequence[float], w: int, h: int) -> List[int]: return [max(0, min(int(round(b[0])), w-1)), max(0, min(int(round(b[1])), h-1)), max(1, min(int(round(b[2])), w)), max(1, min(int(round(b[3])), h))]
 def normalized_bbox_to_pixel(b: Sequence[float], w: int, h: int) -> List[int]: return clamp_bbox([w*b[0]/1000.0, h*b[1]/1000.0, w*b[2]/1000.0, h*b[3]/1000.0], w, h)
-def parse_stage1_localization(raw: str, size: Tuple[int, int]) -> List[List[int]]: return [normalized_bbox_to_pixel(b["bbox"] if isinstance(b, dict) else b, *size) for b in (json.loads(raw).get("boxes", []) if "{" in raw else []) if isinstance(b, (list, dict))]
+def parse_stage1_localization(raw: str, size: Tuple[int, int]) -> List[List[int]]:
+    if isinstance(raw, str):
+        data = json.loads(raw) if "{" in raw or "[" in raw else {}
+        boxes = data.get("boxes", []) if isinstance(data, dict) else (data if isinstance(data, list) else [])
+    else:
+        boxes = raw if isinstance(raw, list) else []
+    result = []
+    for b in boxes:
+        if isinstance(b, dict):
+            bbox = b.get("bbox", b.get("box", list(b.values())[0] if b else None))
+            if bbox is not None and isinstance(bbox, (list, tuple)) and len(bbox) >= 4:
+                result.append(normalized_bbox_to_pixel(bbox, *size))
+        elif isinstance(b, (list, tuple)) and len(b) >= 4:
+            result.append(normalized_bbox_to_pixel(b, *size))
+    return result
 def prepare_square_crop(image: Image.Image, bbox: Sequence[int], size: int) -> Image.Image:
     c = image.crop(tuple(bbox)); s = max(c.size); cv = Image.new(image.mode, (s, s))
     cv.paste(c, ((s - c.size[0]) // 2, (s - c.size[1]) // 2)); return cv.resize((size, size))
@@ -429,19 +772,39 @@ def load_experiment_items(config: ExperimentConfig) -> List[ExperimentItem]:
     return items
 
 def run_ablation_experiment(config: ExperimentConfig, items=None, backends=None) -> Dict[str, Any]:
+    import torch
     wt = {"node": config.weights.node, "attribute": config.weights.attribute, "relation": config.weights.relation}
     norm_wts = {k: v / sum(wt.values()) for k, v in wt.items()}
     items = items or load_experiment_items(config)
-    bm = backends or {b: build_backend(b, config.backend_specs[b], config) for b in STAGE1_VARIANTS + STAGE2_VARIANTS + STAGE3_VARIANTS}
 
-    rows_by_perm = {f"{s1}-{s2}-{s3}": [] for s1 in STAGE1_VARIANTS for s2 in STAGE2_VARIANTS for s3 in STAGE3_VARIANTS}
+    # Determine which backends to use based on config or defaults to all
+    if hasattr(config, 'selected_backends') and config.selected_backends:
+        selected_backends = config.selected_backends
+    else:
+        selected_backends = set(STAGE1_VARIANTS + STAGE2_VARIANTS + STAGE3_VARIANTS)
+
+    # Filter to valid stage variants
+    stage1_selected = selected_backends.intersection(STAGE1_VARIANTS) or STAGE1_VARIANTS
+    stage2_selected = selected_backends.intersection(STAGE2_VARIANTS) or STAGE2_VARIANTS
+    stage3_selected = selected_backends.intersection(STAGE3_VARIANTS) or STAGE3_VARIANTS
+
+    # Only build the selected backends to save memory
+    backends_to_build = stage1_selected.union(stage2_selected).union(stage3_selected)
+    bm = backends or {b: build_backend(b, config.backend_specs[b], config) for b in backends_to_build}
+
+    # Only create permutations for selected backends
+    rows_by_perm = {f"{s1}-{s2}-{s3}": [] for s1 in stage1_selected for s2 in stage2_selected for s3 in stage3_selected}
     time_call = lambda f, *args: (lambda st=time.perf_counter(), res=f(*args): (res, (time.perf_counter() - st) * 1000.0))()
+
+    print(f"Running with backends: stage1={stage1_selected}, stage2={stage2_selected}, stage3={stage3_selected}")
+    print(f"Total permutations: {len(rows_by_perm)}")
 
     for item in items:
         with Image.open(item.image_path) as img_h: img = img_h.convert("RGB")
-        st1_cache = {b: dict(zip(["res", "lat"], time_call(bm[b].detect_nodes, img, item))) for b in STAGE1_VARIANTS}
-        st2_cache = {(b1, b2): dict(zip(["res", "lat"], time_call(bm[b2].score_attributes, img, item, st1_cache[b1]["res"]))) for b1 in STAGE1_VARIANTS for b2 in STAGE2_VARIANTS}
-        st3_cache = {(b1, b3): dict(zip(["res", "lat"], time_call(bm[b3].score_relations, img, item, st1_cache[b1]["res"]))) for b1 in STAGE1_VARIANTS for b3 in STAGE3_VARIANTS}
+        # Only compute for selected backends
+        st1_cache = {b: dict(zip(["res", "lat"], time_call(bm[b].detect_nodes, img, item))) for b in stage1_selected}
+        st2_cache = {(b1, b2): dict(zip(["res", "lat"], time_call(bm[b2].score_attributes, img, item, st1_cache[b1]["res"]))) for b1 in stage1_selected for b2 in stage2_selected}
+        st3_cache = {(b1, b3): dict(zip(["res", "lat"], time_call(bm[b3].score_relations, img, item, st1_cache[b1]["res"]))) for b1 in stage1_selected for b3 in stage3_selected}
 
         for perm in rows_by_perm.keys():
             b1, b2, b3 = perm.split("-")
@@ -462,9 +825,20 @@ def serialize_config(config: ExperimentConfig) -> Dict[str, Any]:
     payload["backend_specs"] = {key: asdict(value) for key, value in config.backend_specs.items()}
     return payload
 
+def _json_default(obj):
+    """Custom JSON encoder for sets, dataclasses, and other non-serializable types."""
+    if isinstance(obj, set):
+        return list(obj)
+    if hasattr(obj, '__dataclass_fields__'):
+        from dataclasses import asdict
+        return asdict(obj)
+    if hasattr(obj, 'tolist'):
+        return obj.tolist()
+    return str(obj)  # Fallback to string representation
+
 def write_json(path: Path, payload: Any) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
+    path.write_text(json.dumps(payload, indent=2, default=_json_default), encoding="utf-8")
 
 def write_csv(path: Path, rows: Sequence[Mapping[str, Any]]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -533,17 +907,21 @@ def build_arg_parser() -> argparse.ArgumentParser:
     p.add_argument("--stage2-calibration-bias", type=float, default=0.0)
     p.add_argument("--stage3-margin-ratio", type=float, default=0.1)
     p.add_argument("--include-model-load-time", action="store_true")
-    
+    p.add_argument("--backends", default=None, help="Comma-separated list of backends to use (e.g., 'E1,E2,E3' for encoder-only pipeline). Defaults to all backends.")
+    p.add_argument("--cpu", action="store_true", help="Run on CPU instead of GPU (slower but uses less memory)")
+    p.add_argument("--low-vram", action="store_true", help="Use lower VRAM settings (models loaded on CPU, moved to GPU only during inference)")
+    p.add_argument("--max-text-length", type=int, default=64, help="Max text length for SigLIP 2 models (default: 64)")
+    p.add_argument("--torch-cuda-mem-frac", type=float, default=0.8, help="Fraction of GPU memory to use (for device_map='auto')")
+
     # Condensed repetitive backend argument parsing
-    for b in ("e1", "v1", "e2", "v2", "e3", "v3"): 
+    for b in ("e1", "v1", "e2", "v2", "e3", "v3"):
         p.add_argument(f"--{b}-backend-kind", default=None) # was "mock")
-        
+
     for m in ("eupe", "qwen", "siglip", "llava"):
         p.add_argument(f"--{m}-model-path", default=None)
         p.add_argument(f"--{m}-checkpoint-path", default=None)
-        
-    return p
 
+    return p
 def config_from_args(args: argparse.Namespace) -> ExperimentConfig:
     none_vals = {None, "None"}
     return ExperimentConfig(
@@ -575,10 +953,15 @@ def config_from_args(args: argparse.Namespace) -> ExperimentConfig:
             "E1": BackendSpec(args.e1_backend_kind, args.eupe_model_path, args.eupe_checkpoint_path),
             "V1": BackendSpec(args.v1_backend_kind, args.qwen_model_path, args.qwen_checkpoint_path),
             "E2": BackendSpec(args.e2_backend_kind, args.siglip_model_path, args.siglip_checkpoint_path),
-            "V2": BackendSpec(args.v2_backend_kind, args.llava_model_path, args.llava_checkpoint_path),
+            "V2": BackendSpec(args.v2_backend_kind, args.qwen_model_path, args.qwen_checkpoint_path),
             "E3": BackendSpec(args.e3_backend_kind, args.siglip_model_path, args.siglip_checkpoint_path),
             "V3": BackendSpec(args.v3_backend_kind, args.qwen_model_path, args.qwen_checkpoint_path),
         },
+        selected_backends=set(args.backends.split(",")) if args.backends else None,
+        use_cpu=args.cpu,
+        low_vram=args.low_vram,
+        max_text_length=args.max_text_length,
+        torch_cuda_mem_frac=args.torch_cuda_mem_frac,
     )
 
 if __name__ == "__main__":
