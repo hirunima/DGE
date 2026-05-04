@@ -1,1 +1,840 @@
-[]
+[
+  {
+    "image_id": "0000-1",
+    "prompt": "A softly blurred bear with hints of blue and white has fur and a more intact, larger mouth that reveals a vibrant green nose.",
+    "permutation": "V1-E2-E3",
+    "final_score": 0.40376654730902783,
+    "st1_res": {
+      "backend": "V1",
+      "nodes": [
+        {
+          "id": 0,
+          "name": "bear",
+          "bbox": [
+            0,
+            0,
+            512,
+            416
+          ],
+          "confidence": 0.99,
+          "passed": true,
+          "score": 1.0
+        },
+        {
+          "id": 1,
+          "name": "mouth",
+          "bbox": [
+            262,
+            154,
+            352,
+            272
+          ],
+          "confidence": 0.98,
+          "passed": true,
+          "score": 1.0
+        },
+        {
+          "id": 2,
+          "name": "nose",
+          "bbox": [
+            285,
+            221,
+            330,
+            260
+          ],
+          "confidence": 0.99,
+          "passed": true,
+          "score": 1.0
+        },
+        {
+          "id": 3,
+          "name": "fur",
+          "bbox": [
+            0,
+            0,
+            512,
+            416
+          ],
+          "confidence": 0.99,
+          "passed": true,
+          "score": 1.0
+        }
+      ],
+      "fidelity_score": 1.0
+    },
+    "st2_res": {
+      "backend": "E2",
+      "crop_size": 384,
+      "attributes": [
+        {
+          "id": 0,
+          "name": "bear",
+          "attribute": "hints of blue and white",
+          "score": 0.1405029296875,
+          "calibrated_score": 0.1405029296875,
+          "skipped": false,
+          "bbox": [
+            0,
+            0,
+            512,
+            416
+          ]
+        },
+        {
+          "id": 0,
+          "name": "bear",
+          "attribute": "softly blurred",
+          "score": 0.15673828125,
+          "calibrated_score": 0.15673828125,
+          "skipped": false,
+          "bbox": [
+            0,
+            0,
+            512,
+            416
+          ]
+        },
+        {
+          "id": 1,
+          "name": "mouth",
+          "attribute": "more intact",
+          "score": 0.0701904296875,
+          "calibrated_score": 0.0701904296875,
+          "skipped": false,
+          "bbox": [
+            262,
+            154,
+            352,
+            272
+          ]
+        },
+        {
+          "id": 1,
+          "name": "mouth",
+          "attribute": "larger",
+          "score": 0.070068359375,
+          "calibrated_score": 0.070068359375,
+          "skipped": false,
+          "bbox": [
+            262,
+            154,
+            352,
+            272
+          ]
+        },
+        {
+          "id": 2,
+          "name": "nose",
+          "attribute": "vibrant green",
+          "score": 0.118408203125,
+          "calibrated_score": 0.118408203125,
+          "skipped": false,
+          "bbox": [
+            285,
+            221,
+            330,
+            260
+          ]
+        }
+      ],
+      "binding_score": 0.111181640625
+    },
+    "st3_res": {
+      "backend": "E3",
+      "relations": [
+        {
+          "subject": 0,
+          "relation": "has",
+          "object": 3,
+          "original_score": 0.1142578125,
+          "swapped_score": 0.069091796875,
+          "delta": 0.045166015625,
+          "swap_correct": true,
+          "skipped": false,
+          "union_bbox": [
+            0,
+            0,
+            512,
+            458
+          ]
+        },
+        {
+          "subject": 1,
+          "relation": "revealing",
+          "object": 2,
+          "original_score": 0.07000732421875,
+          "swapped_score": 0.0599365234375,
+          "delta": 0.01007080078125,
+          "swap_correct": true,
+          "skipped": false,
+          "union_bbox": [
+            0,
+            0,
+            108,
+            142
+          ]
+        },
+        {
+          "subject": 0,
+          "relation": "has",
+          "object": 1,
+          "original_score": 0.1160888671875,
+          "swapped_score": 0.0955810546875,
+          "delta": 0.0205078125,
+          "swap_correct": true,
+          "skipped": false,
+          "union_bbox": [
+            0,
+            0,
+            512,
+            458
+          ]
+        }
+      ],
+      "relation_score": 0.10011800130208333,
+      "swap_accuracy": 1.0
+    },
+    "latency_ms": {
+      "total": 20459.672726050485
+    }
+  },
+  {
+    "image_id": "0001-1",
+    "prompt": "A flock of five sheep stands in front of structures, with one sheep positioned in the middle of the scene, surrounded by other sheep, against a blurred background.",
+    "permutation": "V1-E2-E3",
+    "final_score": 0.4242146809895834,
+    "st1_res": {
+      "backend": "V1",
+      "nodes": [
+        {
+          "id": 0,
+          "name": "sheep",
+          "bbox": [
+            0,
+            312,
+            217,
+            966
+          ],
+          "confidence": 0.98,
+          "passed": true,
+          "score": 1.0
+        },
+        {
+          "id": 103,
+          "name": "blurred background",
+          "bbox": [
+            0,
+            0,
+            1024,
+            389
+          ],
+          "confidence": 0.97,
+          "passed": true,
+          "score": 1.0
+        },
+        {
+          "id": 105,
+          "name": "structures",
+          "bbox": [
+            0,
+            0,
+            517,
+            440
+          ],
+          "confidence": 0.96,
+          "passed": true,
+          "score": 1.0
+        },
+        {
+          "id": 109,
+          "name": "another sheep",
+          "bbox": [
+            873,
+            349,
+            1024,
+            876
+          ],
+          "confidence": 0.95,
+          "passed": true,
+          "score": 1.0
+        },
+        {
+          "id": 110,
+          "name": "middle",
+          "bbox": [
+            361,
+            310,
+            678,
+            1023
+          ],
+          "confidence": 0.99,
+          "passed": true,
+          "score": 1.0
+        }
+      ],
+      "fidelity_score": 1.0
+    },
+    "st2_res": {
+      "backend": "E2",
+      "crop_size": 384,
+      "attributes": [
+        {
+          "id": 0,
+          "name": "sheep",
+          "attribute": "quantity:5",
+          "score": 0.1719970703125,
+          "calibrated_score": 0.1719970703125,
+          "skipped": false,
+          "bbox": [
+            0,
+            312,
+            217,
+            966
+          ]
+        }
+      ],
+      "binding_score": 0.1719970703125
+    },
+    "st3_res": {
+      "backend": "E3",
+      "relations": [
+        {
+          "subject": 109,
+          "relation": "in",
+          "object": 110,
+          "original_score": 0.146728515625,
+          "swapped_score": 0.1463623046875,
+          "delta": 0.0003662109375,
+          "swap_correct": true,
+          "skipped": false,
+          "union_bbox": [
+            0,
+            0,
+            729,
+            785
+          ]
+        },
+        {
+          "subject": 103,
+          "relation": "of",
+          "object": 105,
+          "original_score": 0.02789306640625,
+          "swapped_score": 0.054443359375,
+          "delta": -0.02655029296875,
+          "swap_correct": false,
+          "skipped": false,
+          "union_bbox": [
+            0,
+            0,
+            1024,
+            484
+          ]
+        },
+        {
+          "subject": 0,
+          "relation": "has",
+          "object": 103,
+          "original_score": 0.1273193359375,
+          "swapped_score": 0.122314453125,
+          "delta": 0.0050048828125,
+          "swap_correct": true,
+          "skipped": false,
+          "union_bbox": [
+            0,
+            0,
+            1024,
+            1024
+          ]
+        }
+      ],
+      "relation_score": 0.10064697265625,
+      "swap_accuracy": 0.6666666666666666
+    },
+    "latency_ms": {
+      "total": 57781.97331604315
+    }
+  },
+  {
+    "image_id": "0003-1",
+    "prompt": "A bottle sits on a table in front of a screen, while a light brown audience member is present.",
+    "permutation": "V1-E2-E3",
+    "final_score": 0.43180338541666674,
+    "st1_res": {
+      "backend": "V1",
+      "nodes": [
+        {
+          "id": 0,
+          "name": "bottle",
+          "bbox": [
+            452,
+            426,
+            581,
+            922
+          ],
+          "confidence": 0.98,
+          "passed": true,
+          "score": 1.0
+        },
+        {
+          "id": 5,
+          "name": "screen",
+          "bbox": [
+            0,
+            0,
+            1024,
+            545
+          ],
+          "confidence": 0.97,
+          "passed": true,
+          "score": 1.0
+        },
+        {
+          "id": 6,
+          "name": "table",
+          "bbox": [
+            265,
+            866,
+            673,
+            1023
+          ],
+          "confidence": 0.96,
+          "passed": true,
+          "score": 1.0
+        },
+        {
+          "id": 7,
+          "name": "audience member",
+          "bbox": [
+            607,
+            174,
+            1024,
+            1024
+          ],
+          "confidence": 0.95,
+          "passed": true,
+          "score": 1.0
+        },
+        {
+          "id": 8,
+          "name": "head",
+          "bbox": [
+            819,
+            174,
+            1024,
+            545
+          ],
+          "confidence": 0.94,
+          "passed": true,
+          "score": 1.0
+        }
+      ],
+      "fidelity_score": 1.0
+    },
+    "st2_res": {
+      "backend": "E2",
+      "crop_size": 384,
+      "attributes": [
+        {
+          "id": 7,
+          "name": "audience member",
+          "attribute": "light brown",
+          "score": 0.1884765625,
+          "calibrated_score": 0.1884765625,
+          "skipped": false,
+          "bbox": [
+            607,
+            174,
+            1024,
+            1024
+          ]
+        }
+      ],
+      "binding_score": 0.1884765625
+    },
+    "st3_res": {
+      "backend": "E3",
+      "relations": [
+        {
+          "subject": 0,
+          "relation": "on",
+          "object": 6,
+          "original_score": 0.1466064453125,
+          "swapped_score": 0.12481689453125,
+          "delta": 0.02178955078125,
+          "swap_correct": true,
+          "skipped": false,
+          "union_bbox": [
+            0,
+            0,
+            490,
+            658
+          ]
+        },
+        {
+          "subject": 6,
+          "relation": "in front of",
+          "object": 5,
+          "original_score": 0.08538818359375,
+          "swapped_score": 0.09259033203125,
+          "delta": -0.0072021484375,
+          "swap_correct": false,
+          "skipped": false,
+          "union_bbox": [
+            0,
+            0,
+            1024,
+            1024
+          ]
+        },
+        {
+          "subject": 7,
+          "relation": "has",
+          "object": 8,
+          "original_score": 0.08880615234375,
+          "swapped_score": 0.091064453125,
+          "delta": -0.00225830078125,
+          "swap_correct": false,
+          "skipped": false,
+          "union_bbox": [
+            0,
+            0,
+            459,
+            935
+          ]
+        }
+      ],
+      "relation_score": 0.10693359375,
+      "swap_accuracy": 0.3333333333333333
+    },
+    "latency_ms": {
+      "total": 53059.290101984516
+    }
+  },
+  {
+    "image_id": "0010-1",
+    "prompt": "A broccoli, seasoned with garlic and other spices, rests on a white plate as part of a food item.",
+    "permutation": "V1-E2-E3",
+    "final_score": 0.3399698893229167,
+    "st1_res": {
+      "backend": "V1",
+      "nodes": [
+        {
+          "id": 0,
+          "name": "broccoli",
+          "bbox": [
+            246,
+            301,
+            781,
+            717
+          ],
+          "confidence": 0.99,
+          "passed": true,
+          "score": 1.0
+        },
+        {
+          "id": 100,
+          "name": "plate",
+          "bbox": [
+            0,
+            0,
+            1023,
+            1024
+          ],
+          "confidence": 0.99,
+          "passed": true,
+          "score": 1.0
+        },
+        {
+          "id": 101,
+          "name": "food",
+          "bbox": [
+            244,
+            301,
+            781,
+            717
+          ],
+          "confidence": 0.99,
+          "passed": true,
+          "score": 1.0
+        },
+        {
+          "id": 109,
+          "name": "garlic",
+          "bbox": null,
+          "confidence": 0.0,
+          "passed": false,
+          "score": 0.0
+        },
+        {
+          "id": 110,
+          "name": "spices",
+          "bbox": [
+            424,
+            205,
+            837,
+            813
+          ],
+          "confidence": 0.99,
+          "passed": true,
+          "score": 1.0
+        }
+      ],
+      "fidelity_score": 0.8
+    },
+    "st2_res": {
+      "backend": "E2",
+      "crop_size": 384,
+      "attributes": [
+        {
+          "id": 100,
+          "name": "plate",
+          "attribute": "white",
+          "score": 0.11248779296875,
+          "calibrated_score": 0.11248779296875,
+          "skipped": false,
+          "bbox": [
+            0,
+            0,
+            1023,
+            1024
+          ]
+        },
+        {
+          "id": 110,
+          "name": "spices",
+          "attribute": "other",
+          "score": 0.07952880859375,
+          "calibrated_score": 0.07952880859375,
+          "skipped": false,
+          "bbox": [
+            424,
+            205,
+            837,
+            813
+          ]
+        }
+      ],
+      "binding_score": 0.09600830078125
+    },
+    "st3_res": {
+      "backend": "E3",
+      "relations": [
+        {
+          "subject": 0,
+          "relation": "is seasoned with",
+          "object": 110,
+          "original_score": 0.1483154296875,
+          "swapped_score": 0.1634521484375,
+          "delta": -0.01513671875,
+          "swap_correct": false,
+          "skipped": false,
+          "union_bbox": [
+            0,
+            0,
+            709,
+            730
+          ]
+        },
+        {
+          "subject": 100,
+          "relation": "of",
+          "object": 101,
+          "original_score": 0.0994873046875,
+          "swapped_score": 0.10723876953125,
+          "delta": -0.00775146484375,
+          "swap_correct": false,
+          "skipped": false,
+          "union_bbox": [
+            0,
+            0,
+            1024,
+            1024
+          ]
+        },
+        {
+          "subject": 0,
+          "relation": "is seasoned with",
+          "object": 109,
+          "skipped": true,
+          "skip_reason": "missing_localization"
+        }
+      ],
+      "relation_score": 0.1239013671875,
+      "swap_accuracy": 0.0
+    },
+    "latency_ms": {
+      "total": 52195.03013807116
+    }
+  },
+  {
+    "image_id": "0013-1",
+    "prompt": "Lush green foliage lines the riverbank of a shallow river that flows into a background.",
+    "permutation": "V1-E2-E3",
+    "final_score": 0.39598931206597227,
+    "st1_res": {
+      "backend": "V1",
+      "nodes": [
+        {
+          "id": 100,
+          "name": "river",
+          "bbox": [
+            0,
+            294,
+            512,
+            511
+          ],
+          "confidence": 0.98,
+          "passed": true,
+          "score": 1.0
+        },
+        {
+          "id": 103,
+          "name": "background",
+          "bbox": [
+            0,
+            0,
+            512,
+            294
+          ],
+          "confidence": 0.97,
+          "passed": true,
+          "score": 1.0
+        },
+        {
+          "id": 105,
+          "name": "foliage",
+          "bbox": [
+            0,
+            0,
+            512,
+            294
+          ],
+          "confidence": 0.99,
+          "passed": true,
+          "score": 1.0
+        },
+        {
+          "id": 106,
+          "name": "riverbank",
+          "bbox": [
+            0,
+            294,
+            512,
+            511
+          ],
+          "confidence": 0.96,
+          "passed": true,
+          "score": 1.0
+        }
+      ],
+      "fidelity_score": 1.0
+    },
+    "st2_res": {
+      "backend": "E2",
+      "crop_size": 384,
+      "attributes": [
+        {
+          "id": 100,
+          "name": "river",
+          "attribute": "shallow",
+          "score": 0.0728759765625,
+          "calibrated_score": 0.0728759765625,
+          "skipped": false,
+          "bbox": [
+            0,
+            294,
+            512,
+            511
+          ]
+        },
+        {
+          "id": 105,
+          "name": "foliage",
+          "attribute": "lush",
+          "score": 0.1124267578125,
+          "calibrated_score": 0.1124267578125,
+          "skipped": false,
+          "bbox": [
+            0,
+            0,
+            512,
+            294
+          ]
+        },
+        {
+          "id": 105,
+          "name": "foliage",
+          "attribute": "green",
+          "score": 0.09552001953125,
+          "calibrated_score": 0.09552001953125,
+          "skipped": false,
+          "bbox": [
+            0,
+            0,
+            512,
+            294
+          ]
+        }
+      ],
+      "binding_score": 0.09360758463541667
+    },
+    "st3_res": {
+      "backend": "E3",
+      "relations": [
+        {
+          "subject": 105,
+          "relation": "lines",
+          "object": 106,
+          "original_score": 0.1317138671875,
+          "swapped_score": 0.12744140625,
+          "delta": 0.0042724609375,
+          "swap_correct": true,
+          "skipped": false,
+          "union_bbox": [
+            0,
+            0,
+            512,
+            512
+          ]
+        },
+        {
+          "subject": 106,
+          "relation": "of",
+          "object": 100,
+          "original_score": 0.0777587890625,
+          "swapped_score": 0.08612060546875,
+          "delta": -0.00836181640625,
+          "swap_correct": false,
+          "skipped": false,
+          "union_bbox": [
+            0,
+            0,
+            512,
+            240
+          ]
+        },
+        {
+          "subject": 100,
+          "relation": "flows to",
+          "object": 103,
+          "original_score": 0.0736083984375,
+          "swapped_score": 0.09039306640625,
+          "delta": -0.01678466796875,
+          "swap_correct": false,
+          "skipped": false,
+          "union_bbox": [
+            0,
+            0,
+            512,
+            512
+          ]
+        }
+      ],
+      "relation_score": 0.0943603515625,
+      "swap_accuracy": 0.3333333333333333
+    },
+    "latency_ms": {
+      "total": 20178.080954996403
+    }
+  }
+]

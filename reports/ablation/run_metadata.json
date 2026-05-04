@@ -1,14 +1,14 @@
 {
   "config": {
     "output_dir": "./reports/ablation",
-    "prompts_file": "./data/raw/qwen8b_t2i_prompts_sg.json",
+    "prompts_file": "./data/images/survey_samples/survey_samples_prompts.json",
     "sg_file": null,
-    "images_dir": "./data/images/split/train/qwen-image",
+    "images_dir": "./data/images/survey_samples/survey_samples_images",
     "image_pattern": "{index:04d}-{generation}.png",
     "generation": 1,
     "start_idx": 0,
     "end_idx": null,
-    "limit": null,
+    "limit": 5,
     "weights": {
       "node": 0.3,
       "attribute": 0.3,
@@ -30,36 +30,47 @@
     },
     "backend_specs": {
       "E1": {
-        "kind": "grounding-dino",
-        "model_path": "IDEA-Research/grounding-dino-base",
+        "kind": null,
+        "model_path": null,
         "checkpoint_path": null
       },
       "V1": {
         "kind": "qwen",
-        "model_path": "Qwen/Qwen-VL-Chat",
+        "model_path": "/fs/nexus-projects/scene_graph_sd/Qwen3-VL-8B-Instruct",
         "checkpoint_path": null
       },
       "E2": {
         "kind": "siglip",
-        "model_path": "google/siglip-base-patch16-224",
+        "model_path": "google/siglip2-so400m-patch14-384",
         "checkpoint_path": null
       },
       "V2": {
-        "kind": "llava",
-        "model_path": "llava-hf/llava-1.5-7b-hf",
+        "kind": null,
+        "model_path": "/fs/nexus-projects/scene_graph_sd/Qwen3-VL-8B-Instruct",
         "checkpoint_path": null
       },
       "E3": {
         "kind": "siglip",
-        "model_path": "google/siglip-base-patch16-224",
+        "model_path": "google/siglip2-so400m-patch14-384",
         "checkpoint_path": null
       },
       "V3": {
         "kind": "qwen",
-        "model_path": "Qwen/Qwen-VL-Chat",
+        "model_path": "/fs/nexus-projects/scene_graph_sd/Qwen3-VL-8B-Instruct",
         "checkpoint_path": null
       }
-    }
+    },
+    "selected_backends": [
+      "V3",
+      "V1",
+      "E2",
+      "E3"
+    ],
+    "use_cpu": false,
+    "low_vram": true,
+    "use_vllm": false,
+    "max_text_length": 64,
+    "torch_cuda_mem_frac": 0.8
   },
-  "items_total": 0
+  "items_total": 5
 }
