@@ -1,14 +1,14 @@
 {
   "config": {
     "output_dir": "./reports/ablation",
-    "prompts_file": "./data/images/survey_samples/survey_samples_prompts.json",
+    "prompts_file": "/fs/nexus-projects/scene_graph_sd/DGE-T2I/data/raw/qwen8b_t2i_prompts_aug_v1.json",
     "sg_file": null,
-    "images_dir": "./data/images/survey_samples/survey_samples_images",
+    "images_dir": "/fs/nexus-projects/scene_graph_sd/DGE-T2I/data/images/survey_samples/image2",
     "image_pattern": "{index:04d}-{generation}.png",
     "generation": 1,
     "start_idx": 0,
     "end_idx": null,
-    "limit": 5,
+    "limit": null,
     "weights": {
       "node": 0.3,
       "attribute": 0.3,
@@ -30,23 +30,23 @@
     },
     "backend_specs": {
       "E1": {
-        "kind": null,
-        "model_path": null,
+        "kind": "grounding-dino",
+        "model_path": "IDEA-Research/grounding-dino-base",
         "checkpoint_path": null
       },
       "V1": {
-        "kind": "qwen",
-        "model_path": "/fs/nexus-projects/scene_graph_sd/Qwen3-VL-8B-Instruct",
+        "kind": null,
+        "model_path": "/model",
         "checkpoint_path": null
       },
       "E2": {
-        "kind": "siglip",
+        "kind": null,
         "model_path": "google/siglip2-so400m-patch14-384",
         "checkpoint_path": null
       },
       "V2": {
-        "kind": null,
-        "model_path": "/fs/nexus-projects/scene_graph_sd/Qwen3-VL-8B-Instruct",
+        "kind": "qwen",
+        "model_path": "/model",
         "checkpoint_path": null
       },
       "E3": {
@@ -56,21 +56,26 @@
       },
       "V3": {
         "kind": "qwen",
-        "model_path": "/fs/nexus-projects/scene_graph_sd/Qwen3-VL-8B-Instruct",
+        "model_path": "/model",
         "checkpoint_path": null
       }
     },
     "selected_backends": [
-      "V3",
-      "V1",
-      "E2",
-      "E3"
+      "V2",
+      "E3",
+      "E1",
+      "V3"
     ],
     "use_cpu": false,
     "low_vram": true,
-    "use_vllm": false,
+    "use_vllm": true,
     "max_text_length": 64,
-    "torch_cuda_mem_frac": 0.8
+    "torch_cuda_mem_frac": 0.8,
+    "vllm_api_base": "http://127.0.0.1:8000/v1",
+    "vllm_api_key": null,
+    "vllm_temperature": null,
+    "vllm_max_tokens": null,
+    "vllm_yes_no_max_tokens": null
   },
-  "items_total": 5
+  "items_total": 106
 }

@@ -13,6 +13,10 @@ conda activate dge-t2i-env
 
 echo "Running on GPU: $CUDA_VISIBLE_DEVICES"
 echo "Python: $(which python)"
+export VLLM_API_BASE="${VLLM_API_BASE:-http://127.0.0.1:8000/v1}"
+export QWEN_MODEL_PATH="${QWEN_MODEL_PATH:-/model}"
+echo "vLLM API: $VLLM_API_BASE"
+echo "Qwen model id: $QWEN_MODEL_PATH"
 echo ""
 
 # V1 permutations first (4), then E1 permutations (4)
@@ -35,8 +39,8 @@ PERMUTATIONS=(
     "V1,E2,E3,V3"
     "V1,V2,E3,V3"
     # # E1 permutations (faster - uses GroundingDINO)
-    # "E1,E2,E3,V3"
-    # "E1,V2,E3,V3"
+    "E1,E2,E3,V3"
+    "E1,V2,E3,V3"
 )
 
 
@@ -48,39 +52,39 @@ build_cmd() {
     local p1=${parts[1]}
     local p2=${parts[2]}
 
+    # TODO: run on image2!!
     local cmd=(
         python src/eval/ablation.py
         --output-dir ./reports/ablation
-        --images-dir ./data/images/survey_samples/survey_samples_images
-        --prompts-file ./data/images/survey_samples/survey_samples_prompts.json
-        --limit 5
+        --images-dir /fs/nexus-projects/scene_graph_sd/DGE-T2I/data/images/survey_samples/image2
+        --prompts-file /fs/nexus-projects/scene_graph_sd/DGE-T2I/data/raw/qwen8b_t2i_prompts_aug_v1.json
         --low-vram
     )
 
-    # # Add VLLM-specific flag
-    # if [[ "$p0" == V1 || "$p1" == V2 || "$p2" == V3 ]]; then
-    #     cmd+=(--use-vllm)
-    # fi
+    Add vLLM when any Qwen-backed V-stage is selected.
+    if [[ "$p0" == V1 || "$p1" == V2 || "$p2" == V3 || "${parts[3]:-}" == V3 ]]; then
+        cmd+=(--use-vllm)
+    fi
 
     # Stage 1 - only set the backend kind for the one being used
     if [[ "$p0" == "E1" ]]; then
         cmd+=(--e1-backend-kind grounding-dino --eupe-model-path IDEA-Research/grounding-dino-base)
     else
-        cmd+=(--v1-backend-kind qwen --qwen-model-path /fs/nexus-projects/scene_graph_sd/Qwen3-VL-8B-Instruct)
+        cmd+=(--v1-backend-kind qwen --qwen-model-path "$QWEN_MODEL_PATH")
     fi
 
     # Stage 2
     if [[ "$p1" == "E2" ]]; then
         cmd+=(--e2-backend-kind siglip --siglip-model-path google/siglip2-so400m-patch14-384)
     else
-        cmd+=(--v2-backend-kind qwen --qwen-model-path /fs/nexus-projects/scene_graph_sd/Qwen3-VL-8B-Instruct)
+        cmd+=(--v2-backend-kind qwen --qwen-model-path "$QWEN_MODEL_PATH")
     fi
 
     # Stage 3
     # if [[ "$p2" == "E3" ]]; then
         cmd+=(--e3-backend-kind siglip --siglip-model-path google/siglip2-so400m-patch14-384)
     # else
-        cmd+=(--v3-backend-kind qwen --qwen-model-path /fs/nexus-projects/scene_graph_sd/Qwen3-VL-8B-Instruct)
+        cmd+=(--v3-backend-kind qwen --qwen-model-path "$QWEN_MODEL_PATH")
     # fi
 
     # Only run this specific permutation

@@ -12,6 +12,9 @@ import cv2
 import numpy as np
 from PIL import Image
 
+import os
+import re
+
 from modules.processing import (
     apply_batch_results,
     build_attribute_prompt,
@@ -89,6 +92,8 @@ class ExperimentConfig:
     include_model_load_time: bool; label_config: LabelConfig; backend_specs: Dict[str, BackendSpec]
     selected_backends: Optional[set] = None; use_cpu: bool = False; low_vram: bool = False; use_vllm: bool = False
     max_text_length: int = 64; torch_cuda_mem_frac: float = 0.8
+    vllm_api_base: str = "http://127.0.0.1:8000/v1"; vllm_api_key: Optional[str] = None
+    vllm_temperature: Optional[float] = None; vllm_max_tokens: Optional[int] = None; vllm_yes_no_max_tokens: Optional[int] = None
 
     def __post_init__(self):
         object.__setattr__(self, 'selected_backends', self.selected_backends or None)
@@ -113,6 +118,8 @@ def _backend_runtime_key(backend_id: str, spec: BackendSpec, config: ExperimentC
     if backend_id in {"V1", "V2", "V3"} and "qwen" in kind:
         model_path = spec.model_path or _default_qwen_model_path()
         runtime_kind = "qwen-vllm" if config.use_vllm else "qwen-hf"
+        if config.use_vllm:
+            return (runtime_kind, model_path, config.vllm_api_base)
         return (runtime_kind, model_path, spec.checkpoint_path, config.use_cpu)
 
     return None
@@ -414,32 +421,45 @@ class _QwenVLLMMixin:
     @classmethod
     def load_shared_runtime(cls, spec: BackendSpec, config: ExperimentConfig) -> Tuple[Dict[str, Any], float]:
         import os
-        from vllm import LLM, SamplingParams
-
-        visible_devices = os.environ.get("CUDA_VISIBLE_DEVICES", "1")
-        os.environ["CUDA_VISIBLE_DEVICES"] = visible_devices
-        print(f"Qwen VLLM runtime: Using CUDA_VISIBLE_DEVICES={visible_devices}")
+        import urllib.request
 
         model_path = spec.model_path or _default_qwen_model_path()
+        api_base = config.vllm_api_base.rstrip("/")
+        api_key = config.vllm_api_key if config.vllm_api_key is not None else os.environ.get("VLLM_API_KEY") or os.environ.get("OPENAI_API_KEY")
+        headers = {}
+        if api_key:
+            headers["Authorization"] = f"Bearer {api_key}"
+        try:
+            request = urllib.request.Request(f"{api_base}/models", headers=headers)
+            with urllib.request.urlopen(request, timeout=10) as response:
+                models_payload = json.loads(response.read().decode("utf-8"))
+            served_model_ids = [m.get("id") for m in models_payload.get("data", []) if m.get("id")]
+            if model_path not in served_model_ids and len(served_model_ids) == 1:
+                print(f"Qwen vLLM runtime: server model id is {served_model_ids[0]!r}; overriding requested model {model_path!r}")
+                model_path = served_model_ids[0]
+        except Exception as exc:
+            print(f"Qwen vLLM runtime: warning: could not query {api_base}/models ({exc}); using requested model {model_path!r}")
+        print(f"Qwen vLLM runtime: using OpenAI-compatible server {api_base} with model {model_path}")
 
         start = time.perf_counter()
-        llm = LLM(
-            model=model_path,
-            gpu_memory_utilization=0.5,
-            dtype="float16",
-            enforce_eager=True,
-            max_model_len=4096,
-            swap_space=4,
-        )
-        sampling_params = SamplingParams(
-            temperature=0.0,
-            max_tokens=256,
-            ignore_eos=True,
-        )
+        sampling_params = {}
+        yes_no_sampling_params = {}
+        if config.vllm_temperature is not None:
+            sampling_params["temperature"] = config.vllm_temperature
+            yes_no_sampling_params["temperature"] = config.vllm_temperature
+        if config.vllm_max_tokens is not None:
+            sampling_params["max_tokens"] = config.vllm_max_tokens
+        if config.vllm_yes_no_max_tokens is not None:
+            yes_no_sampling_params["max_tokens"] = config.vllm_yes_no_max_tokens
         load_time_ms = (time.perf_counter() - start) * 1000.0
         return ({
-            "llm": llm,
+            "llm": {"api_base": api_base, "model": model_path},
+            "api_base": api_base,
+            "api_key": api_key,
+            "model": model_path,
             "sampling_params": sampling_params,
+            "yes_no_sampling_params": yes_no_sampling_params,
+            "timeout_s": 300,
         }, load_time_ms)
 
     def __init__(self, backend_id: str, spec: BackendSpec, config: ExperimentConfig, shared_runtime: Optional[Dict[str, Any]] = None):
@@ -447,8 +467,13 @@ class _QwenVLLMMixin:
         runtime = shared_runtime
         if runtime is None:
             runtime, self.model_load_time_ms = self.load_shared_runtime(spec, config)
-        self.llm = runtime["llm"]
+        self.llm = runtime.get("llm", runtime)
+        self.api_base = runtime.get("api_base")
+        self.api_key = runtime.get("api_key")
+        self.model = runtime.get("model", spec.model_path or _default_qwen_model_path())
+        self.timeout_s = runtime.get("timeout_s", 300)
         self.sampling_params = runtime["sampling_params"]
+        self.yes_no_sampling_params = runtime.get("yes_no_sampling_params", self.sampling_params)
 
 class QwenNodeDetectorVLLM(_QwenVLLMMixin, NodeDetectorBackend):
     """Qwen node detector using vLLM for faster inference with batching."""
@@ -458,6 +483,62 @@ class QwenNodeDetectorVLLM(_QwenVLLMMixin, NodeDetectorBackend):
         buffer = io.BytesIO()
         image.save(buffer, format="PNG")
         return base64.b64encode(buffer.getvalue()).decode("utf-8")
+
+    def _messages_for_image_url(self, image_url: str, prompt: str) -> List[Dict[str, Any]]:
+        return [{
+            "role": "user",
+            "content": [
+                {"type": "image_url", "image_url": {"url": image_url}},
+                {"type": "text", "text": prompt},
+            ],
+        }]
+
+    def _messages_for_image(self, image: Image.Image, prompt: str) -> List[Dict[str, Any]]:
+        image_url = f"data:image/png;base64,{self._image_to_base64(image)}"
+        return self._messages_for_image_url(image_url, prompt)
+
+    def _chat_texts(self, conversations: List[List[Dict[str, Any]]], sampling_params: Any) -> List[str]:
+        if not conversations:
+            return []
+        from concurrent.futures import ThreadPoolExecutor
+
+        max_workers = min(16, len(conversations))
+        with ThreadPoolExecutor(max_workers=max_workers) as executor:
+            return list(executor.map(lambda messages: self._chat_text(messages, sampling_params), conversations))
+
+    def _chat_text(self, messages: List[Dict[str, Any]], sampling_params: Mapping[str, Any]) -> str:
+        import urllib.error
+        import urllib.request
+
+        if not self.api_base:
+            # Compatibility path for tests that monkeypatch a fake in-process runtime.
+            response = self.llm.chat([messages], sampling_params=sampling_params)
+            return response[0].outputs[0].text.strip()
+
+        payload = {
+            "model": self.model,
+            "messages": messages,
+            **dict(sampling_params),
+        }
+        data = json.dumps(payload).encode("utf-8")
+        headers = {"Content-Type": "application/json"}
+        if self.api_key:
+            headers["Authorization"] = f"Bearer {self.api_key}"
+
+        request = urllib.request.Request(
+            f"{self.api_base}/chat/completions",
+            data=data,
+            headers=headers,
+            method="POST",
+        )
+        try:
+            with urllib.request.urlopen(request, timeout=self.timeout_s) as response:
+                body = json.loads(response.read().decode("utf-8"))
+        except urllib.error.HTTPError as exc:
+            detail = exc.read().decode("utf-8", errors="replace")
+            raise RuntimeError(f"vLLM server request failed with HTTP {exc.code}: {detail}") from exc
+
+        return body["choices"][0]["message"]["content"].strip()
 
     def detect_nodes(self, image: Image.Image, item: ExperimentItem) -> Dict[str, Any]:
         """Process all entities in a single prompt per image for efficiency."""
@@ -482,16 +563,7 @@ Entities to locate:
 
 Return ONLY the JSON object, nothing else."""
 
-        messages = [{
-            "role": "user",
-            "content": [
-                {"type": "image_url", "image_url": {"url": f"data:image/png;base64,{self._image_to_base64(image)}"}},
-                {"type": "text", "text": prompt}
-            ]
-        }]
-
-        response = self.llm.chat(messages, sampling_params=self.sampling_params)
-        raw = response[0].outputs[0].text.strip()
+        raw = self._chat_texts([self._messages_for_image(image, prompt)], self.sampling_params)[0]
 
         # Parse the JSON response
         nodes = []
@@ -522,25 +594,91 @@ Return ONLY the JSON object, nothing else."""
         return {"backend": self.backend_id, "nodes": nodes, "fidelity_score": safe_mean(n["score"] for n in nodes)}
 
     def yes_no_score(self, image: Image.Image, prompt: str) -> Tuple[float, dict]:
-        messages = [{
-            "role": "user",
-            "content": [
-                {"type": "image_url", "image_url": {"url": f"data:image/png;base64,{self._image_to_base64(image)}"}},
-                {"type": "text", "text": prompt}
-            ]
-        }]
-
-        response = self.llm.chat(messages, sampling_params=self.sampling_params)
-        text = response[0].outputs[0].text.strip().lower()
+        score, probs, text = self.batch_yes_no_score([(image, prompt)])[0]
+        text = text.strip().lower()
+        if text.startswith("yes") or text.startswith("no"):
+            return score, probs
         yes_prob = 1.0 if text.startswith("yes") else 0.0
         return yes_prob, {"yes_prob": yes_prob, "no_prob": 1.0 - yes_prob}
 
+    def batch_yes_no_score(self, requests: List[Tuple[Image.Image, str]]) -> List[Tuple[float, Dict[str, float], str]]:
+        conversations = [self._messages_for_image(image, prompt) for image, prompt in requests]
+        texts = self._chat_texts(conversations, self.yes_no_sampling_params)
+        results = []
+        for text in texts:
+            yes_prob = 1.0 if text.strip().lower().startswith("yes") else 0.0
+            results.append((yes_prob, {"yes_prob": yes_prob, "no_prob": 1.0 - yes_prob}, text))
+        return results
+
 class QwenAttributeClassifierVLLM(QwenNodeDetectorVLLM, AttributeScorerBackend):
+    def score_attributes(self, image: Image.Image, item: ExperimentItem, stage1_result: Dict[str, Any]) -> Dict[str, Any]:
+        node_map = {n["id"]: n for n in stage1_result.get("nodes", [])}
+        results = []
+        requests = []
+        request_indices = []
+
+        for entity in item.scene_graph.get("objects", []):
+            for attr in entity.get("attributes", []):
+                node = node_map.get(entity.get("id"))
+                if not node or not node.get("passed") or not node.get("bbox"):
+                    results.append({"id": entity.get("id"), "name": entity.get("name"), "attribute": attr, "skipped": True, "skip_reason": "node_not_localized"})
+                    continue
+
+                crop = prepare_square_crop(image, node["bbox"], self.config.stage2_crop_size)
+                prompt = f"Answer strictly with Yes or No.\nDoes this crop show a {entity.get('name')} with attribute '{attr}'?"
+                request_indices.append(len(results))
+                requests.append((crop, prompt))
+                results.append({"id": entity.get("id"), "name": entity.get("name"), "attribute": attr, "skipped": False, "bbox": node["bbox"]})
+
+        for result_idx, (raw_score, probs, _) in zip(request_indices, self.batch_yes_no_score(requests)):
+            cal_score = calibrate_score(raw_score, self.config.stage2_calibration, self.config.stage2_calibration_scale, self.config.stage2_calibration_bias)
+            results[result_idx].update({"score": raw_score, "calibrated_score": cal_score, "token_probs": probs})
+
+        return {"backend": self.backend_id, "crop_size": self.config.stage2_crop_size, "attributes": results, "binding_score": safe_mean(e.get("calibrated_score") for e in results if not e.get("skipped"))}
+
     def _evaluate_attribute(self, crop, entity_name, attribute):
         score, probs = self.yes_no_score(crop, f"Answer strictly with Yes or No.\nDoes this crop show a {entity_name} with attribute '{attribute}'?")
         return score, {"token_probs": probs}
 
 class QwenRelationScorerVLLM(QwenNodeDetectorVLLM, RelationScorerBackend):
+    def score_relations(self, image: Image.Image, item: ExperimentItem, stage1_result: Dict[str, Any]) -> Dict[str, Any]:
+        node_map = {n["id"]: n for n in stage1_result.get("nodes", [])}
+        entity_map = {e["id"]: e for e in item.scene_graph.get("objects", [])}
+        results = []
+        requests = []
+        request_indices = []
+        prompt_template = "Answer strictly with Yes or No.\nThe red box marks the subject and the blue box marks the object.\nIs the relation true: {s} {r} {o}?"
+
+        for rel in item.scene_graph.get("relations", []):
+            subj, obj = node_map.get(rel.get("subject")), node_map.get(rel.get("object"))
+            if not subj or not obj or not subj.get("bbox") or not obj.get("bbox"):
+                results.append({"subject": rel.get("subject"), "relation": rel.get("relation"), "object": rel.get("object"), "skipped": True, "skip_reason": "missing_localization"})
+                continue
+
+            s_name = entity_map.get(rel["subject"], {}).get("name", "sub")
+            o_name = entity_map.get(rel["object"], {}).get("name", "obj")
+            marked = draw_relation_markers(image, subj["bbox"], obj["bbox"])
+            request_indices.append(len(results))
+            requests.append((marked, prompt_template.format(s=s_name, r=rel["relation"], o=o_name)))
+            requests.append((marked, prompt_template.format(s=o_name, r=rel["relation"], o=s_name)))
+            results.append({"subject": rel["subject"], "relation": rel["relation"], "object": rel["object"], "skipped": False, "marker_mode": marked.mode})
+
+        yes_no_results = self.batch_yes_no_score(requests)
+        for result_idx, pair_start in zip(request_indices, range(0, len(yes_no_results), 2)):
+            orig_raw, orig_p, _ = yes_no_results[pair_start]
+            swap_raw, swap_p, _ = yes_no_results[pair_start + 1]
+            cal = lambda s: calibrate_score(s, self.config.stage2_calibration, self.config.stage2_calibration_scale, self.config.stage2_calibration_bias)
+            orig_score, swap_score = cal(orig_raw), cal(swap_raw)
+            results[result_idx].update({
+                "original_score": orig_score,
+                "swapped_score": swap_score,
+                "delta": orig_score - swap_score,
+                "swap_correct": orig_score > swap_score,
+                "token_probs": {"original": orig_p, "swapped": swap_p},
+            })
+
+        return {"backend": self.backend_id, "relations": results, "relation_score": safe_mean(e.get("original_score") for e in results if not e.get("skipped")), "swap_accuracy": safe_mean(1.0 if e.get("swap_correct") else 0.0 for e in results if e.get("swap_correct") is not None)}
+
     def _evaluate_relation(self, image, subj_bbox, obj_bbox, relation, subj_name, obj_name):
         marked = draw_relation_markers(image, subj_bbox, obj_bbox)
         prompt = "Answer strictly with Yes or No.\nThe red box marks the subject and the blue box marks the object.\nIs the relation true: {s} {r} {o}?"
@@ -824,39 +962,55 @@ def calibrate_score(raw: float, mode: str, scale: float, bias: float) -> float:
 
 # --- Main Runner ---
 def load_experiment_items(config: ExperimentConfig) -> List[ExperimentItem]:
-    """Load experiment items from prompts file and image directory."""
+    """Load experiment items by iterating through the image directory."""
     items = []
 
+    # 1. Load the prompt data into a list for lookups
     if config.prompts_file:
         try:
             prompts_data = load_json_or_jsonl(config.prompts_file)
         except Exception as e:
-            raise Exception("Couldn't load prompts file.")
+            raise Exception(f"Couldn't load prompts file: {e}")
+    else:
+        raise ValueError("Prompts file is required to match images to data.")
 
-        for idx in tqdm(range(len(prompts_data)), desc="Loading items"):
-            entry = prompts_data[idx]
+    # 2. Iterate through files in the image directory
+    if not os.path.exists(config.images_dir):
+        raise FileNotFoundError(f"Directory not found: {config.images_dir}")
+
+    # Filtering for .png files and sorting to maintain order
+    image_files = sorted([f for f in os.listdir(config.images_dir) if f.endswith(".png")])
+
+    for filename in tqdm(image_files, desc="Processing images"):
+        image_path = os.path.join(config.images_dir, filename)
+        
+        try:
+            # Extract the prompt index from "00XX-{gen}.png"
+            # This splits by hyphen and takes the first part as the integer index
+            prompt_idx = int(re.split('[-_]', filename)[0])
+            
+            # Ensure the index exists in our prompts data
+            if prompt_idx >= len(prompts_data):
+                print(f"Warning: Index {prompt_idx} from file {filename} out of range.")
+                continue
+
+            entry = prompts_data[prompt_idx]
             scene_graph = extract_scene_graph(entry["meta_prompt"]["prompt"]) if "meta_prompt" in entry else None
             prompt = entry["prompt"]
+            image_id = filename.replace(".png", "")
 
-            for i in range(config.generation):
-                if config.prompts_file:
-                    image_path = image_path_from_pattern(config.image_pattern, config.images_dir, idx, i + 1)
-                else:
-                    image_path = os.path.join(config.images_dir, scene_graph["filename"])
-                if not os.path.exists(image_path):
-                    continue
+            items.append(ExperimentItem(
+                prompt_index=prompt_idx,
+                image_id=str(image_id),
+                prompt=str(prompt),
+                image_path=str(image_path),
+                scene_graph=scene_graph
+            ))
+        except (ValueError, IndexError) as e:
+            print(f"Skipping {filename}: Could not parse index or find matching prompt.")
+            continue
 
-                image_id = os.path.basename(image_path).split(".png")[0]
-
-                items.append(ExperimentItem(
-                            prompt_index=idx,
-                            image_id=str(image_id),
-                            prompt=str(prompt),
-                            image_path=str(image_path),
-                            scene_graph=scene_graph
-                        ))
-
-    # Apply filtering
+    # 3. Apply filtering/slicing
     if config.start_idx > 0:
         items = items[config.start_idx:]
     if config.end_idx is not None:
@@ -865,6 +1019,50 @@ def load_experiment_items(config: ExperimentConfig) -> List[ExperimentItem]:
         items = items[:config.limit]
 
     return items
+
+# def load_experiment_items(config: ExperimentConfig) -> List[ExperimentItem]:
+#     """Load experiment items from prompts file and image directory."""
+#     items = []
+
+#     if config.prompts_file:
+#         try:
+#             prompts_data = load_json_or_jsonl(config.prompts_file)
+#         except Exception as e:
+#             raise Exception("Couldn't load prompts file.")
+
+#         for idx in tqdm(range(len(prompts_data)), desc="Loading items"):
+#             entry = prompts_data[idx]
+#             scene_graph = extract_scene_graph(entry["meta_prompt"]["prompt"]) if "meta_prompt" in entry else None
+#             prompt = entry["prompt"]
+
+#             for i in range(config.generation):
+#                 if config.prompts_file:
+#                     image_path = image_path_from_pattern(config.image_pattern, config.images_dir, idx, i + 1)
+#                 else:
+#                     image_path = os.path.join(config.images_dir, scene_graph["filename"])
+#                 if not os.path.exists(image_path):
+#                     print("Didn't find", image_path)
+#                     continue
+
+#                 image_id = os.path.basename(image_path).split(".png")[0]
+
+#                 items.append(ExperimentItem(
+#                             prompt_index=idx,
+#                             image_id=str(image_id),
+#                             prompt=str(prompt),
+#                             image_path=str(image_path),
+#                             scene_graph=scene_graph
+#                         ))
+
+#     # Apply filtering
+#     if config.start_idx > 0:
+#         items = items[config.start_idx:]
+#     if config.end_idx is not None:
+#         items = items[:config.end_idx]
+#     if config.limit is not None:
+#         items = items[:config.limit]
+
+#     return items
 
 def run_ablation_experiment(config: ExperimentConfig, items=None, backends=None) -> Dict[str, Any]:
     import torch
@@ -1011,7 +1209,12 @@ def build_arg_parser() -> argparse.ArgumentParser:
     p.add_argument("--backends", default=None, help="Comma-separated list of backends to use (e.g., 'E1,E2,E3' for encoder-only pipeline). Defaults to all backends.")
     p.add_argument("--cpu", action="store_true", help="Run on CPU instead of GPU (slower but uses less memory)")
     p.add_argument("--low-vram", action="store_true", help="Use lower VRAM settings (models loaded on CPU, moved to GPU only during inference)")
-    p.add_argument("--use-vllm", action="store_true", help="Use vLLM for Qwen inference (faster but requires vLLM installation)")
+    p.add_argument("--use-vllm", action="store_true", help="Use a vLLM OpenAI-compatible server for Qwen inference")
+    p.add_argument("--vllm-api-base", default=os.environ.get("VLLM_API_BASE", "http://127.0.0.1:8000/v1"), help="Base URL for the vLLM OpenAI-compatible API")
+    p.add_argument("--vllm-api-key", default=os.environ.get("VLLM_API_KEY") or os.environ.get("OPENAI_API_KEY"), help="Optional API key for the vLLM server")
+    p.add_argument("--vllm-temperature", type=float, default=None, help="Optional temperature to send to the vLLM server")
+    p.add_argument("--vllm-max-tokens", type=int, default=None, help="Optional max_tokens for general vLLM requests")
+    p.add_argument("--vllm-yes-no-max-tokens", type=int, default=None, help="Optional max_tokens for vLLM yes/no requests")
     p.add_argument("--max-text-length", type=int, default=64, help="Max text length for SigLIP 2 models (default: 64)")
     p.add_argument("--torch-cuda-mem-frac", type=float, default=0.8, help="Fraction of GPU memory to use (for device_map='auto')")
 
@@ -1065,6 +1268,11 @@ def config_from_args(args: argparse.Namespace) -> ExperimentConfig:
         use_vllm=args.use_vllm,
         max_text_length=args.max_text_length,
         torch_cuda_mem_frac=args.torch_cuda_mem_frac,
+        vllm_api_base=args.vllm_api_base,
+        vllm_api_key=args.vllm_api_key,
+        vllm_temperature=args.vllm_temperature,
+        vllm_max_tokens=args.vllm_max_tokens,
+        vllm_yes_no_max_tokens=args.vllm_yes_no_max_tokens,
     )
 
 if __name__ == "__main__":
@@ -1078,5 +1286,7 @@ if __name__ == "__main__":
     print(f"  Images dir: {config.images_dir}")
     print(f"  Backend specs: {config.backend_specs}")
     print(f"  Use vLLM: {config.use_vllm}")
+    if config.use_vllm:
+        print(f"  vLLM API base: {config.vllm_api_base}")
     report = run_ablation_experiment(config)
     write_experiment_outputs(report, config.output_dir)
