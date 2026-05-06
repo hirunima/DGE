@@ -32,7 +32,10 @@ from modules.processing import (
 
 from tqdm import tqdm
 
-STAGE1_VARIANTS, STAGE2_VARIANTS, STAGE3_VARIANTS = ("E1", "V1"), ("E2", "V2"), ("E3", "V3")
+STAGE1_VARIANTS = ("E1", "V1")
+STAGE2_VARIANTS = ("E2", "V2", "S2")
+DEFAULT_STAGE2_VARIANTS = ("E2", "V2")
+STAGE3_VARIANTS = ("E3", "V3")
 
 # def extract_scene_graph(prompt_text: str) -> Dict[str, Any]:
 #     text = prompt_text.split("Current Task:")[-1] if "Current Task:" in prompt_text else prompt_text
@@ -1293,6 +1296,30 @@ class MockPipeline(NodeDetectorBackend, AttributeScorerBackend, RelationScorerBa
         s = 0.1 + 0.8 * _hash_val(s_name, relation, o_name)
         return s, max(0.0, s - 0.25), {}
 
+class SkippedAttributeScorer(AttributeScorerBackend):
+    def score_attributes(self, image: Image.Image, item: ExperimentItem, stage1_result: Dict[str, Any]) -> Dict[str, Any]:
+        results = []
+        for entity in item.scene_graph.get("objects", []):
+            for attr in entity.get("attributes", []):
+                results.append({
+                    "id": entity.get("id"),
+                    "name": entity.get("name"),
+                    "attribute": attr,
+                    "skipped": True,
+                    "skip_reason": "stage2_skipped",
+                })
+        return {
+            "backend": self.backend_id,
+            "crop_size": None,
+            "attributes": results,
+            "binding_score": None,
+            "skipped": True,
+            "skip_reason": "stage2_skipped",
+        }
+
+    def _evaluate_attribute(self, crop, entity_name, attribute):
+        raise NotImplementedError("SkippedAttributeScorer bypasses stage 2 attribute scoring.")
+
 class UnavailableBackend(NodeDetectorBackend, AttributeScorerBackend, RelationScorerBackend):
     def detect_nodes(self, *a): raise NotImplementedError("Not Implemented")
     def _evaluate_attribute(self, *a): raise NotImplementedError("Not Implemented")
@@ -1344,6 +1371,7 @@ def build_backend(backend_id: str, spec: BackendSpec, config: ExperimentConfig, 
                 return BLIP2AttributeScorer(backend_id, spec, config, shared_runtime=shared_runtime)
             return SigLIPAttributeScorer(backend_id, spec, config, shared_runtime=shared_runtime) if "siglip" in k else UnavailableBackend(backend_id, spec, config)
         case "V2": return QwenAttributeClassifierVLLM(backend_id, spec, config, shared_runtime=shared_runtime) if config.use_vllm else VLMAttributeScorer(backend_id, spec, config, shared_runtime=shared_runtime) if k in {"llava", "llava-next", "qwen", "qwen-vl"} else UnavailableBackend(backend_id, spec, config)
+        case "S2": return SkippedAttributeScorer(backend_id, spec, config) if k in {"skip", "skipped", "none"} else UnavailableBackend(backend_id, spec, config)
         case "E3":
             if k in {"eva", "eva-clip", "evaclip"}:
                 return EVAClipRelationScorer(backend_id, spec, config, shared_runtime=shared_runtime)
@@ -1545,7 +1573,7 @@ def run_ablation_experiment(config: ExperimentConfig, items=None, backends=None)
     if hasattr(config, 'selected_backends') and config.selected_backends:
         selected_backends = config.selected_backends
     else:
-        selected_backends = set(STAGE1_VARIANTS + STAGE2_VARIANTS + STAGE3_VARIANTS)
+        selected_backends = set(STAGE1_VARIANTS + DEFAULT_STAGE2_VARIANTS + STAGE3_VARIANTS)
 
     # Filter to valid stage variants
     stage1_selected = selected_backends.intersection(STAGE1_VARIANTS) or STAGE1_VARIANTS
@@ -1734,6 +1762,7 @@ def config_from_args(args: argparse.Namespace) -> ExperimentConfig:
                 args.eva_clip_checkpoint_path if args.e2_backend_kind in {"eva", "eva-clip", "evaclip"} else args.blip2_checkpoint_path if args.e2_backend_kind in {"blip2", "blip-2"} else args.siglip_checkpoint_path,
             ),
             "V2": BackendSpec(args.v2_backend_kind, args.qwen_model_path, args.qwen_checkpoint_path),
+            "S2": BackendSpec("skip"),
             "E3": BackendSpec(
                 args.e3_backend_kind,
                 args.reitr_model_path if args.e3_backend_kind in {"reitr", "reltr"} else args.eva_clip_model_path if args.e3_backend_kind in {"eva", "eva-clip", "evaclip"} else args.siglip_model_path,

@@ -23,7 +23,6 @@ export REITR_CODE_DIR="${REITR_CODE_DIR:-/fs/nexus-projects/scene_graph_sd/RelTR
 PROMPTS_FILE="/fs/nexus-projects/scene_graph_sd/DGE-T2I/data/raw/qwen8b_t2i_prompts_aug_v1.json"
 echo "vLLM API: $VLLM_API_BASE"
 echo "Qwen model id: $QWEN_MODEL_PATH"
-echo "BLIP-2 model: $BLIP2_MODEL_PATH"
 echo "ReITR/RelTR code dir: $REITR_CODE_DIR"
 echo "ReITR/RelTR checkpoint: ${REITR_CHECKPOINT_PATH:-unset}"
 echo ""
@@ -44,12 +43,9 @@ echo ""
 # )
 
 PERMUTATIONS=(
-    # # V1 permutations (slower - uses Qwen for node detection)
-    "V1,E2,E3,V3"
-    "V1,V2,E3,V3"
-    # # E1 permutations (faster - uses GroundingDINO)
-    "E1,E2,E3,V3"
-    "E1,V2,E3,V3"
+    # Compare all-VLM scoring with and without the second stage.
+    "V1,S2,V3"
+    "V1,V2,V3"
 )
 
 RUN_NAMES=("img1" "img2")
@@ -96,17 +92,18 @@ build_cmd() {
     # Stage 2
     if [[ "$p1" == "E2" ]]; then
         cmd+=(--e2-backend-kind blip-2 --blip2-model-path "$BLIP2_MODEL_PATH")
+    elif [[ "$p1" == "S2" ]]; then
+        :
     else
         cmd+=(--v2-backend-kind qwen --qwen-model-path "$QWEN_MODEL_PATH")
     fi
 
     # Stage 3
-    # if [[ "$p2" == "E3" ]]; then
-        # cmd+=(--e3-backend-kind eva-clip --eva-clip-model-path "$EVA_CLIP_MODEL_PATH" --eva-clip-checkpoint-path "$EVA_CLIP_CHECKPOINT_PATH")
+    if [[ "$p2" == "E3" ]]; then
         cmd+=("--e3-backend-kind reitr")
-    # else
+    else
         cmd+=(--v3-backend-kind qwen --qwen-model-path "$QWEN_MODEL_PATH")
-    # fi
+    fi
 
     # Only run this specific permutation
     cmd+=(--backends "$perm")
