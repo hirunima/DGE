@@ -2,14 +2,8 @@
 DGE - A Dynamic Metric and Grounded Evaluation Benchmarks for Text-to-Image and Image Editing Models
 
 ## Overview
+[dataset_pipeline.pdf](https://github.com/user-attachments/files/27456772/dataset_pipeline.pdf)
 
-Recent advancements in text-to-image (T2I) generation and image editing models have produced highly realistic visual results. However, evaluating these models remains a major challenge. Existing evaluation metrics often rely on global image statistics, high-level semantic similarity, or fixed VLM-based scoring criteria, which fail to capture fine-grained compositional details, object relationships, and attribute grounding specified in prompts.
-
-This repository provides a generative evaluation framework featuring:
-
-- Grounded benchmarks for text-to-image generation and image editing
-- Fine-grained scene-graph-based evaluation
-- Global scene-graph-conditioned consistency evaluation
 
 ---
 
