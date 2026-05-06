@@ -2,7 +2,7 @@
 DGE - A Dynamic Metric and Grounded Evaluation Benchmarks for Text-to-Image and Image Editing Models
 
 ## Overview
-[dataset_pipeline.pdf](https://github.com/user-attachments/files/27456772/dataset_pipeline.pdf)
+[dataset_pipeline.pdf]([https://github.com/hirunima/DGE/blob/main/dataset_pipeline.pdf])
 
 
 ---
@@ -28,28 +28,21 @@ Our experiments demonstrate that the combined framework provides a more holistic
 │
 ├── evaluation/
 │   ├── fine_grain/
-│   │   ├── object_level/
-│   │   ├── attribute_level/
-│   │   ├── relationship_level/
 │   │   └── vlm_scoring/
 │   │
 │   └── global/
 │       ├── graph_embeddings/
 │
-├── benchmarks/
-│   ├── t2i/
-│   └── image_editing/
-│
-├── scripts/
-├── configs/
-└── README.md
+└── benchmarks/
+    ├── t2i/
+    └── image_editing/
 ```
 
 ---
 
 # Prompt Generation
 
-The `prompt_generation/` directory contains code for generating prompts, grounded scene graphs, and benchmark annotations for:
+The `candidate_generation/` directory contains code for generating prompts, grounded scene graphs, and benchmark annotations for:
 
 - Text-to-image generation
 - Image editing
@@ -89,7 +82,6 @@ Includes evaluation for:
 
 - Scene-graph-conditioned embedding alignment
 - Global semantic consistency
-- Cross-dataset compositional evaluation
 
 ---
 
