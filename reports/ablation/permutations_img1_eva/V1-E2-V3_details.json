@@ -1,0 +1,1625 @@
+[
+  {
+    "image_id": "0003-1",
+    "prompt": "A softly blurred bear with hints of blue and white has fur and a more intact, larger mouth that reveals a vibrant green nose.",
+    "permutation": "V1-E2-V3",
+    "final_score": 0.5620671498894216,
+    "st1_res": {
+      "backend": "V1",
+      "nodes": [
+        {
+          "id": 0,
+          "name": "bear",
+          "bbox": [
+            0,
+            0,
+            512,
+            512
+          ],
+          "confidence": 1.0,
+          "passed": true,
+          "score": 1.0
+        },
+        {
+          "id": 1,
+          "name": "mouth",
+          "bbox": null,
+          "confidence": 0.0,
+          "passed": false,
+          "score": 0.0
+        },
+        {
+          "id": 2,
+          "name": "nose",
+          "bbox": null,
+          "confidence": 0.0,
+          "passed": false,
+          "score": 0.0
+        },
+        {
+          "id": 3,
+          "name": "fur",
+          "bbox": [
+            0,
+            0,
+            512,
+            512
+          ],
+          "confidence": 1.0,
+          "passed": true,
+          "score": 1.0
+        }
+      ],
+      "fidelity_score": 0.5
+    },
+    "st2_res": {
+      "backend": "E2",
+      "crop_size": 384,
+      "attributes": [
+        {
+          "id": 0,
+          "name": "bear",
+          "attribute": "hints of blue and white",
+          "score": 0.5279801525357402,
+          "calibrated_score": 0.5279801525357402,
+          "skipped": false,
+          "bbox": [
+            0,
+            0,
+            512,
+            512
+          ],
+          "positive_prompt": "A photo of a bear that is hints of blue and white",
+          "negative_prompt": "A photo of a bear that is not hints of blue and white",
+          "positive_score": 0.0086822509765625,
+          "negative_score": -0.002521514892578125,
+          "contrastive_temperature": 10.0
+        },
+        {
+          "id": 0,
+          "name": "bear",
+          "attribute": "softly blurred",
+          "score": 0.5110894134674561,
+          "calibrated_score": 0.5110894134674561,
+          "skipped": false,
+          "bbox": [
+            0,
+            0,
+            512,
+            512
+          ],
+          "positive_prompt": "A photo of a bear that is softly blurred",
+          "negative_prompt": "A photo of a bear that is not softly blurred",
+          "positive_score": -0.006290435791015625,
+          "negative_score": -0.0107269287109375,
+          "contrastive_temperature": 10.0
+        },
+        {
+          "id": 1,
+          "name": "mouth",
+          "attribute": "more intact",
+          "skipped": true,
+          "skip_reason": "node_not_localized"
+        },
+        {
+          "id": 1,
+          "name": "mouth",
+          "attribute": "larger",
+          "skipped": true,
+          "skip_reason": "node_not_localized"
+        },
+        {
+          "id": 2,
+          "name": "nose",
+          "attribute": "vibrant green",
+          "skipped": true,
+          "skip_reason": "node_not_localized"
+        }
+      ],
+      "binding_score": 0.5195347830015982
+    },
+    "st3_res": {
+      "backend": "V3",
+      "relations": [
+        {
+          "subject": 0,
+          "relation": "has",
+          "object": 3,
+          "skipped": false,
+          "original_score": 1.0,
+          "swapped_score": 1.0,
+          "delta": 0.0,
+          "swap_correct": false,
+          "answers": {
+            "original": "yes",
+            "swapped": "yes"
+          }
+        },
+        {
+          "subject": 1,
+          "relation": "revealing",
+          "object": 2,
+          "skipped": false,
+          "original_score": 0.0,
+          "swapped_score": 0.0,
+          "delta": 0.0,
+          "swap_correct": false,
+          "answers": {
+            "original": "no",
+            "swapped": "no"
+          }
+        },
+        {
+          "subject": 0,
+          "relation": "has",
+          "object": 1,
+          "skipped": false,
+          "original_score": 1.0,
+          "swapped_score": 1.0,
+          "delta": 0.0,
+          "swap_correct": false,
+          "answers": {
+            "original": "yes",
+            "swapped": "yes"
+          }
+        }
+      ],
+      "relation_score": 0.6666666666666666,
+      "swap_accuracy": 0.0
+    },
+    "latency_ms": {
+      "total": 3336.1673419713043
+    }
+  },
+  {
+    "image_id": "0056-2",
+    "prompt": "A flock of five sheep stands in front of structures, with one sheep positioned in the middle of the scene, surrounded by other sheep, against a blurred background.",
+    "permutation": "V1-E2-V3",
+    "final_score": 0.5889651828288723,
+    "st1_res": {
+      "backend": "V1",
+      "nodes": [
+        {
+          "id": 0,
+          "name": "sheep",
+          "bbox": [
+            0,
+            347,
+            1000,
+            928
+          ],
+          "confidence": 1.0,
+          "passed": true,
+          "score": 1.0
+        },
+        {
+          "id": 103,
+          "name": "blurred background",
+          "bbox": [
+            0,
+            0,
+            1664,
+            928
+          ],
+          "confidence": 1.0,
+          "passed": true,
+          "score": 1.0
+        },
+        {
+          "id": 105,
+          "name": "structures",
+          "bbox": [
+            0,
+            67,
+            999,
+            502
+          ],
+          "confidence": 1.0,
+          "passed": true,
+          "score": 1.0
+        },
+        {
+          "id": 109,
+          "name": "another sheep",
+          "bbox": null,
+          "confidence": 0.0,
+          "passed": false,
+          "score": 0.0
+        },
+        {
+          "id": 110,
+          "name": "middle",
+          "bbox": null,
+          "confidence": 0.0,
+          "passed": false,
+          "score": 0.0
+        }
+      ],
+      "fidelity_score": 0.6
+    },
+    "st2_res": {
+      "backend": "E2",
+      "crop_size": 384,
+      "attributes": [
+        {
+          "id": 0,
+          "name": "sheep",
+          "attribute": "quantity:5",
+          "score": 0.5002288818199503,
+          "calibrated_score": 0.5002288818199503,
+          "skipped": false,
+          "bbox": [
+            0,
+            347,
+            1000,
+            928
+          ],
+          "positive_prompt": "A photo of a sheep that is quantity:5",
+          "negative_prompt": "A photo of a sheep that is not quantity:5",
+          "positive_score": 0.0201568603515625,
+          "negative_score": 0.0200653076171875,
+          "contrastive_temperature": 10.0
+        }
+      ],
+      "binding_score": 0.5002288818199503
+    },
+    "st3_res": {
+      "backend": "V3",
+      "relations": [
+        {
+          "subject": 109,
+          "relation": "in",
+          "object": 110,
+          "skipped": false,
+          "original_score": 0.0,
+          "swapped_score": 0.0,
+          "delta": 0.0,
+          "swap_correct": false,
+          "answers": {
+            "original": "no",
+            "swapped": "no"
+          }
+        },
+        {
+          "subject": 103,
+          "relation": "of",
+          "object": 105,
+          "skipped": false,
+          "original_score": 1.0,
+          "swapped_score": 1.0,
+          "delta": 0.0,
+          "swap_correct": false,
+          "answers": {
+            "original": "yes",
+            "swapped": "yes"
+          }
+        },
+        {
+          "subject": 0,
+          "relation": "has",
+          "object": 103,
+          "skipped": false,
+          "original_score": 1.0,
+          "swapped_score": 1.0,
+          "delta": 0.0,
+          "swap_correct": false,
+          "answers": {
+            "original": "yes",
+            "swapped": "yes"
+          }
+        }
+      ],
+      "relation_score": 0.6666666666666666,
+      "swap_accuracy": 0.0
+    },
+    "latency_ms": {
+      "total": 8736.950337013695
+    }
+  },
+  {
+    "image_id": "0059-4",
+    "prompt": "A pomegranate is positioned in the center of a dark-hued hair arrangement, against a light-colored, large background.",
+    "permutation": "V1-E2-V3",
+    "final_score": 0.6460090567625328,
+    "st1_res": {
+      "backend": "V1",
+      "nodes": [
+        {
+          "id": 1,
+          "name": "pomegranate",
+          "bbox": [
+            234,
+            262,
+            512,
+            512
+          ],
+          "confidence": 1.0,
+          "passed": true,
+          "score": 1.0
+        },
+        {
+          "id": 2,
+          "name": "background",
+          "bbox": [
+            24,
+            24,
+            508,
+            508
+          ],
+          "confidence": 1.0,
+          "passed": true,
+          "score": 1.0
+        },
+        {
+          "id": 3,
+          "name": "arrangement",
+          "bbox": null,
+          "confidence": 0.0,
+          "passed": false,
+          "score": 0.0
+        },
+        {
+          "id": 4,
+          "name": "fruit",
+          "bbox": [
+            234,
+            260,
+            512,
+            512
+          ],
+          "confidence": 1.0,
+          "passed": true,
+          "score": 1.0
+        }
+      ],
+      "fidelity_score": 0.75
+    },
+    "st2_res": {
+      "backend": "E2",
+      "crop_size": 384,
+      "attributes": [
+        {
+          "id": 2,
+          "name": "background",
+          "attribute": "light-colored",
+          "score": 0.530935775912949,
+          "calibrated_score": 0.530935775912949,
+          "skipped": false,
+          "bbox": [
+            24,
+            24,
+            508,
+            508
+          ],
+          "positive_prompt": "A photo of a background that is light-colored",
+          "negative_prompt": "A photo of a background that is not light-colored",
+          "positive_score": 0.042633056640625,
+          "negative_score": 0.030242919921875,
+          "contrastive_temperature": 10.0
+        },
+        {
+          "id": 2,
+          "name": "background",
+          "attribute": "large",
+          "score": 0.5117852313289148,
+          "calibrated_score": 0.5117852313289148,
+          "skipped": false,
+          "bbox": [
+            24,
+            24,
+            508,
+            508
+          ],
+          "positive_prompt": "A photo of a background that is large",
+          "negative_prompt": "A photo of a background that is not large",
+          "positive_score": 0.02734375,
+          "negative_score": 0.0226287841796875,
+          "contrastive_temperature": 10.0
+        },
+        {
+          "id": 3,
+          "name": "arrangement",
+          "attribute": "hair tone:dark",
+          "skipped": true,
+          "skip_reason": "node_not_localized"
+        }
+      ],
+      "binding_score": 0.5213605036209319
+    },
+    "st3_res": {
+      "backend": "V3",
+      "relations": [
+        {
+          "subject": 4,
+          "relation": "against",
+          "object": 2,
+          "skipped": false,
+          "original_score": 1.0,
+          "swapped_score": 1.0,
+          "delta": 0.0,
+          "swap_correct": false,
+          "answers": {
+            "original": "yes",
+            "swapped": "yes"
+          }
+        },
+        {
+          "subject": 1,
+          "relation": "is positioned in",
+          "object": 3,
+          "skipped": false,
+          "original_score": 0.0,
+          "swapped_score": 0.0,
+          "delta": 0.0,
+          "swap_correct": false,
+          "answers": {
+            "original": "no",
+            "swapped": "no"
+          }
+        },
+        {
+          "subject": 1,
+          "relation": "is in the center of",
+          "object": 3,
+          "skipped": false,
+          "original_score": 1.0,
+          "swapped_score": 1.0,
+          "delta": 0.0,
+          "swap_correct": false,
+          "answers": {
+            "original": "yes",
+            "swapped": "yes"
+          }
+        }
+      ],
+      "relation_score": 0.6666666666666666,
+      "swap_accuracy": 0.0
+    },
+    "latency_ms": {
+      "total": 3921.030914003495
+    }
+  },
+  {
+    "image_id": "0094-1",
+    "prompt": "A bottle sits on a table in front of a screen, while a light brown audience member is present.",
+    "permutation": "V1-E2-V3",
+    "final_score": 0.7656748570854064,
+    "st1_res": {
+      "backend": "V1",
+      "nodes": [
+        {
+          "id": 0,
+          "name": "bottle",
+          "bbox": [
+            442,
+            416,
+            567,
+            900
+          ],
+          "confidence": 1.0,
+          "passed": true,
+          "score": 1.0
+        },
+        {
+          "id": 5,
+          "name": "screen",
+          "bbox": [
+            0,
+            0,
+            1024,
+            535
+          ],
+          "confidence": 1.0,
+          "passed": true,
+          "score": 1.0
+        },
+        {
+          "id": 6,
+          "name": "table",
+          "bbox": [
+            261,
+            845,
+            657,
+            984
+          ],
+          "confidence": 1.0,
+          "passed": true,
+          "score": 1.0
+        },
+        {
+          "id": 7,
+          "name": "audience member",
+          "bbox": [
+            600,
+            169,
+            1000,
+            999
+          ],
+          "confidence": 1.0,
+          "passed": true,
+          "score": 1.0
+        },
+        {
+          "id": 8,
+          "name": "head",
+          "bbox": null,
+          "confidence": 0.0,
+          "passed": false,
+          "score": 0.0
+        }
+      ],
+      "fidelity_score": 0.8
+    },
+    "st2_res": {
+      "backend": "E2",
+      "crop_size": 384,
+      "attributes": [
+        {
+          "id": 7,
+          "name": "audience member",
+          "attribute": "light brown",
+          "score": 0.4970245712562187,
+          "calibrated_score": 0.4970245712562187,
+          "skipped": false,
+          "bbox": [
+            600,
+            169,
+            1000,
+            999
+          ],
+          "positive_prompt": "A photo of a audience member that is light brown",
+          "negative_prompt": "A photo of a audience member that is not light brown",
+          "positive_score": 0.043670654296875,
+          "negative_score": 0.04486083984375,
+          "contrastive_temperature": 10.0
+        }
+      ],
+      "binding_score": 0.4970245712562187
+    },
+    "st3_res": {
+      "backend": "V3",
+      "relations": [
+        {
+          "subject": 0,
+          "relation": "on",
+          "object": 6,
+          "skipped": false,
+          "original_score": 1.0,
+          "swapped_score": 1.0,
+          "delta": 0.0,
+          "swap_correct": false,
+          "answers": {
+            "original": "yes",
+            "swapped": "yes"
+          }
+        },
+        {
+          "subject": 6,
+          "relation": "in front of",
+          "object": 5,
+          "skipped": false,
+          "original_score": 1.0,
+          "swapped_score": 0.0,
+          "delta": 1.0,
+          "swap_correct": true,
+          "answers": {
+            "original": "yes",
+            "swapped": "no"
+          }
+        },
+        {
+          "subject": 7,
+          "relation": "has",
+          "object": 8,
+          "skipped": false,
+          "original_score": 1.0,
+          "swapped_score": 1.0,
+          "delta": 0.0,
+          "swap_correct": false,
+          "answers": {
+            "original": "yes",
+            "swapped": "yes"
+          }
+        }
+      ],
+      "relation_score": 1.0,
+      "swap_accuracy": 0.3333333333333333
+    },
+    "latency_ms": {
+      "total": 8485.488006961532
+    }
+  },
+  {
+    "image_id": "0124-3",
+    "prompt": "A sheep stands in a pen, facing a head, with berries visible beyond a metal fence.",
+    "permutation": "V1-E2-V3",
+    "final_score": 0.8294684664244063,
+    "st1_res": {
+      "backend": "V1",
+      "nodes": [
+        {
+          "id": 1,
+          "name": "pen",
+          "bbox": [
+            0,
+            0,
+            1024,
+            1024
+          ],
+          "confidence": 1.0,
+          "passed": true,
+          "score": 1.0
+        },
+        {
+          "id": 5,
+          "name": "head",
+          "bbox": [
+            145,
+            435,
+            983,
+            1000
+          ],
+          "confidence": 1.0,
+          "passed": true,
+          "score": 1.0
+        },
+        {
+          "id": 7,
+          "name": "fence",
+          "bbox": [
+            0,
+            85,
+            1000,
+            875
+          ],
+          "confidence": 1.0,
+          "passed": true,
+          "score": 1.0
+        },
+        {
+          "id": 8,
+          "name": "sheep",
+          "bbox": [
+            144,
+            436,
+            984,
+            1000
+          ],
+          "confidence": 1.0,
+          "passed": true,
+          "score": 1.0
+        },
+        {
+          "id": 12,
+          "name": "berries",
+          "bbox": [
+            149,
+            240,
+            305,
+            447
+          ],
+          "confidence": 1.0,
+          "passed": true,
+          "score": 1.0
+        }
+      ],
+      "fidelity_score": 1.0
+    },
+    "st2_res": {
+      "backend": "E2",
+      "crop_size": 384,
+      "attributes": [
+        {
+          "id": 7,
+          "name": "fence",
+          "attribute": "material:metal",
+          "score": 0.48840539927321863,
+          "calibrated_score": 0.48840539927321863,
+          "skipped": false,
+          "bbox": [
+            0,
+            85,
+            1000,
+            875
+          ],
+          "positive_prompt": "A photo of a fence that is material:metal",
+          "negative_prompt": "A photo of a fence that is not material:metal",
+          "positive_score": -0.0272064208984375,
+          "negative_score": -0.0225677490234375,
+          "contrastive_temperature": 10.0
+        }
+      ],
+      "binding_score": 0.48840539927321863
+    },
+    "st3_res": {
+      "backend": "V3",
+      "relations": [
+        {
+          "subject": 12,
+          "relation": "seen beyond",
+          "object": 7,
+          "skipped": false,
+          "original_score": 1.0,
+          "swapped_score": 0.0,
+          "delta": 1.0,
+          "swap_correct": true,
+          "answers": {
+            "original": "yes",
+            "swapped": "no"
+          }
+        },
+        {
+          "subject": 8,
+          "relation": "stands in",
+          "object": 1,
+          "skipped": false,
+          "original_score": 1.0,
+          "swapped_score": 0.0,
+          "delta": 1.0,
+          "swap_correct": true,
+          "answers": {
+            "original": "yes",
+            "swapped": "no"
+          }
+        },
+        {
+          "subject": 8,
+          "relation": "facing",
+          "object": 5,
+          "skipped": false,
+          "original_score": 1.0,
+          "swapped_score": 1.0,
+          "delta": 0.0,
+          "swap_correct": false,
+          "answers": {
+            "original": "yes",
+            "swapped": "yes"
+          }
+        }
+      ],
+      "relation_score": 1.0,
+      "swap_accuracy": 0.6666666666666666
+    },
+    "latency_ms": {
+      "total": 9544.157608004753
+    }
+  },
+  {
+    "image_id": "0126-3",
+    "prompt": "A group, wearing a white t-shirt with a black lettered design, is seated on grass in the trees.",
+    "permutation": "V1-E2-V3",
+    "final_score": 1.0,
+    "st1_res": {
+      "backend": "V1",
+      "nodes": [
+        {
+          "id": 101,
+          "name": "group",
+          "bbox": [
+            27,
+            359,
+            948,
+            848
+          ],
+          "confidence": 1.0,
+          "passed": true,
+          "score": 1.0
+        },
+        {
+          "id": 103,
+          "name": "trees",
+          "bbox": [
+            0,
+            0,
+            1024,
+            583
+          ],
+          "confidence": 1.0,
+          "passed": true,
+          "score": 1.0
+        },
+        {
+          "id": 115,
+          "name": "white t-shirt",
+          "bbox": [
+            26,
+            495,
+            306,
+            835
+          ],
+          "confidence": 1.0,
+          "passed": true,
+          "score": 1.0
+        },
+        {
+          "id": 116,
+          "name": "black lettered design",
+          "bbox": [
+            104,
+            537,
+            228,
+            678
+          ],
+          "confidence": 1.0,
+          "passed": true,
+          "score": 1.0
+        },
+        {
+          "id": 118,
+          "name": "grass",
+          "bbox": [
+            0,
+            512,
+            1024,
+            1024
+          ],
+          "confidence": 1.0,
+          "passed": true,
+          "score": 1.0
+        }
+      ],
+      "fidelity_score": 1.0
+    },
+    "st2_res": {
+      "backend": "E2",
+      "crop_size": 384,
+      "attributes": [],
+      "binding_score": null
+    },
+    "st3_res": {
+      "backend": "V3",
+      "relations": [
+        {
+          "subject": 101,
+          "relation": "is in",
+          "object": 103,
+          "skipped": false,
+          "original_score": 1.0,
+          "swapped_score": 1.0,
+          "delta": 0.0,
+          "swap_correct": false,
+          "answers": {
+            "original": "yes",
+            "swapped": "yes"
+          }
+        },
+        {
+          "subject": 115,
+          "relation": "with",
+          "object": 116,
+          "skipped": false,
+          "original_score": 1.0,
+          "swapped_score": 1.0,
+          "delta": 0.0,
+          "swap_correct": false,
+          "answers": {
+            "original": "yes",
+            "swapped": "yes"
+          }
+        },
+        {
+          "subject": 101,
+          "relation": "are seated on",
+          "object": 118,
+          "skipped": false,
+          "original_score": 1.0,
+          "swapped_score": 1.0,
+          "delta": 0.0,
+          "swap_correct": false,
+          "answers": {
+            "original": "yes",
+            "swapped": "yes"
+          }
+        }
+      ],
+      "relation_score": 1.0,
+      "swap_accuracy": 0.0
+    },
+    "latency_ms": {
+      "total": 8414.264145947527
+    }
+  },
+  {
+    "image_id": "0130-4",
+    "prompt": "A fast-food meal sits on a dark tray, accompanied by a messy sandwich with a dollop of red sauce on a small white dish, and a red McDonald\u2019s fries container placed in front of the sandwich.",
+    "permutation": "V1-E2-V3",
+    "final_score": 0.41666666666666663,
+    "st1_res": {
+      "backend": "V1",
+      "nodes": [
+        {
+          "id": 7,
+          "name": "fast-food meal",
+          "bbox": [
+            0,
+            34,
+            512,
+            512
+          ],
+          "confidence": 1.0,
+          "passed": true,
+          "score": 1.0
+        },
+        {
+          "id": 8,
+          "name": "small white dish",
+          "bbox": [
+            0,
+            298,
+            466,
+            512
+          ],
+          "confidence": 1.0,
+          "passed": true,
+          "score": 1.0
+        },
+        {
+          "id": 9,
+          "name": "dark tray",
+          "bbox": [
+            0,
+            0,
+            512,
+            512
+          ],
+          "confidence": 1.0,
+          "passed": true,
+          "score": 1.0
+        },
+        {
+          "id": 11,
+          "name": "sandwich",
+          "bbox": null,
+          "confidence": 0.0,
+          "passed": false,
+          "score": 0.0
+        },
+        {
+          "id": 13,
+          "name": "dollop of red sauce",
+          "bbox": null,
+          "confidence": 0.0,
+          "passed": false,
+          "score": 0.0
+        },
+        {
+          "id": 14,
+          "name": "McDonald's fries container",
+          "bbox": null,
+          "confidence": 0.0,
+          "passed": false,
+          "score": 0.0
+        }
+      ],
+      "fidelity_score": 0.5
+    },
+    "st2_res": {
+      "backend": "E2",
+      "crop_size": 384,
+      "attributes": [
+        {
+          "id": 11,
+          "name": "sandwich",
+          "attribute": "order:messy/disordered/unordered/disorganized/unorganized/cluttered/untidy",
+          "skipped": true,
+          "skip_reason": "node_not_localized"
+        },
+        {
+          "id": 14,
+          "name": "McDonald's fries container",
+          "attribute": "red",
+          "skipped": true,
+          "skip_reason": "node_not_localized"
+        }
+      ],
+      "binding_score": null
+    },
+    "st3_res": {
+      "backend": "V3",
+      "relations": [
+        {
+          "subject": 9,
+          "relation": "is underneath",
+          "object": 7,
+          "skipped": false,
+          "original_score": 1.0,
+          "swapped_score": 1.0,
+          "delta": 0.0,
+          "swap_correct": false,
+          "answers": {
+            "original": "yes",
+            "swapped": "yes"
+          }
+        },
+        {
+          "subject": 14,
+          "relation": "is in front of",
+          "object": 11,
+          "skipped": false,
+          "original_score": 0.0,
+          "swapped_score": 0.0,
+          "delta": 0.0,
+          "swap_correct": false,
+          "answers": {
+            "original": "no",
+            "swapped": "no"
+          }
+        },
+        {
+          "subject": 8,
+          "relation": "holds",
+          "object": 13,
+          "skipped": false,
+          "original_score": 0.0,
+          "swapped_score": 0.0,
+          "delta": 0.0,
+          "swap_correct": false,
+          "answers": {
+            "original": "no",
+            "swapped": "no"
+          }
+        }
+      ],
+      "relation_score": 0.3333333333333333,
+      "swap_accuracy": 0.0
+    },
+    "latency_ms": {
+      "total": 3511.476869985927
+    }
+  },
+  {
+    "image_id": "0132-4",
+    "prompt": "A horse, with a fresh face and a nose, is looking down towards the ground.",
+    "permutation": "V1-E2-V3",
+    "final_score": 0.6516937035204018,
+    "st1_res": {
+      "backend": "V1",
+      "nodes": [
+        {
+          "id": 0,
+          "name": "horse",
+          "bbox": [
+            0,
+            0,
+            512,
+            512
+          ],
+          "confidence": 1.0,
+          "passed": true,
+          "score": 1.0
+        },
+        {
+          "id": 4,
+          "name": "face",
+          "bbox": [
+            0,
+            0,
+            512,
+            512
+          ],
+          "confidence": 1.0,
+          "passed": true,
+          "score": 1.0
+        },
+        {
+          "id": 8,
+          "name": "nose",
+          "bbox": [
+            355,
+            511,
+            512,
+            512
+          ],
+          "confidence": 1.0,
+          "passed": true,
+          "score": 1.0
+        },
+        {
+          "id": 11,
+          "name": "ground",
+          "bbox": null,
+          "confidence": 0.0,
+          "passed": false,
+          "score": 0.0
+        }
+      ],
+      "fidelity_score": 0.75
+    },
+    "st2_res": {
+      "backend": "E2",
+      "crop_size": 384,
+      "attributes": [
+        {
+          "id": 4,
+          "name": "face",
+          "attribute": "fresh",
+          "score": 0.5384144438945387,
+          "calibrated_score": 0.5384144438945387,
+          "skipped": false,
+          "bbox": [
+            0,
+            0,
+            512,
+            512
+          ],
+          "positive_prompt": "A photo of a face that is fresh",
+          "negative_prompt": "A photo of a face that is not fresh",
+          "positive_score": -0.0167388916015625,
+          "negative_score": -0.032135009765625,
+          "contrastive_temperature": 10.0
+        }
+      ],
+      "binding_score": 0.5384144438945387
+    },
+    "st3_res": {
+      "backend": "V3",
+      "relations": [
+        {
+          "subject": 0,
+          "relation": "has",
+          "object": 4,
+          "skipped": false,
+          "original_score": 1.0,
+          "swapped_score": 1.0,
+          "delta": 0.0,
+          "swap_correct": false,
+          "answers": {
+            "original": "yes",
+            "swapped": "yes"
+          }
+        },
+        {
+          "subject": 0,
+          "relation": "has",
+          "object": 8,
+          "skipped": false,
+          "original_score": 1.0,
+          "swapped_score": 1.0,
+          "delta": 0.0,
+          "swap_correct": false,
+          "answers": {
+            "original": "yes",
+            "swapped": "yes"
+          }
+        },
+        {
+          "subject": 0,
+          "relation": "looking down towards",
+          "object": 11,
+          "skipped": false,
+          "original_score": 0.0,
+          "swapped_score": 0.0,
+          "delta": 0.0,
+          "swap_correct": false,
+          "answers": {
+            "original": "no",
+            "swapped": "no"
+          }
+        }
+      ],
+      "relation_score": 0.6666666666666666,
+      "swap_accuracy": 0.0
+    },
+    "latency_ms": {
+      "total": 3395.117129024584
+    }
+  },
+  {
+    "image_id": "0133-3",
+    "prompt": "A person with outstretched arms, one of which is raised, stands against a background of green grass and trees.",
+    "permutation": "V1-E2-V3",
+    "final_score": 0.8263730996499626,
+    "st1_res": {
+      "backend": "V1",
+      "nodes": [
+        {
+          "id": 106,
+          "name": "arms",
+          "bbox": [
+            144,
+            213,
+            856,
+            895
+          ],
+          "confidence": 1.0,
+          "passed": true,
+          "score": 1.0
+        },
+        {
+          "id": 107,
+          "name": "right arm",
+          "bbox": [
+            144,
+            213,
+            387,
+            625
+          ],
+          "confidence": 1.0,
+          "passed": true,
+          "score": 1.0
+        },
+        {
+          "id": 109,
+          "name": "background",
+          "bbox": [
+            0,
+            0,
+            1024,
+            1024
+          ],
+          "confidence": 1.0,
+          "passed": true,
+          "score": 1.0
+        },
+        {
+          "id": 110,
+          "name": "grass",
+          "bbox": [
+            0,
+            855,
+            1024,
+            1024
+          ],
+          "confidence": 1.0,
+          "passed": true,
+          "score": 1.0
+        },
+        {
+          "id": 111,
+          "name": "trees",
+          "bbox": [
+            0,
+            365,
+            273,
+            870
+          ],
+          "confidence": 1.0,
+          "passed": true,
+          "score": 1.0
+        }
+      ],
+      "fidelity_score": 1.0
+    },
+    "st2_res": {
+      "backend": "E2",
+      "crop_size": 384,
+      "attributes": [
+        {
+          "id": 106,
+          "name": "arms",
+          "attribute": "outstretched",
+          "score": 0.5035857539553867,
+          "calibrated_score": 0.5035857539553867,
+          "skipped": false,
+          "bbox": [
+            144,
+            213,
+            856,
+            895
+          ],
+          "positive_prompt": "A photo of a arms that is outstretched",
+          "negative_prompt": "A photo of a arms that is not outstretched",
+          "positive_score": 0.048370361328125,
+          "negative_score": 0.04693603515625,
+          "contrastive_temperature": 10.0
+        },
+        {
+          "id": 107,
+          "name": "right arm",
+          "attribute": "raised",
+          "score": 0.48927519335788794,
+          "calibrated_score": 0.48927519335788794,
+          "skipped": false,
+          "bbox": [
+            144,
+            213,
+            387,
+            625
+          ],
+          "positive_prompt": "A photo of a right arm that is raised",
+          "negative_prompt": "A photo of a right arm that is not raised",
+          "positive_score": -0.005985260009765625,
+          "negative_score": -0.0016946792602539062,
+          "contrastive_temperature": 10.0
+        },
+        {
+          "id": 110,
+          "name": "grass",
+          "attribute": "green",
+          "score": 0.4444969495363886,
+          "calibrated_score": 0.4444969495363886,
+          "skipped": false,
+          "bbox": [
+            0,
+            855,
+            1024,
+            1024
+          ],
+          "positive_prompt": "A photo of a grass that is green",
+          "negative_prompt": "A photo of a grass that is not green",
+          "positive_score": -0.009735107421875,
+          "negative_score": 0.0125579833984375,
+          "contrastive_temperature": 10.0
+        }
+      ],
+      "binding_score": 0.47911929894988775
+    },
+    "st3_res": {
+      "backend": "V3",
+      "relations": [
+        {
+          "subject": 109,
+          "relation": "features",
+          "object": 110,
+          "skipped": false,
+          "original_score": 1.0,
+          "swapped_score": 0.0,
+          "delta": 1.0,
+          "swap_correct": true,
+          "answers": {
+            "original": "yes",
+            "swapped": "no"
+          }
+        },
+        {
+          "subject": 109,
+          "relation": "features",
+          "object": 111,
+          "skipped": false,
+          "original_score": 1.0,
+          "swapped_score": 1.0,
+          "delta": 0.0,
+          "swap_correct": false,
+          "answers": {
+            "original": "yes",
+            "swapped": "yes"
+          }
+        },
+        {
+          "subject": 106,
+          "relation": "includes",
+          "object": 107,
+          "skipped": false,
+          "original_score": 1.0,
+          "swapped_score": 0.0,
+          "delta": 1.0,
+          "swap_correct": true,
+          "answers": {
+            "original": "yes",
+            "swapped": "no"
+          }
+        }
+      ],
+      "relation_score": 1.0,
+      "swap_accuracy": 0.6666666666666666
+    },
+    "latency_ms": {
+      "total": 8044.44638203131
+    }
+  },
+  {
+    "image_id": "0142-3",
+    "prompt": "A glass cup sits on a table inside a room with a white wall, while two chairs are arranged around a round table nearby.",
+    "permutation": "V1-E2-V3",
+    "final_score": 0.8383986134831758,
+    "st1_res": {
+      "backend": "V1",
+      "nodes": [
+        {
+          "id": 4,
+          "name": "chair",
+          "bbox": [
+            115,
+            520,
+            351,
+            863
+          ],
+          "confidence": 1.0,
+          "passed": true,
+          "score": 1.0
+        },
+        {
+          "id": 9,
+          "name": "cup",
+          "bbox": [
+            343,
+            442,
+            583,
+            567
+          ],
+          "confidence": 1.0,
+          "passed": true,
+          "score": 1.0
+        },
+        {
+          "id": 100,
+          "name": "room",
+          "bbox": [
+            0,
+            0,
+            1024,
+            1024
+          ],
+          "confidence": 1.0,
+          "passed": true,
+          "score": 1.0
+        },
+        {
+          "id": 102,
+          "name": "wall",
+          "bbox": [
+            0,
+            0,
+            1024,
+            775
+          ],
+          "confidence": 1.0,
+          "passed": true,
+          "score": 1.0
+        },
+        {
+          "id": 103,
+          "name": "table",
+          "bbox": [
+            214,
+            545,
+            652,
+            907
+          ],
+          "confidence": 1.0,
+          "passed": true,
+          "score": 1.0
+        },
+        {
+          "id": 104,
+          "name": "table",
+          "bbox": [
+            214,
+            544,
+            653,
+            907
+          ],
+          "confidence": 1.0,
+          "passed": true,
+          "score": 1.0
+        }
+      ],
+      "fidelity_score": 1.0
+    },
+    "st2_res": {
+      "backend": "E2",
+      "crop_size": 384,
+      "attributes": [
+        {
+          "id": 4,
+          "name": "chair",
+          "attribute": "quantity:2",
+          "score": 0.5367075192125471,
+          "calibrated_score": 0.5367075192125471,
+          "skipped": false,
+          "bbox": [
+            115,
+            520,
+            351,
+            863
+          ],
+          "positive_prompt": "A photo of a chair that is quantity:2",
+          "negative_prompt": "A photo of a chair that is not quantity:2",
+          "positive_score": 0.091796875,
+          "negative_score": 0.07708740234375,
+          "contrastive_temperature": 10.0
+        },
+        {
+          "id": 9,
+          "name": "cup",
+          "attribute": "material:glass",
+          "score": 0.49401121170615214,
+          "calibrated_score": 0.49401121170615214,
+          "skipped": false,
+          "bbox": [
+            343,
+            442,
+            583,
+            567
+          ],
+          "positive_prompt": "A photo of a cup that is material:glass",
+          "negative_prompt": "A photo of a cup that is not material:glass",
+          "positive_score": 0.021575927734375,
+          "negative_score": 0.0239715576171875,
+          "contrastive_temperature": 10.0
+        },
+        {
+          "id": 102,
+          "name": "wall",
+          "attribute": "color:white",
+          "score": 0.49229492152622745,
+          "calibrated_score": 0.49229492152622745,
+          "skipped": false,
+          "bbox": [
+            0,
+            0,
+            1024,
+            775
+          ],
+          "positive_prompt": "A photo of a wall that is color:white",
+          "negative_prompt": "A photo of a wall that is not color:white",
+          "positive_score": 0.015838623046875,
+          "negative_score": 0.0189208984375,
+          "contrastive_temperature": 10.0
+        },
+        {
+          "id": 104,
+          "name": "table",
+          "attribute": "shape:round",
+          "score": 0.5377697093531815,
+          "calibrated_score": 0.5377697093531815,
+          "skipped": false,
+          "bbox": [
+            214,
+            544,
+            653,
+            907
+          ],
+          "positive_prompt": "A photo of a table that is shape:round",
+          "negative_prompt": "A photo of a table that is not shape:round",
+          "positive_score": 0.053253173828125,
+          "negative_score": 0.038116455078125,
+          "contrastive_temperature": 10.0
+        }
+      ],
+      "binding_score": 0.515195840449527
+    },
+    "st3_res": {
+      "backend": "V3",
+      "relations": [
+        {
+          "subject": 9,
+          "relation": "is on",
+          "object": 103,
+          "skipped": false,
+          "original_score": 1.0,
+          "swapped_score": 1.0,
+          "delta": 0.0,
+          "swap_correct": false,
+          "answers": {
+            "original": "yes",
+            "swapped": "yes"
+          }
+        },
+        {
+          "subject": 102,
+          "relation": "has",
+          "object": 100,
+          "skipped": false,
+          "original_score": 1.0,
+          "swapped_score": 1.0,
+          "delta": 0.0,
+          "swap_correct": false,
+          "answers": {
+            "original": "yes",
+            "swapped": "yes"
+          }
+        },
+        {
+          "subject": 4,
+          "relation": "are around",
+          "object": 104,
+          "skipped": false,
+          "original_score": 1.0,
+          "swapped_score": 1.0,
+          "delta": 0.0,
+          "swap_correct": false,
+          "answers": {
+            "original": "yes",
+            "swapped": "yes"
+          }
+        }
+      ],
+      "relation_score": 1.0,
+      "swap_accuracy": 0.0
+    },
+    "latency_ms": {
+      "total": 9341.510405065492
+    }
+  }
+]

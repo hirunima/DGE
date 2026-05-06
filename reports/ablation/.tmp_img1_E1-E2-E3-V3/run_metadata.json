@@ -1,0 +1,81 @@
+{
+  "config": {
+    "output_dir": "./reports/ablation/.tmp_img1_E1-E2-E3-V3",
+    "prompts_file": "/fs/nexus-projects/scene_graph_sd/DGE-T2I/data/raw/qwen8b_t2i_prompts_aug_v1.json",
+    "sg_file": null,
+    "images_dir": "/fs/nexus-projects/scene_graph_sd/DGE-T2I/data/images/survey_samples/image1",
+    "image_pattern": "{index:04d}-{generation}.png",
+    "generation": 1,
+    "start_idx": 0,
+    "end_idx": null,
+    "limit": 10,
+    "weights": {
+      "node": 0.3,
+      "attribute": 0.3,
+      "relation": 0.3
+    },
+    "node_confidence_threshold": 0.2,
+    "node_nms_threshold": 0.3,
+    "stage2_crop_size": 384,
+    "stage2_calibration": "clip",
+    "stage2_calibration_scale": 1.0,
+    "stage2_calibration_bias": 0.0,
+    "stage3_margin_ratio": 0.1,
+    "include_model_load_time": false,
+    "label_config": {
+      "path": null,
+      "key_field": "image_id",
+      "score_field": "score",
+      "result_key_field": "image_id"
+    },
+    "backend_specs": {
+      "E1": {
+        "kind": "grounding-dino",
+        "model_path": "IDEA-Research/grounding-dino-base",
+        "checkpoint_path": null
+      },
+      "V1": {
+        "kind": null,
+        "model_path": "/model",
+        "checkpoint_path": null
+      },
+      "E2": {
+        "kind": "blip-2",
+        "model_path": "Salesforce/blip2-itm-vit-g",
+        "checkpoint_path": null
+      },
+      "V2": {
+        "kind": null,
+        "model_path": "/model",
+        "checkpoint_path": null
+      },
+      "E3": {
+        "kind": "reitr",
+        "model_path": null,
+        "checkpoint_path": null
+      },
+      "V3": {
+        "kind": "qwen",
+        "model_path": "/model",
+        "checkpoint_path": null
+      }
+    },
+    "selected_backends": [
+      "E2",
+      "E1",
+      "E3",
+      "V3"
+    ],
+    "use_cpu": false,
+    "low_vram": true,
+    "use_vllm": true,
+    "max_text_length": 64,
+    "torch_cuda_mem_frac": 0.8,
+    "vllm_api_base": "http://127.0.0.1:8000/v1",
+    "vllm_api_key": null,
+    "vllm_temperature": null,
+    "vllm_max_tokens": null,
+    "vllm_yes_no_max_tokens": null
+  },
+  "items_total": 10
+}

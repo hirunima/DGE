@@ -118,6 +118,8 @@ def _default_eva_clip_model_path() -> str:
 def _default_eva_clip_checkpoint_path() -> str:
     return os.environ.get("EVA_CLIP_CHECKPOINT_PATH") or "https://huggingface.co/QuanSun/EVA-CLIP/blob/main/EVA02_CLIP_L_psz14_224to336.pt"
 
+def _default_blip2_model_path() -> str:
+    return os.environ.get("BLIP2_MODEL_PATH") or "Salesforce/blip2-itm-vit-g"
 
 def _default_reitr_model_path() -> str:
     return os.environ.get("REITR_CODE_DIR") or os.environ.get("RELTR_CODE_DIR") or "/fs/nexus-projects/scene_graph_sd/RelTR"
@@ -139,6 +141,10 @@ def _backend_runtime_key(backend_id: str, spec: BackendSpec, config: ExperimentC
         model_path = spec.model_path or _default_eva_clip_model_path()
         checkpoint_path = spec.checkpoint_path or _default_eva_clip_checkpoint_path()
         return ("eva-clip", model_path, checkpoint_path, config.use_cpu)
+
+    if backend_id == "E2" and kind in {"blip2", "blip-2"}:
+        model_path = spec.model_path or _default_blip2_model_path()
+        return ("blip2", model_path, spec.checkpoint_path, config.use_cpu)
 
     if backend_id == "E3" and kind in {"reitr", "reltr"}:
         model_path = spec.model_path or _default_reitr_model_path()
@@ -367,7 +373,6 @@ class DinoClipNodeDetector(NodeDetectorBackend, _TransformersBackendMixin):
             "fidelity_score": safe_mean(n["score"] for n in nodes),
         }
 # --- END UPDATED COMPONENT ---
-
 
 class _VisionLanguageMixin(_TransformersBackendMixin):
     @classmethod
@@ -795,7 +800,7 @@ class SigLIPMixin(_TransformersBackendMixin):
 
 class SigLIPAttributeScorer(SigLIPMixin, AttributeScorerBackend):
     def _evaluate_attribute(self, crop, entity_name, attribute):
-        return self.image_text_sim(crop, f"A photo of a {attribute} {entity_name}"), {}
+        return score_contrastive_attribute(self.image_text_sim, crop, entity_name, attribute)
 
 class EVAClipMixin(_TransformersBackendMixin):
     @classmethod
@@ -865,7 +870,86 @@ class EVAClipMixin(_TransformersBackendMixin):
 
 class EVAClipAttributeScorer(EVAClipMixin, AttributeScorerBackend):
     def _evaluate_attribute(self, crop, entity_name, attribute):
-        return self.image_text_sim(crop, f"A photo of a {attribute} {entity_name}"), {}
+        return score_contrastive_attribute(self.image_text_sim, crop, entity_name, attribute)
+
+class BLIP2Mixin(_TransformersBackendMixin):
+    @classmethod
+    def load_shared_runtime(cls, spec: BackendSpec, config: ExperimentConfig) -> Tuple[Dict[str, Any], float]:
+        import torch
+        from transformers import AutoProcessor, Blip2ForImageTextRetrieval
+
+        start = time.perf_counter()
+        model_path = spec.model_path or _default_blip2_model_path()
+        use_cuda = torch.cuda.is_available() and not config.use_cpu
+        dtype = torch.float16 if use_cuda else torch.float32
+        proc = AutoProcessor.from_pretrained(model_path)
+        kwargs = {"torch_dtype": dtype}
+        if use_cuda:
+            kwargs["device_map"] = "auto"
+        model = Blip2ForImageTextRetrieval.from_pretrained(model_path, **kwargs)
+        if spec.checkpoint_path:
+            ckpt = torch.load(spec.checkpoint_path, map_location="cpu")
+            state_dict = ckpt.get("state_dict", ckpt) if isinstance(ckpt, dict) else ckpt
+            model.load_state_dict({k.replace("module.", "", 1): v for k, v in state_dict.items()}, strict=False)
+        if not use_cuda:
+            model.to("cpu")
+        model.eval()
+        load_time_ms = (time.perf_counter() - start) * 1000.0
+        return ({
+            "proc": proc,
+            "model": model,
+            "dtype": dtype,
+        }, load_time_ms)
+
+    def __init__(self, *args, shared_runtime: Optional[Dict[str, Any]] = None):
+        super().__init__(*args)
+        runtime = shared_runtime
+        if runtime is None:
+            runtime, self.model_load_time_ms = self.load_shared_runtime(self.spec, self.config)
+        self.proc = runtime["proc"]
+        self.model = runtime["model"]
+        self.dtype = runtime["dtype"]
+
+    @property
+    def device(self):
+        if hasattr(self.model, "device"):
+            return self.model.device
+        return next(self.model.parameters()).device
+
+    def _to_blip2_device(self, inputs: Any) -> Dict[str, Any]:
+        import torch
+
+        moved = {}
+        for key, value in inputs.items():
+            if not hasattr(value, "to"):
+                moved[key] = value
+            elif torch.is_floating_point(value):
+                moved[key] = value.to(device=self.device, dtype=self.dtype)
+            else:
+                moved[key] = value.to(self.device)
+        return moved
+
+    def image_text_sim(self, image: Image.Image, text: str) -> float:
+        import torch
+
+        image = image.convert("RGB")
+        if min(image.size) < 2:
+            image = image.resize((max(2, image.size[0]), max(2, image.size[1])))
+
+        inputs = self.proc(images=image, text=text, return_tensors="pt")
+        inputs = self._to_blip2_device(inputs)
+        with torch.inference_mode():
+            outputs = self.model(**inputs, use_image_text_matching_head=False)
+            if outputs.logits_per_image is not None:
+                return float(outputs.logits_per_image[0][0].item())
+            image_embeds = torch.nn.functional.normalize(outputs.image_embeds, dim=-1)
+            text_embeds = torch.nn.functional.normalize(outputs.text_embeds, dim=-1)
+            similarities = image_embeds @ text_embeds.T
+            return float(similarities.max().item())
+
+class BLIP2AttributeScorer(BLIP2Mixin, AttributeScorerBackend):
+    def _evaluate_attribute(self, crop, entity_name, attribute):
+        return score_contrastive_attribute(self.image_text_sim, crop, entity_name, attribute)
 
 class VLMAttributeScorer(_VisionLanguageMixin, AttributeScorerBackend):
     def score_attributes(self, image: Image.Image, item: ExperimentItem, stage1_result: Dict[str, Any]) -> Dict[str, Any]:
@@ -1223,6 +1307,8 @@ def _load_shared_runtime_for_backend(backend_id: str, spec: BackendSpec, config:
         return SigLIPMixin.load_shared_runtime(spec, config)
     if runtime_key[0] == "eva-clip":
         return EVAClipMixin.load_shared_runtime(spec, config)
+    if runtime_key[0] == "blip2":
+        return BLIP2Mixin.load_shared_runtime(spec, config)
     if runtime_key[0] == "reitr":
         return ReITRRelationScorer.load_shared_runtime(spec, config)
     if runtime_key[0] == "qwen-hf":
@@ -1246,11 +1332,16 @@ def build_backend(backend_id: str, spec: BackendSpec, config: ExperimentConfig, 
         shared_runtime = cached["runtime"]
 
     match backend_id:
-        case "E1": return DinoClipNodeDetector(backend_id, spec, config) if k in {"grounding", "grounding-dino", "hf-grounding"} else UnavailableBackend(backend_id, spec, config)
+        case "E1":
+            if k in {"grounding", "grounding-dino", "hf-grounding"}:
+                return DinoClipNodeDetector(backend_id, spec, config)
+            return UnavailableBackend(backend_id, spec, config)
         case "V1": return QwenNodeDetectorVLLM(backend_id, spec, config, shared_runtime=shared_runtime) if config.use_vllm else QwenNodeDetector(backend_id, spec, config, shared_runtime=shared_runtime) if "qwen" in k else UnavailableBackend(backend_id, spec, config)
         case "E2":
             if k in {"eva", "eva-clip", "evaclip"}:
                 return EVAClipAttributeScorer(backend_id, spec, config, shared_runtime=shared_runtime)
+            if k in {"blip2", "blip-2"}:
+                return BLIP2AttributeScorer(backend_id, spec, config, shared_runtime=shared_runtime)
             return SigLIPAttributeScorer(backend_id, spec, config, shared_runtime=shared_runtime) if "siglip" in k else UnavailableBackend(backend_id, spec, config)
         case "V2": return QwenAttributeClassifierVLLM(backend_id, spec, config, shared_runtime=shared_runtime) if config.use_vllm else VLMAttributeScorer(backend_id, spec, config, shared_runtime=shared_runtime) if k in {"llava", "llava-next", "qwen", "qwen-vl"} else UnavailableBackend(backend_id, spec, config)
         case "E3":
@@ -1263,10 +1354,37 @@ def build_backend(backend_id: str, spec: BackendSpec, config: ExperimentConfig, 
     return UnavailableBackend(backend_id, spec, config)
 
 # --- Geometry & Metric Utils ---
+CONTRASTIVE_ATTRIBUTE_TEMPERATURE = 25.0
+
 def _score_eval_yes_no_json(raw_text: str) -> Tuple[float, str]:
     evaluation = extract_json(raw_text)
     answer = normalize_answer(evaluation.get("satisfies") if evaluation else raw_text)
     return (1.0 if answer == "yes" else 0.0), answer
+
+def build_contrastive_attribute_prompts(entity_name: str, attribute: str) -> Tuple[str, str]:
+    entity_name = str(entity_name).strip()
+    attribute = str(attribute).strip()
+    return (
+        f"{attribute} {entity_name}",
+        f"not {attribute} {entity_name}",
+    )
+
+def contrastive_binary_score(positive_score: float, negative_score: float, temperature: float = CONTRASTIVE_ATTRIBUTE_TEMPERATURE) -> float:
+    logit = max(-60.0, min(60.0, temperature * (positive_score - negative_score)))
+    return 1.0 / (1.0 + math.exp(-logit))
+
+def score_contrastive_attribute(sim_fn, crop: Image.Image, entity_name: str, attribute: str) -> Tuple[float, Dict[str, Any]]:
+    positive_prompt, negative_prompt = build_contrastive_attribute_prompts(entity_name, attribute)
+    positive_score = float(sim_fn(crop, positive_prompt))
+    negative_score = float(sim_fn(crop, negative_prompt))
+    score = contrastive_binary_score(positive_score, negative_score)
+    return score, {
+        "positive_prompt": positive_prompt,
+        "negative_prompt": negative_prompt,
+        "positive_score": positive_score,
+        "negative_score": negative_score,
+        "contrastive_temperature": CONTRASTIVE_ATTRIBUTE_TEMPERATURE,
+    }
 
 def _node_from_eval_object_response(
     raw_text: str,
@@ -1416,50 +1534,6 @@ def load_experiment_items(config: ExperimentConfig) -> List[ExperimentItem]:
         items = items[:config.limit]
 
     return items
-
-# def load_experiment_items(config: ExperimentConfig) -> List[ExperimentItem]:
-#     """Load experiment items from prompts file and image directory."""
-#     items = []
-
-#     if config.prompts_file:
-#         try:
-#             prompts_data = load_json_or_jsonl(config.prompts_file)
-#         except Exception as e:
-#             raise Exception("Couldn't load prompts file.")
-
-#         for idx in tqdm(range(len(prompts_data)), desc="Loading items"):
-#             entry = prompts_data[idx]
-#             scene_graph = extract_scene_graph(entry["meta_prompt"]["prompt"]) if "meta_prompt" in entry else None
-#             prompt = entry["prompt"]
-
-#             for i in range(config.generation):
-#                 if config.prompts_file:
-#                     image_path = image_path_from_pattern(config.image_pattern, config.images_dir, idx, i + 1)
-#                 else:
-#                     image_path = os.path.join(config.images_dir, scene_graph["filename"])
-#                 if not os.path.exists(image_path):
-#                     print("Didn't find", image_path)
-#                     continue
-
-#                 image_id = os.path.basename(image_path).split(".png")[0]
-
-#                 items.append(ExperimentItem(
-#                             prompt_index=idx,
-#                             image_id=str(image_id),
-#                             prompt=str(prompt),
-#                             image_path=str(image_path),
-#                             scene_graph=scene_graph
-#                         ))
-
-#     # Apply filtering
-#     if config.start_idx > 0:
-#         items = items[config.start_idx:]
-#     if config.end_idx is not None:
-#         items = items[:config.end_idx]
-#     if config.limit is not None:
-#         items = items[:config.limit]
-
-#     return items
 
 def run_ablation_experiment(config: ExperimentConfig, items=None, backends=None) -> Dict[str, Any]:
     import torch
@@ -1619,7 +1693,7 @@ def build_arg_parser() -> argparse.ArgumentParser:
     for b in ("e1", "v1", "e2", "v2", "e3", "v3"):
         p.add_argument(f"--{b}-backend-kind", default=None) # was "mock")
 
-    for m in ("eupe", "qwen", "siglip", "eva-clip", "reitr", "llava"):
+    for m in ("eupe", "qwen", "siglip", "eva-clip", "blip2", "reitr", "llava"):
         p.add_argument(f"--{m}-model-path", default=None)
         p.add_argument(f"--{m}-checkpoint-path", default=None)
 
@@ -1656,8 +1730,8 @@ def config_from_args(args: argparse.Namespace) -> ExperimentConfig:
             "V1": BackendSpec(args.v1_backend_kind, args.qwen_model_path, args.qwen_checkpoint_path),
             "E2": BackendSpec(
                 args.e2_backend_kind,
-                args.eva_clip_model_path if args.e2_backend_kind in {"eva", "eva-clip", "evaclip"} else args.siglip_model_path,
-                args.eva_clip_checkpoint_path if args.e2_backend_kind in {"eva", "eva-clip", "evaclip"} else args.siglip_checkpoint_path,
+                args.eva_clip_model_path if args.e2_backend_kind in {"eva", "eva-clip", "evaclip"} else args.blip2_model_path if args.e2_backend_kind in {"blip2", "blip-2"} else args.siglip_model_path,
+                args.eva_clip_checkpoint_path if args.e2_backend_kind in {"eva", "eva-clip", "evaclip"} else args.blip2_checkpoint_path if args.e2_backend_kind in {"blip2", "blip-2"} else args.siglip_checkpoint_path,
             ),
             "V2": BackendSpec(args.v2_backend_kind, args.qwen_model_path, args.qwen_checkpoint_path),
             "E3": BackendSpec(

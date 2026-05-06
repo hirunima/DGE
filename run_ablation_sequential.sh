@@ -17,15 +17,13 @@ echo "Running on GPU: $CUDA_VISIBLE_DEVICES"
 echo "Python: $(which python)"
 export VLLM_API_BASE="${VLLM_API_BASE:-http://127.0.0.1:8000/v1}"
 export QWEN_MODEL_PATH="${QWEN_MODEL_PATH:-/model}"
-export EVA_CLIP_MODEL_PATH="${EVA_CLIP_MODEL_PATH:-EVA02-CLIP-L-14-336}"
-export EVA_CLIP_CHECKPOINT_PATH="${EVA_CLIP_CHECKPOINT_PATH:-https://huggingface.co/QuanSun/EVA-CLIP/blob/main/EVA02_CLIP_L_psz14_224to336.pt}"
+export BLIP2_MODEL_PATH="${BLIP2_MODEL_PATH:-Salesforce/blip2-itm-vit-g}"
 export EVA_CLIP_CODE_DIR="/fs/nexus-projects/scene_graph_sd/EVA/EVA-CLIP/rei"
 export REITR_CODE_DIR="${REITR_CODE_DIR:-/fs/nexus-projects/scene_graph_sd/RelTR}"
 PROMPTS_FILE="/fs/nexus-projects/scene_graph_sd/DGE-T2I/data/raw/qwen8b_t2i_prompts_aug_v1.json"
 echo "vLLM API: $VLLM_API_BASE"
 echo "Qwen model id: $QWEN_MODEL_PATH"
-echo "EVA-CLIP model: $EVA_CLIP_MODEL_PATH"
-echo "EVA-CLIP checkpoint: $EVA_CLIP_CHECKPOINT_PATH"
+echo "BLIP-2 model: $BLIP2_MODEL_PATH"
 echo "ReITR/RelTR code dir: $REITR_CODE_DIR"
 echo "ReITR/RelTR checkpoint: ${REITR_CHECKPOINT_PATH:-unset}"
 echo ""
@@ -97,7 +95,7 @@ build_cmd() {
 
     # Stage 2
     if [[ "$p1" == "E2" ]]; then
-        cmd+=(--e2-backend-kind eva-clip --eva-clip-model-path "$EVA_CLIP_MODEL_PATH" --eva-clip-checkpoint-path "$EVA_CLIP_CHECKPOINT_PATH")
+        cmd+=(--e2-backend-kind blip-2 --blip2-model-path "$BLIP2_MODEL_PATH")
     else
         cmd+=(--v2-backend-kind qwen --qwen-model-path "$QWEN_MODEL_PATH")
     fi
