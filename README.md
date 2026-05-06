@@ -2,9 +2,9 @@
 DGE - A Dynamic Metric and Grounded Evaluation Benchmarks for Text-to-Image and Image Editing Models
 
 ## Overview
-[dataset_pipeline.pdf]([https://github.com/hirunima/DGE/blob/main/dataset_pipeline.pdf])
-
-
+<p align="center">
+  <img align="middle" src="dataset_pipeline.pdf" alt="The main figure"/>
+</p>
 ---
 
 ## Abstract
