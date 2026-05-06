@@ -20,8 +20,12 @@ from modules.processing import (
     build_attribute_prompt,
     build_object_prompt,
     build_relation_prompt,
+    extract_json,
     image_path_from_pattern,
     load_json_or_jsonl,
+    normalize_answer,
+    normalize_bbox,
+    normalize_visible,
     summarize_results,
     extract_scene_graph
 )
@@ -364,56 +368,18 @@ class _VisionLanguageMixin(_TransformersBackendMixin):
         return probs[0], {"yes_prob": probs[0], "no_prob": probs[1]}
 
 class QwenNodeDetector( _VisionLanguageMixin, NodeDetectorBackend):
-    """Optimized Qwen node detector that batches all entities per image into one prompt."""
+    """Qwen node detector using the same per-object prompts as the eval pipeline."""
 
     def detect_nodes(self, image: Image.Image, item: ExperimentItem) -> Dict[str, Any]:
         objects = item.scene_graph.get("objects", [])
         if not objects:
             return {"backend": self.backend_id, "nodes": [], "fidelity_score": 1.0}
 
-        # Build a single prompt asking for all entities (reduces N queries to 1)
-        entity_list = "\n".join(f"  - Entity {i+1}: {obj.get('name')} (id: {obj.get('id')})" for i, obj in enumerate(objects))
-        prompt = f"""Analyze the image and locate all the following entities. Return a JSON object with this exact structure:
-{{
-  "results": [
-    {{"entity_id": <id>, "name": "<name>", "boxes": [[<x1>, <y1>, <x2>, <y2>], ...], "confidence": <0-1>}},
-    ...
-  ]
-}}
-
-For each entity, provide bounding boxes in normalized coordinates [0,1000]. If an entity is not found, use empty boxes [] and confidence 0.0.
-
-Entities to locate:
-{entity_list}
-
-Return ONLY the JSON object, nothing else."""
-
-        raw = self.generate_text(image, prompt)
-        print("VLM Stage 1 output:", raw)
-
-        # Parse the batched JSON response
         nodes = []
-        try:
-            parsed = json.loads(raw[raw.find("{"):raw.rfind("}")+1]) if "{" in raw else {}
-            results = parsed.get("results", [])
-            for result in results:
-                entity_id = result.get("entity_id")
-                name = result.get("name")
-                boxes_raw = result.get("boxes", [])
-                conf = float(result.get("confidence", 0.0))
-                boxes = parse_stage1_localization(boxes_raw, image.size)
-                passed = bool(boxes) and conf >= self.config.node_confidence_threshold
-                nodes.append({
-                    "id": entity_id,
-                    "name": name,
-                    "bbox": boxes[0] if passed else None,
-                    "confidence": conf,
-                    "passed": passed,
-                    "score": 1.0 if passed else 0.0
-                })
-        except json.JSONDecodeError:
-            # On parse failure, return empty results
-            pass
+        width, height = image.size
+        for entity in objects:
+            raw = self.generate_text(image, build_object_prompt(width, height, entity))
+            nodes.append(_node_from_eval_object_response(raw, entity, image.size, self.config.node_confidence_threshold))
 
         return {"backend": self.backend_id, "nodes": nodes, "fidelity_score": safe_mean(n["score"] for n in nodes)}
 
@@ -476,7 +442,7 @@ class _QwenVLLMMixin:
         self.yes_no_sampling_params = runtime.get("yes_no_sampling_params", self.sampling_params)
 
 class QwenNodeDetectorVLLM(_QwenVLLMMixin, NodeDetectorBackend):
-    """Qwen node detector using vLLM for faster inference with batching."""
+    """Qwen node detector using vLLM and the eval pipeline's per-object prompts."""
 
     def _image_to_base64(self, image: Image.Image) -> str:
         import io, base64
@@ -541,55 +507,17 @@ class QwenNodeDetectorVLLM(_QwenVLLMMixin, NodeDetectorBackend):
         return body["choices"][0]["message"]["content"].strip()
 
     def detect_nodes(self, image: Image.Image, item: ExperimentItem) -> Dict[str, Any]:
-        """Process all entities in a single prompt per image for efficiency."""
         objects = item.scene_graph.get("objects", [])
         if not objects:
             return {"backend": self.backend_id, "nodes": [], "fidelity_score": 1.0}
 
-        # Build a single prompt asking for all entities
-        entity_list = "\n".join(f"  - Entity {i+1}: {obj.get('name')} (id: {obj.get('id')})" for i, obj in enumerate(objects))
-        prompt = f"""Analyze the image and locate all the following entities. Return a JSON object with this exact structure:
-{{
-  "results": [
-    {{"entity_id": <id>, "name": "<name>", "boxes": [[<x1>, <y1>, <x2>, <y2>], ...], "confidence": <0-1>}},
-    ...
-  ]
-}}
-
-For each entity, provide bounding boxes in normalized coordinates [0,1000]. If an entity is not found, use empty boxes [] and confidence 0.0.
-
-Entities to locate:
-{entity_list}
-
-Return ONLY the JSON object, nothing else."""
-
-        raw = self._chat_texts([self._messages_for_image(image, prompt)], self.sampling_params)[0]
-
-        # Parse the JSON response
-        nodes = []
-        try:
-            parsed = json.loads(raw[raw.find("{"):raw.rfind("}")+1]) if "{" in raw else {}
-            results = parsed.get("results", [])
-            for result in results:
-                entity_id = result.get("entity_id")
-                name = result.get("name")
-                boxes_raw = result.get("boxes", [])
-                conf = float(result.get("confidence", 0.0))
-                boxes = parse_stage1_localization(boxes_raw, image.size)
-                passed = bool(boxes) and conf >= self.config.node_confidence_threshold
-                nodes.append({
-                    "id": entity_id,
-                    "name": name,
-                    "bbox": boxes[0] if passed else None,
-                    "confidence": conf,
-                    "passed": passed,
-                    "score": 1.0 if passed else 0.0
-                })
-        except json.JSONDecodeError as e:
-            print(f"Warning: Failed to parse JSON for image {item.image_id}: {e}")
-            print(f"Raw response: {raw[:200]}...")
-            # Return empty results on parse failure
-            pass
+        width, height = image.size
+        prompts = [build_object_prompt(width, height, entity) for entity in objects]
+        raw_outputs = self._chat_texts([self._messages_for_image(image, prompt) for prompt in prompts], self.sampling_params)
+        nodes = [
+            _node_from_eval_object_response(raw, entity, image.size, self.config.node_confidence_threshold)
+            for raw, entity in zip(raw_outputs, objects)
+        ]
 
         return {"backend": self.backend_id, "nodes": nodes, "fidelity_score": safe_mean(n["score"] for n in nodes)}
 
@@ -612,61 +540,48 @@ Return ONLY the JSON object, nothing else."""
 
 class QwenAttributeClassifierVLLM(QwenNodeDetectorVLLM, AttributeScorerBackend):
     def score_attributes(self, image: Image.Image, item: ExperimentItem, stage1_result: Dict[str, Any]) -> Dict[str, Any]:
-        node_map = {n["id"]: n for n in stage1_result.get("nodes", [])}
         results = []
         requests = []
         request_indices = []
+        width, height = image.size
 
         for entity in item.scene_graph.get("objects", []):
             for attr in entity.get("attributes", []):
-                node = node_map.get(entity.get("id"))
-                if not node or not node.get("passed") or not node.get("bbox"):
-                    results.append({"id": entity.get("id"), "name": entity.get("name"), "attribute": attr, "skipped": True, "skip_reason": "node_not_localized"})
-                    continue
-
-                crop = prepare_square_crop(image, node["bbox"], self.config.stage2_crop_size)
-                prompt = f"Answer strictly with Yes or No.\nDoes this crop show a {entity.get('name')} with attribute '{attr}'?"
+                prompt = build_attribute_prompt(width, height, entity, attr)
                 request_indices.append(len(results))
-                requests.append((crop, prompt))
-                results.append({"id": entity.get("id"), "name": entity.get("name"), "attribute": attr, "skipped": False, "bbox": node["bbox"]})
+                requests.append((image, prompt))
+                results.append({"id": entity.get("id"), "name": entity.get("name"), "attribute": attr, "skipped": False})
 
-        for result_idx, (raw_score, probs, _) in zip(request_indices, self.batch_yes_no_score(requests)):
+        raw_outputs = self._chat_texts([self._messages_for_image(img, prompt) for img, prompt in requests], self.sampling_params)
+        for result_idx, raw in zip(request_indices, raw_outputs):
+            raw_score, answer = _score_eval_yes_no_json(raw)
             cal_score = calibrate_score(raw_score, self.config.stage2_calibration, self.config.stage2_calibration_scale, self.config.stage2_calibration_bias)
-            results[result_idx].update({"score": raw_score, "calibrated_score": cal_score, "token_probs": probs})
+            results[result_idx].update({"score": raw_score, "calibrated_score": cal_score, "answer": answer})
 
         return {"backend": self.backend_id, "crop_size": self.config.stage2_crop_size, "attributes": results, "binding_score": safe_mean(e.get("calibrated_score") for e in results if not e.get("skipped"))}
 
     def _evaluate_attribute(self, crop, entity_name, attribute):
-        score, probs = self.yes_no_score(crop, f"Answer strictly with Yes or No.\nDoes this crop show a {entity_name} with attribute '{attribute}'?")
-        return score, {"token_probs": probs}
+        raise NotImplementedError("QwenAttributeClassifierVLLM uses score_attributes with eval-pipeline prompts.")
 
 class QwenRelationScorerVLLM(QwenNodeDetectorVLLM, RelationScorerBackend):
     def score_relations(self, image: Image.Image, item: ExperimentItem, stage1_result: Dict[str, Any]) -> Dict[str, Any]:
-        node_map = {n["id"]: n for n in stage1_result.get("nodes", [])}
         entity_map = {e["id"]: e for e in item.scene_graph.get("objects", [])}
         results = []
         requests = []
         request_indices = []
-        prompt_template = "Answer strictly with Yes or No.\nThe red box marks the subject and the blue box marks the object.\nIs the relation true: {s} {r} {o}?"
+        width, height = image.size
 
         for rel in item.scene_graph.get("relations", []):
-            subj, obj = node_map.get(rel.get("subject")), node_map.get(rel.get("object"))
-            if not subj or not obj or not subj.get("bbox") or not obj.get("bbox"):
-                results.append({"subject": rel.get("subject"), "relation": rel.get("relation"), "object": rel.get("object"), "skipped": True, "skip_reason": "missing_localization"})
-                continue
-
-            s_name = entity_map.get(rel["subject"], {}).get("name", "sub")
-            o_name = entity_map.get(rel["object"], {}).get("name", "obj")
-            marked = draw_relation_markers(image, subj["bbox"], obj["bbox"])
+            swapped_rel = {"subject": rel.get("object"), "relation": rel.get("relation"), "object": rel.get("subject")}
             request_indices.append(len(results))
-            requests.append((marked, prompt_template.format(s=s_name, r=rel["relation"], o=o_name)))
-            requests.append((marked, prompt_template.format(s=o_name, r=rel["relation"], o=s_name)))
-            results.append({"subject": rel["subject"], "relation": rel["relation"], "object": rel["object"], "skipped": False, "marker_mode": marked.mode})
+            requests.append((image, build_relation_prompt(width, height, rel, entity_map)))
+            requests.append((image, build_relation_prompt(width, height, swapped_rel, entity_map)))
+            results.append({"subject": rel["subject"], "relation": rel["relation"], "object": rel["object"], "skipped": False})
 
-        yes_no_results = self.batch_yes_no_score(requests)
-        for result_idx, pair_start in zip(request_indices, range(0, len(yes_no_results), 2)):
-            orig_raw, orig_p, _ = yes_no_results[pair_start]
-            swap_raw, swap_p, _ = yes_no_results[pair_start + 1]
+        raw_outputs = self._chat_texts([self._messages_for_image(img, prompt) for img, prompt in requests], self.sampling_params)
+        for result_idx, pair_start in zip(request_indices, range(0, len(raw_outputs), 2)):
+            orig_raw, orig_answer = _score_eval_yes_no_json(raw_outputs[pair_start])
+            swap_raw, swap_answer = _score_eval_yes_no_json(raw_outputs[pair_start + 1])
             cal = lambda s: calibrate_score(s, self.config.stage2_calibration, self.config.stage2_calibration_scale, self.config.stage2_calibration_bias)
             orig_score, swap_score = cal(orig_raw), cal(swap_raw)
             results[result_idx].update({
@@ -674,17 +589,13 @@ class QwenRelationScorerVLLM(QwenNodeDetectorVLLM, RelationScorerBackend):
                 "swapped_score": swap_score,
                 "delta": orig_score - swap_score,
                 "swap_correct": orig_score > swap_score,
-                "token_probs": {"original": orig_p, "swapped": swap_p},
+                "answers": {"original": orig_answer, "swapped": swap_answer},
             })
 
         return {"backend": self.backend_id, "relations": results, "relation_score": safe_mean(e.get("original_score") for e in results if not e.get("skipped")), "swap_accuracy": safe_mean(1.0 if e.get("swap_correct") else 0.0 for e in results if e.get("swap_correct") is not None)}
 
     def _evaluate_relation(self, image, subj_bbox, obj_bbox, relation, subj_name, obj_name):
-        marked = draw_relation_markers(image, subj_bbox, obj_bbox)
-        prompt = "Answer strictly with Yes or No.\nThe red box marks the subject and the blue box marks the object.\nIs the relation true: {s} {r} {o}?"
-        orig_s, orig_p = self.yes_no_score(marked, prompt.format(s=subj_name, r=relation, o=obj_name))
-        swap_s, swap_p = self.yes_no_score(marked, prompt.format(s=obj_name, r=relation, o=subj_name))
-        return orig_s, swap_s, {"token_probs": {"original": orig_p, "swapped": swap_p}, "marker_mode": marked.mode}
+        raise NotImplementedError("QwenRelationScorerVLLM uses score_relations with eval-pipeline prompts.")
 
 class SigLIPMixin(_TransformersBackendMixin):
     @classmethod
@@ -759,9 +670,14 @@ class SigLIPMixin(_TransformersBackendMixin):
     def image_text_sim(self, image: Image.Image, text: str) -> float:
         import torch
 
+        image = image.convert("RGB")
+        if min(image.size) < 2:
+            image = image.resize((max(2, image.size[0]), max(2, image.size[1])))
+
         if self.use_siglip2:
             # SigLIP 2: use separate image and text feature extraction
-            inputs_img = self.proc(images=image, return_tensors="pt")
+            from transformers.image_utils import ChannelDimension
+            inputs_img = self.proc(images=np.asarray(image), return_tensors="pt", input_data_format=ChannelDimension.LAST)
             inputs_txt = self.proc(text=[text], padding="max_length", max_length=64, return_tensors="pt")
 
             inputs_img = {k: v.to(self.model.device) for k, v in inputs_img.items()}
@@ -816,9 +732,27 @@ class SigLIPAttributeScorer(SigLIPMixin, AttributeScorerBackend):
         return self.image_text_sim(crop, f"A photo of a {attribute} {entity_name}"), {}
 
 class VLMAttributeScorer(_VisionLanguageMixin, AttributeScorerBackend):
+    def score_attributes(self, image: Image.Image, item: ExperimentItem, stage1_result: Dict[str, Any]) -> Dict[str, Any]:
+        results = []
+        width, height = image.size
+        for entity in item.scene_graph.get("objects", []):
+            for attr in entity.get("attributes", []):
+                raw = self.generate_text(image, build_attribute_prompt(width, height, entity, attr))
+                raw_score, answer = _score_eval_yes_no_json(raw)
+                cal_score = calibrate_score(raw_score, self.config.stage2_calibration, self.config.stage2_calibration_scale, self.config.stage2_calibration_bias)
+                results.append({
+                    "id": entity.get("id"),
+                    "name": entity.get("name"),
+                    "attribute": attr,
+                    "score": raw_score,
+                    "calibrated_score": cal_score,
+                    "answer": answer,
+                    "skipped": False,
+                })
+        return {"backend": self.backend_id, "crop_size": None, "attributes": results, "binding_score": safe_mean(e.get("calibrated_score") for e in results if not e.get("skipped"))}
+
     def _evaluate_attribute(self, crop, entity_name, attribute):
-        score, probs = self.yes_no_score(crop, f"Answer strictly with Yes or No.\nDoes this crop show a {entity_name} with attribute '{attribute}'?")
-        return score, {"token_probs": probs}
+        raise NotImplementedError("VLMAttributeScorer uses score_attributes with eval-pipeline prompts.")
 
 class SigLIPRelationScorer(SigLIPMixin, RelationScorerBackend):
     def _evaluate_relation(self, image, subj_bbox, obj_bbox, relation, subj_name, obj_name):
@@ -826,12 +760,31 @@ class SigLIPRelationScorer(SigLIPMixin, RelationScorerBackend):
         return self.image_text_sim(crop, f"{subj_name} {relation} {obj_name}"), self.image_text_sim(crop, f"{obj_name} {relation} {subj_name}"), {"union_bbox": crop.getbbox()}
 
 class VLMRelationScorer( _VisionLanguageMixin, RelationScorerBackend):
+    def score_relations(self, image: Image.Image, item: ExperimentItem, stage1_result: Dict[str, Any]) -> Dict[str, Any]:
+        entity_map = {e["id"]: e for e in item.scene_graph.get("objects", [])}
+        results = []
+        width, height = image.size
+        for rel in item.scene_graph.get("relations", []):
+            swapped_rel = {"subject": rel.get("object"), "relation": rel.get("relation"), "object": rel.get("subject")}
+            orig_raw, orig_answer = _score_eval_yes_no_json(self.generate_text(image, build_relation_prompt(width, height, rel, entity_map)))
+            swap_raw, swap_answer = _score_eval_yes_no_json(self.generate_text(image, build_relation_prompt(width, height, swapped_rel, entity_map)))
+            cal = lambda s: calibrate_score(s, self.config.stage2_calibration, self.config.stage2_calibration_scale, self.config.stage2_calibration_bias)
+            orig_score, swap_score = cal(orig_raw), cal(swap_raw)
+            results.append({
+                "subject": rel["subject"],
+                "relation": rel["relation"],
+                "object": rel["object"],
+                "original_score": orig_score,
+                "swapped_score": swap_score,
+                "delta": orig_score - swap_score,
+                "swap_correct": orig_score > swap_score,
+                "answers": {"original": orig_answer, "swapped": swap_answer},
+                "skipped": False,
+            })
+        return {"backend": self.backend_id, "relations": results, "relation_score": safe_mean(e.get("original_score") for e in results if not e.get("skipped")), "swap_accuracy": safe_mean(1.0 if e.get("swap_correct") else 0.0 for e in results if e.get("swap_correct") is not None)}
+
     def _evaluate_relation(self, image, subj_bbox, obj_bbox, relation, subj_name, obj_name):
-        marked = draw_relation_markers(image, subj_bbox, obj_bbox)
-        prompt = "Answer strictly with Yes or No.\nThe red box marks the subject and the blue box marks the object.\nIs the relation true: {s} {r} {o}?"
-        orig_s, orig_p = self.yes_no_score(marked, prompt.format(s=subj_name, r=relation, o=obj_name))
-        swap_s, swap_p = self.yes_no_score(marked, prompt.format(s=obj_name, r=relation, o=subj_name))
-        return orig_s, swap_s, {"token_probs": {"original": orig_p, "swapped": swap_p}, "marker_mode": marked.mode}
+        raise NotImplementedError("VLMRelationScorer uses score_relations with eval-pipeline prompts.")
 
 
 def extract_scene_graph(prompt_text: str) -> Dict[str, Any]:
@@ -927,6 +880,32 @@ def build_backend(backend_id: str, spec: BackendSpec, config: ExperimentConfig, 
     return UnavailableBackend(backend_id, spec, config)
 
 # --- Geometry & Metric Utils ---
+def _score_eval_yes_no_json(raw_text: str) -> Tuple[float, str]:
+    evaluation = extract_json(raw_text)
+    answer = normalize_answer(evaluation.get("satisfies") if evaluation else raw_text)
+    return (1.0 if answer == "yes" else 0.0), answer
+
+def _node_from_eval_object_response(
+    raw_text: str,
+    entity: Dict[str, Any],
+    image_size: Tuple[int, int],
+    confidence_threshold: float,
+) -> Dict[str, Any]:
+    evaluation = extract_json(raw_text)
+    visible = normalize_visible(evaluation.get("visible") if evaluation else None)
+    bbox = normalize_bbox(evaluation.get("bbox") if evaluation else None)
+    clamped_bbox = clamp_bbox(bbox, *image_size) if visible and bbox else None
+    confidence = 1.0 if visible else 0.0
+    passed = bool(clamped_bbox) and confidence >= confidence_threshold
+    return {
+        "id": entity.get("id"),
+        "name": entity.get("name"),
+        "bbox": clamped_bbox if passed else None,
+        "confidence": confidence,
+        "passed": passed,
+        "score": 1.0 if passed else 0.0,
+    }
+
 def safe_mean(v: Iterable) -> Optional[float]: 
     cleaned = [float(x) for x in v if x is not None]
     return sum(cleaned) / len(cleaned) if cleaned else None

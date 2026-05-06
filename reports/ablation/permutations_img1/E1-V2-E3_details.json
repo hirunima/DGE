@@ -3,7 +3,7 @@
     "image_id": "0003-1",
     "prompt": "A softly blurred bear with hints of blue and white has fur and a more intact, larger mouth that reveals a vibrant green nose.",
     "permutation": "E1-V2-E3",
-    "final_score": 0.0,
+    "final_score": 0.2,
     "st1_res": {
       "backend": "E1",
       "nodes": [
@@ -50,39 +50,49 @@
           "id": 0,
           "name": "bear",
           "attribute": "hints of blue and white",
-          "skipped": true,
-          "skip_reason": "node_not_localized"
+          "skipped": false,
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
         },
         {
           "id": 0,
           "name": "bear",
           "attribute": "softly blurred",
-          "skipped": true,
-          "skip_reason": "node_not_localized"
+          "skipped": false,
+          "score": 0.0,
+          "calibrated_score": 0.0,
+          "answer": "no"
         },
         {
           "id": 1,
           "name": "mouth",
           "attribute": "more intact",
-          "skipped": true,
-          "skip_reason": "node_not_localized"
+          "skipped": false,
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
         },
         {
           "id": 1,
           "name": "mouth",
           "attribute": "larger",
-          "skipped": true,
-          "skip_reason": "node_not_localized"
+          "skipped": false,
+          "score": 0.0,
+          "calibrated_score": 0.0,
+          "answer": "no"
         },
         {
           "id": 2,
           "name": "nose",
           "attribute": "vibrant green",
-          "skipped": true,
-          "skip_reason": "node_not_localized"
+          "skipped": false,
+          "score": 0.0,
+          "calibrated_score": 0.0,
+          "answer": "no"
         }
       ],
-      "binding_score": null
+      "binding_score": 0.4
     },
     "st3_res": {
       "backend": "E3",
@@ -113,14 +123,14 @@
       "swap_accuracy": null
     },
     "latency_ms": {
-      "total": 1104.9885989632457
+      "total": 1968.7026379979216
     }
   },
   {
     "image_id": "0056-2",
     "prompt": "A flock of five sheep stands in front of structures, with one sheep positioned in the middle of the scene, surrounded by other sheep, against a blurred background.",
     "permutation": "E1-V2-E3",
-    "final_score": 0.2,
+    "final_score": 0.6,
     "st1_res": {
       "backend": "E1",
       "nodes": [
@@ -180,11 +190,13 @@
           "id": 0,
           "name": "sheep",
           "attribute": "quantity:5",
-          "skipped": true,
-          "skip_reason": "node_not_localized"
+          "skipped": false,
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
         }
       ],
-      "binding_score": null
+      "binding_score": 1.0
     },
     "st3_res": {
       "backend": "E3",
@@ -215,7 +227,7 @@
       "swap_accuracy": null
     },
     "latency_ms": {
-      "total": 334.7014510072768
+      "total": 1888.240786967799
     }
   },
   {
@@ -290,54 +302,27 @@
           "name": "background",
           "attribute": "light-colored",
           "skipped": false,
-          "bbox": [
-            301,
-            151,
-            400,
-            236
-          ],
-          "score": 1.0,
-          "calibrated_score": 1.0,
-          "token_probs": {
-            "yes_prob": 1.0,
-            "no_prob": 0.0
-          }
+          "score": 0.0,
+          "calibrated_score": 0.0,
+          "answer": "no"
         },
         {
           "id": 2,
           "name": "background",
           "attribute": "large",
           "skipped": false,
-          "bbox": [
-            301,
-            151,
-            400,
-            236
-          ],
-          "score": 0.0,
-          "calibrated_score": 0.0,
-          "token_probs": {
-            "yes_prob": 0.0,
-            "no_prob": 1.0
-          }
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
         },
         {
           "id": 3,
           "name": "arrangement",
           "attribute": "hair tone:dark",
           "skipped": false,
-          "bbox": [
-            121,
-            136,
-            433,
-            437
-          ],
           "score": 0.0,
           "calibrated_score": 0.0,
-          "token_probs": {
-            "yes_prob": 0.0,
-            "no_prob": 1.0
-          }
+          "answer": "no"
         }
       ],
       "binding_score": 0.3333333333333333
@@ -398,14 +383,14 @@
       "swap_accuracy": 0.3333333333333333
     },
     "latency_ms": {
-      "total": 806.9712780416012
+      "total": 1575.9447189047933
     }
   },
   {
     "image_id": "0094-1",
     "prompt": "A bottle sits on a table in front of a screen, while a light brown audience member is present.",
     "permutation": "E1-V2-E3",
-    "final_score": 0.35417683919270837,
+    "final_score": 0.6875101725260417,
     "st1_res": {
       "backend": "E1",
       "nodes": [
@@ -486,21 +471,12 @@
           "name": "audience member",
           "attribute": "light brown",
           "skipped": false,
-          "bbox": [
-            453,
-            426,
-            580,
-            920
-          ],
-          "score": 0.0,
-          "calibrated_score": 0.0,
-          "token_probs": {
-            "yes_prob": 0.0,
-            "no_prob": 1.0
-          }
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
         }
       ],
-      "binding_score": 0.0
+      "binding_score": 1.0
     },
     "st3_res": {
       "backend": "E3",
@@ -558,14 +534,14 @@
       "swap_accuracy": 0.3333333333333333
     },
     "latency_ms": {
-      "total": 544.0303950454108
+      "total": 1779.7098190058023
     }
   },
   {
     "image_id": "0124-3",
     "prompt": "A sheep stands in a pen, facing a head, with berries visible beyond a metal fence.",
     "permutation": "E1-V2-E3",
-    "final_score": 0.2602213541666667,
+    "final_score": 0.5935546875000001,
     "st1_res": {
       "backend": "E1",
       "nodes": [
@@ -636,21 +612,12 @@
           "name": "fence",
           "attribute": "material:metal",
           "skipped": false,
-          "bbox": [
-            440,
-            250,
-            601,
-            470
-          ],
-          "score": 0.0,
-          "calibrated_score": 0.0,
-          "token_probs": {
-            "yes_prob": 0.0,
-            "no_prob": 1.0
-          }
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
         }
       ],
-      "binding_score": 0.0
+      "binding_score": 1.0
     },
     "st3_res": {
       "backend": "E3",
@@ -690,7 +657,7 @@
       "swap_accuracy": 1.0
     },
     "latency_ms": {
-      "total": 445.4978569992818
+      "total": 1678.8702770136297
     }
   },
   {
@@ -798,7 +765,7 @@
       "swap_accuracy": 1.0
     },
     "latency_ms": {
-      "total": 265.95603401074186
+      "total": 254.2048619943671
     }
   },
   {
@@ -879,25 +846,18 @@
           "name": "sandwich",
           "attribute": "order:messy/disordered/unordered/disorganized/unorganized/cluttered/untidy",
           "skipped": false,
-          "bbox": [
-            318,
-            275,
-            512,
-            445
-          ],
           "score": 0.0,
           "calibrated_score": 0.0,
-          "token_probs": {
-            "yes_prob": 0.0,
-            "no_prob": 1.0
-          }
+          "answer": "no"
         },
         {
           "id": 14,
           "name": "McDonald's fries container",
           "attribute": "red",
-          "skipped": true,
-          "skip_reason": "node_not_localized"
+          "skipped": false,
+          "score": 0.0,
+          "calibrated_score": 0.0,
+          "answer": "no"
         }
       ],
       "binding_score": 0.0
@@ -931,14 +891,14 @@
       "swap_accuracy": null
     },
     "latency_ms": {
-      "total": 382.06255598925054
+      "total": 1541.692111059092
     }
   },
   {
     "image_id": "0132-4",
     "prompt": "A horse, with a fresh face and a nose, is looking down towards the ground.",
     "permutation": "E1-V2-E3",
-    "final_score": 0.25,
+    "final_score": 0.125,
     "st1_res": {
       "backend": "E1",
       "nodes": [
@@ -990,11 +950,13 @@
           "id": 4,
           "name": "face",
           "attribute": "fresh",
-          "skipped": true,
-          "skip_reason": "node_not_localized"
+          "skipped": false,
+          "score": 0.0,
+          "calibrated_score": 0.0,
+          "answer": "no"
         }
       ],
-      "binding_score": null
+      "binding_score": 0.0
     },
     "st3_res": {
       "backend": "E3",
@@ -1025,7 +987,7 @@
       "swap_accuracy": null
     },
     "latency_ms": {
-      "total": 204.50022199656814
+      "total": 989.8023589630611
     }
   },
   {
@@ -1113,54 +1075,27 @@
           "name": "arms",
           "attribute": "outstretched",
           "skipped": false,
-          "bbox": [
-            148,
-            214,
-            876,
-            1017
-          ],
           "score": 1.0,
           "calibrated_score": 1.0,
-          "token_probs": {
-            "yes_prob": 1.0,
-            "no_prob": 0.0
-          }
+          "answer": "yes"
         },
         {
           "id": 107,
           "name": "right arm",
           "attribute": "raised",
           "skipped": false,
-          "bbox": [
-            148,
-            214,
-            876,
-            1017
-          ],
           "score": 1.0,
           "calibrated_score": 1.0,
-          "token_probs": {
-            "yes_prob": 1.0,
-            "no_prob": 0.0
-          }
+          "answer": "yes"
         },
         {
           "id": 110,
           "name": "grass",
           "attribute": "green",
           "skipped": false,
-          "bbox": [
-            148,
-            214,
-            876,
-            1017
-          ],
           "score": 1.0,
           "calibrated_score": 1.0,
-          "token_probs": {
-            "yes_prob": 1.0,
-            "no_prob": 0.0
-          }
+          "answer": "yes"
         }
       ],
       "binding_score": 1.0
@@ -1221,7 +1156,7 @@
       "swap_accuracy": 1.0
     },
     "latency_ms": {
-      "total": 846.1620350717567
+      "total": 2706.3570539467037
     }
   },
   {
@@ -1311,51 +1246,37 @@
           "id": 4,
           "name": "chair",
           "attribute": "quantity:2",
-          "skipped": true,
-          "skip_reason": "node_not_localized"
+          "skipped": false,
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
         },
         {
           "id": 9,
           "name": "cup",
           "attribute": "material:glass",
-          "skipped": true,
-          "skip_reason": "node_not_localized"
+          "skipped": false,
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
         },
         {
           "id": 102,
           "name": "wall",
           "attribute": "color:white",
           "skipped": false,
-          "bbox": [
-            481,
-            490,
-            530,
-            566
-          ],
           "score": 1.0,
           "calibrated_score": 1.0,
-          "token_probs": {
-            "yes_prob": 1.0,
-            "no_prob": 0.0
-          }
+          "answer": "yes"
         },
         {
           "id": 104,
           "name": "table",
           "attribute": "shape:round",
           "skipped": false,
-          "bbox": [
-            220,
-            548,
-            666,
-            929
-          ],
           "score": 1.0,
           "calibrated_score": 1.0,
-          "token_probs": {
-            "yes_prob": 1.0,
-            "no_prob": 0.0
-          }
+          "answer": "yes"
         }
       ],
       "binding_score": 1.0
@@ -1398,7 +1319,7 @@
       "swap_accuracy": 1.0
     },
     "latency_ms": {
-      "total": 543.6327790375799
+      "total": 3343.335403013043
     }
   },
   {
@@ -1486,36 +1407,18 @@
           "name": "plate",
           "attribute": "white",
           "skipped": false,
-          "bbox": [
-            243,
-            236,
-            782,
-            715
-          ],
           "score": 1.0,
           "calibrated_score": 1.0,
-          "token_probs": {
-            "yes_prob": 1.0,
-            "no_prob": 0.0
-          }
+          "answer": "yes"
         },
         {
           "id": 110,
           "name": "spices",
           "attribute": "other",
           "skipped": false,
-          "bbox": [
-            243,
-            236,
-            782,
-            715
-          ],
           "score": 0.0,
           "calibrated_score": 0.0,
-          "token_probs": {
-            "yes_prob": 0.0,
-            "no_prob": 1.0
-          }
+          "answer": "no"
         }
       ],
       "binding_score": 0.5
@@ -1576,14 +1479,14 @@
       "swap_accuracy": 0.0
     },
     "latency_ms": {
-      "total": 616.1658790661022
+      "total": 2149.1755610331893
     }
   },
   {
     "image_id": "0178-3",
     "prompt": "A pair of zebras grazes on a lush green field, positioned to the right of a group of three cows, with a bare tree trunk extending into the frame from the right side of the field.",
     "permutation": "E1-V2-E3",
-    "final_score": 0.125,
+    "final_score": 0.375,
     "st1_res": {
       "backend": "E1",
       "nodes": [
@@ -1636,42 +1539,39 @@
           "name": "cow",
           "attribute": "quantity:3",
           "skipped": false,
-          "bbox": [
-            381,
-            404,
-            477,
-            521
-          ],
           "score": 0.0,
           "calibrated_score": 0.0,
-          "token_probs": {
-            "yes_prob": 0.0,
-            "no_prob": 1.0
-          }
+          "answer": "no"
         },
         {
           "id": 1,
           "name": "zebra",
           "attribute": "quantity:2",
-          "skipped": true,
-          "skip_reason": "node_not_localized"
+          "skipped": false,
+          "score": 0.0,
+          "calibrated_score": 0.0,
+          "answer": "no"
         },
         {
           "id": 100,
           "name": "field",
           "attribute": "lush green",
-          "skipped": true,
-          "skip_reason": "node_not_localized"
+          "skipped": false,
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
         },
         {
           "id": 105,
           "name": "tree trunk",
           "attribute": "bare",
-          "skipped": true,
-          "skip_reason": "node_not_localized"
+          "skipped": false,
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
         }
       ],
-      "binding_score": 0.0
+      "binding_score": 0.5
     },
     "st3_res": {
       "backend": "E3",
@@ -1702,7 +1602,7 @@
       "swap_accuracy": null
     },
     "latency_ms": {
-      "total": 371.11793499207124
+      "total": 2911.286215938162
     }
   },
   {
@@ -1793,14 +1693,14 @@
       "swap_accuracy": null
     },
     "latency_ms": {
-      "total": 284.991501015611
+      "total": 256.6390329739079
     }
   },
   {
     "image_id": "0214-1",
     "prompt": "Lush green foliage lines the riverbank of a shallow river that flows into a background.",
     "permutation": "E1-V2-E3",
-    "final_score": 0.0,
+    "final_score": 0.3333333333333333,
     "st1_res": {
       "backend": "E1",
       "nodes": [
@@ -1847,25 +1747,31 @@
           "id": 100,
           "name": "river",
           "attribute": "shallow",
-          "skipped": true,
-          "skip_reason": "node_not_localized"
+          "skipped": false,
+          "score": 0.0,
+          "calibrated_score": 0.0,
+          "answer": "no"
         },
         {
           "id": 105,
           "name": "foliage",
           "attribute": "lush",
-          "skipped": true,
-          "skip_reason": "node_not_localized"
+          "skipped": false,
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
         },
         {
           "id": 105,
           "name": "foliage",
           "attribute": "green",
-          "skipped": true,
-          "skip_reason": "node_not_localized"
+          "skipped": false,
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
         }
       ],
-      "binding_score": null
+      "binding_score": 0.6666666666666666
     },
     "st3_res": {
       "backend": "E3",
@@ -1896,14 +1802,14 @@
       "swap_accuracy": null
     },
     "latency_ms": {
-      "total": 178.77207102719694
+      "total": 2280.508896103129
     }
   },
   {
     "image_id": "0220-5",
     "prompt": "Two zebras stand on a sunny, grassy field, casting shadows under bright daylight, with bare trees in the background.",
     "permutation": "E1-V2-E3",
-    "final_score": 0.6223083496093751,
+    "final_score": 0.6889750162760417,
     "st1_res": {
       "backend": "E1",
       "nodes": [
@@ -1997,93 +1903,48 @@
           "name": "zebra",
           "attribute": "quantity:2",
           "skipped": false,
-          "bbox": [
-            13,
-            394,
-            538,
-            866
-          ],
-          "score": 0.0,
-          "calibrated_score": 0.0,
-          "token_probs": {
-            "yes_prob": 0.0,
-            "no_prob": 1.0
-          }
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
         },
         {
           "id": 100,
           "name": "field",
           "attribute": "sunny",
           "skipped": false,
-          "bbox": [
-            13,
-            394,
-            538,
-            866
-          ],
           "score": 1.0,
           "calibrated_score": 1.0,
-          "token_probs": {
-            "yes_prob": 1.0,
-            "no_prob": 0.0
-          }
+          "answer": "yes"
         },
         {
           "id": 100,
           "name": "field",
           "attribute": "grassy",
           "skipped": false,
-          "bbox": [
-            13,
-            394,
-            538,
-            866
-          ],
           "score": 1.0,
           "calibrated_score": 1.0,
-          "token_probs": {
-            "yes_prob": 1.0,
-            "no_prob": 0.0
-          }
+          "answer": "yes"
         },
         {
           "id": 105,
           "name": "trees",
           "attribute": "bare",
           "skipped": false,
-          "bbox": [
-            13,
-            394,
-            538,
-            866
-          ],
           "score": 1.0,
           "calibrated_score": 1.0,
-          "token_probs": {
-            "yes_prob": 1.0,
-            "no_prob": 0.0
-          }
+          "answer": "yes"
         },
         {
           "id": 106,
           "name": "lighting",
           "attribute": "bright",
           "skipped": false,
-          "bbox": [
-            13,
-            394,
-            538,
-            866
-          ],
           "score": 1.0,
           "calibrated_score": 1.0,
-          "token_probs": {
-            "yes_prob": 1.0,
-            "no_prob": 0.0
-          }
+          "answer": "yes"
         }
       ],
-      "binding_score": 0.8
+      "binding_score": 1.0
     },
     "st3_res": {
       "backend": "E3",
@@ -2141,14 +2002,14 @@
       "swap_accuracy": 0.3333333333333333
     },
     "latency_ms": {
-      "total": 856.3193419831805
+      "total": 2879.9219140200876
     }
   },
   {
     "image_id": "0241-5",
     "prompt": "An airplane soars through the sky, as a crescent moon with an orange glow peeks through a thin veil, forming a celestial wonder in a scene.",
     "permutation": "E1-V2-E3",
-    "final_score": 0.3610026041666667,
+    "final_score": 0.6110026041666667,
     "st1_res": {
       "backend": "E1",
       "nodes": [
@@ -2242,75 +2103,39 @@
           "name": "moon",
           "attribute": "crescent",
           "skipped": false,
-          "bbox": [
-            408,
-            431,
-            791,
-            615
-          ],
-          "score": 0.0,
-          "calibrated_score": 0.0,
-          "token_probs": {
-            "yes_prob": 0.0,
-            "no_prob": 1.0
-          }
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
         },
         {
           "id": 103,
           "name": "moon",
           "attribute": "orange glow",
           "skipped": false,
-          "bbox": [
-            408,
-            431,
-            791,
-            615
-          ],
-          "score": 0.0,
-          "calibrated_score": 0.0,
-          "token_probs": {
-            "yes_prob": 0.0,
-            "no_prob": 1.0
-          }
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
         },
         {
           "id": 104,
           "name": "veil",
           "attribute": "thin",
           "skipped": false,
-          "bbox": [
-            408,
-            431,
-            791,
-            615
-          ],
           "score": 0.0,
           "calibrated_score": 0.0,
-          "token_probs": {
-            "yes_prob": 0.0,
-            "no_prob": 1.0
-          }
+          "answer": "no"
         },
         {
           "id": 106,
           "name": "wonder",
           "attribute": "celestial",
           "skipped": false,
-          "bbox": [
-            408,
-            431,
-            791,
-            615
-          ],
-          "score": 0.0,
-          "calibrated_score": 0.0,
-          "token_probs": {
-            "yes_prob": 0.0,
-            "no_prob": 1.0
-          }
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
         }
       ],
-      "binding_score": 0.0
+      "binding_score": 0.75
     },
     "st3_res": {
       "backend": "E3",
@@ -2368,14 +2193,14 @@
       "swap_accuracy": 0.3333333333333333
     },
     "latency_ms": {
-      "total": 716.2944610463455
+      "total": 3271.9496389618143
     }
   },
   {
     "image_id": "0244-4",
     "prompt": "In a kitchen with a tiled backsplash, a wine glass holds an orange drink beside a bowl on the countertop.",
     "permutation": "E1-V2-E3",
-    "final_score": 0.5353122287326388,
+    "final_score": 0.7019788953993056,
     "st1_res": {
       "backend": "E1",
       "nodes": [
@@ -2469,39 +2294,21 @@
           "name": "drink",
           "attribute": "orange",
           "skipped": false,
-          "bbox": [
-            442,
-            513,
-            521,
-            768
-          ],
           "score": 1.0,
           "calibrated_score": 1.0,
-          "token_probs": {
-            "yes_prob": 1.0,
-            "no_prob": 0.0
-          }
+          "answer": "yes"
         },
         {
           "id": 12,
           "name": "backsplash",
           "attribute": "tiled",
           "skipped": false,
-          "bbox": [
-            920,
-            688,
-            997,
-            744
-          ],
-          "score": 0.0,
-          "calibrated_score": 0.0,
-          "token_probs": {
-            "yes_prob": 0.0,
-            "no_prob": 1.0
-          }
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
         }
       ],
-      "binding_score": 0.5
+      "binding_score": 1.0
     },
     "st3_res": {
       "backend": "E3",
@@ -2559,7 +2366,7 @@
       "swap_accuracy": 0.3333333333333333
     },
     "latency_ms": {
-      "total": 591.2238700548187
+      "total": 2390.2783469529822
     }
   },
   {
@@ -2610,26 +2417,19 @@
           "id": 0,
           "name": "snowboard",
           "attribute": "material:wood/wooden/bamboo/hardwood",
-          "skipped": true,
-          "skip_reason": "node_not_localized"
+          "skipped": false,
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
         },
         {
           "id": 9,
           "name": "accents",
           "attribute": "color:red",
           "skipped": false,
-          "bbox": [
-            347,
-            767,
-            407,
-            801
-          ],
           "score": 1.0,
           "calibrated_score": 1.0,
-          "token_probs": {
-            "yes_prob": 1.0,
-            "no_prob": 0.0
-          }
+          "answer": "yes"
         }
       ],
       "binding_score": 1.0
@@ -2656,7 +2456,7 @@
       "swap_accuracy": null
     },
     "latency_ms": {
-      "total": 366.212913999334
+      "total": 1772.1291040070355
     }
   },
   {
@@ -2731,54 +2531,27 @@
           "name": "bench",
           "attribute": "pattern:striped/lined/pinstriped",
           "skipped": false,
-          "bbox": [
-            126,
-            520,
-            945,
-            913
-          ],
           "score": 1.0,
           "calibrated_score": 1.0,
-          "token_probs": {
-            "yes_prob": 1.0,
-            "no_prob": 0.0
-          }
+          "answer": "yes"
         },
         {
           "id": 102,
           "name": "wall",
           "attribute": "concrete",
           "skipped": false,
-          "bbox": [
-            126,
-            520,
-            945,
-            913
-          ],
           "score": 1.0,
           "calibrated_score": 1.0,
-          "token_probs": {
-            "yes_prob": 1.0,
-            "no_prob": 0.0
-          }
+          "answer": "yes"
         },
         {
           "id": 104,
           "name": "bricks",
           "attribute": "red",
           "skipped": false,
-          "bbox": [
-            126,
-            520,
-            945,
-            913
-          ],
           "score": 1.0,
           "calibrated_score": 1.0,
-          "token_probs": {
-            "yes_prob": 1.0,
-            "no_prob": 0.0
-          }
+          "answer": "yes"
         }
       ],
       "binding_score": 1.0
@@ -2839,14 +2612,14 @@
       "swap_accuracy": 0.3333333333333333
     },
     "latency_ms": {
-      "total": 653.9484290988185
+      "total": 2624.884195975028
     }
   },
   {
     "image_id": "0310-5",
     "prompt": "A soft/fluffy/furry/hairy hot dog (quantity: 3), served as part of a freshly prepared meal, sits on a dark brown plate resting on a stone/granite/cobblestone/gravel/marble/pebbled/rocky/sandy dining table, accompanied by a reddish-brown sausage with bright yellow mustard creating contrast.",
     "permutation": "E1-V2-E3",
-    "final_score": 0.3333333333333333,
+    "final_score": 0.45238095238095233,
     "st1_res": {
       "backend": "E1",
       "nodes": [
@@ -2920,85 +2693,66 @@
           "name": "hot dog",
           "attribute": "texture:soft/fluffy/furry/hairy",
           "skipped": false,
-          "bbox": [
-            981,
-            391,
-            1247,
-            708
-          ],
           "score": 0.0,
           "calibrated_score": 0.0,
-          "token_probs": {
-            "yes_prob": 0.0,
-            "no_prob": 1.0
-          }
+          "answer": "no"
         },
         {
           "id": 0,
           "name": "hot dog",
           "attribute": "quantity:3",
           "skipped": false,
-          "bbox": [
-            981,
-            391,
-            1247,
-            708
-          ],
-          "score": 0.0,
-          "calibrated_score": 0.0,
-          "token_probs": {
-            "yes_prob": 0.0,
-            "no_prob": 1.0
-          }
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
         },
         {
           "id": 1,
           "name": "dining table",
           "attribute": "material:stone/granite/cobblestone/gravel/marble/pebbled/rocky/sandy",
-          "skipped": true,
-          "skip_reason": "node_not_localized"
+          "skipped": false,
+          "score": 0.0,
+          "calibrated_score": 0.0,
+          "answer": "no"
         },
         {
           "id": 100,
           "name": "plate",
           "attribute": "color:dark brown",
-          "skipped": true,
-          "skip_reason": "node_not_localized"
+          "skipped": false,
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
         },
         {
           "id": 102,
           "name": "mustard",
           "attribute": "color:bright yellow",
-          "skipped": true,
-          "skip_reason": "node_not_localized"
+          "skipped": false,
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
         },
         {
           "id": 103,
           "name": "sausage",
           "attribute": "color:reddish-brown",
           "skipped": false,
-          "bbox": [
-            981,
-            391,
-            1247,
-            708
-          ],
           "score": 1.0,
           "calibrated_score": 1.0,
-          "token_probs": {
-            "yes_prob": 1.0,
-            "no_prob": 0.0
-          }
+          "answer": "yes"
         },
         {
           "id": 104,
           "name": "meal",
           "attribute": "freshly prepared",
-          "skipped": true,
-          "skip_reason": "node_not_localized"
+          "skipped": false,
+          "score": 0.0,
+          "calibrated_score": 0.0,
+          "answer": "unclear"
         }
       ],
-      "binding_score": 0.3333333333333333
+      "binding_score": 0.5714285714285714
     },
     "st3_res": {
       "backend": "E3",
@@ -3029,7 +2783,7 @@
       "swap_accuracy": null
     },
     "latency_ms": {
-      "total": 673.9598769927397
+      "total": 6555.9323480702005
     }
   },
   {
@@ -3142,14 +2896,14 @@
       "swap_accuracy": 0.0
     },
     "latency_ms": {
-      "total": 283.06378109846264
+      "total": 267.20746606588364
     }
   },
   {
     "image_id": "0346-4",
     "prompt": "A lettered bus, parked on a cobblestone ground and positioned to the right of four motorcycles, has a car behind them.",
     "permutation": "E1-V2-E3",
-    "final_score": 0.47928195529513895,
+    "final_score": 0.59039306640625,
     "st1_res": {
       "backend": "E1",
       "nodes": [
@@ -3217,57 +2971,30 @@
           "name": "bus",
           "attribute": "pattern:lettered",
           "skipped": false,
-          "bbox": [
-            24,
-            445,
-            497,
-            742
-          ],
           "score": 1.0,
           "calibrated_score": 1.0,
-          "token_probs": {
-            "yes_prob": 1.0,
-            "no_prob": 0.0
-          }
+          "answer": "yes"
         },
         {
           "id": 5,
           "name": "motorcycle",
           "attribute": "quantity:4",
           "skipped": false,
-          "bbox": [
-            480,
-            610,
-            557,
-            702
-          ],
           "score": 0.0,
           "calibrated_score": 0.0,
-          "token_probs": {
-            "yes_prob": 0.0,
-            "no_prob": 1.0
-          }
+          "answer": "no"
         },
         {
           "id": 100,
           "name": "ground",
           "attribute": "cobblestone",
           "skipped": false,
-          "bbox": [
-            480,
-            610,
-            557,
-            702
-          ],
-          "score": 0.0,
-          "calibrated_score": 0.0,
-          "token_probs": {
-            "yes_prob": 0.0,
-            "no_prob": 1.0
-          }
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
         }
       ],
-      "binding_score": 0.3333333333333333
+      "binding_score": 0.6666666666666666
     },
     "st3_res": {
       "backend": "E3",
@@ -3325,14 +3052,14 @@
       "swap_accuracy": 1.0
     },
     "latency_ms": {
-      "total": 748.5758760012686
+      "total": 2629.7693790402263
     }
   },
   {
     "image_id": "0353-5",
     "prompt": "A messy broccoli with a partially obscured floret accompanies a healthy, flavorful, delicious meal that includes a side dish, while a chicken is seasoned with fresh parsley.",
     "permutation": "E1-V2-E3",
-    "final_score": 0.6410902235243057,
+    "final_score": 0.4410902235243056,
     "st1_res": {
       "backend": "E1",
       "nodes": [
@@ -3426,93 +3153,48 @@
           "name": "broccoli",
           "attribute": "order:messy/disordered/unordered/disorganized/unorganized/cluttered/untidy",
           "skipped": false,
-          "bbox": [
-            192,
-            408,
-            484,
-            641
-          ],
           "score": 0.0,
           "calibrated_score": 0.0,
-          "token_probs": {
-            "yes_prob": 0.0,
-            "no_prob": 1.0
-          }
+          "answer": "no"
         },
         {
           "id": 2,
           "name": "meal",
           "attribute": "healthy",
           "skipped": false,
-          "bbox": [
-            6,
-            165,
-            1016,
-            946
-          ],
           "score": 1.0,
           "calibrated_score": 1.0,
-          "token_probs": {
-            "yes_prob": 1.0,
-            "no_prob": 0.0
-          }
+          "answer": "yes"
         },
         {
           "id": 2,
           "name": "meal",
           "attribute": "flavorful",
           "skipped": false,
-          "bbox": [
-            6,
-            165,
-            1016,
-            946
-          ],
-          "score": 1.0,
-          "calibrated_score": 1.0,
-          "token_probs": {
-            "yes_prob": 1.0,
-            "no_prob": 0.0
-          }
+          "score": 0.0,
+          "calibrated_score": 0.0,
+          "answer": "unclear"
         },
         {
           "id": 2,
           "name": "meal",
           "attribute": "delicious",
           "skipped": false,
-          "bbox": [
-            6,
-            165,
-            1016,
-            946
-          ],
-          "score": 1.0,
-          "calibrated_score": 1.0,
-          "token_probs": {
-            "yes_prob": 1.0,
-            "no_prob": 0.0
-          }
+          "score": 0.0,
+          "calibrated_score": 0.0,
+          "answer": "unclear"
         },
         {
           "id": 16,
           "name": "floret",
           "attribute": "partially obscured",
           "skipped": false,
-          "bbox": [
-            192,
-            408,
-            484,
-            641
-          ],
-          "score": 1.0,
-          "calibrated_score": 1.0,
-          "token_probs": {
-            "yes_prob": 1.0,
-            "no_prob": 0.0
-          }
+          "score": 0.0,
+          "calibrated_score": 0.0,
+          "answer": "no"
         }
       ],
-      "binding_score": 0.8
+      "binding_score": 0.2
     },
     "st3_res": {
       "backend": "E3",
@@ -3570,14 +3252,14 @@
       "swap_accuracy": 0.3333333333333333
     },
     "latency_ms": {
-      "total": 966.888266033493
+      "total": 4101.652650977485
     }
   },
   {
     "image_id": "0357-5",
     "prompt": "A donut moves along a conveyor belt on a donut production line inside a brightly lit room, with machinery featuring a white warning sign attached.",
     "permutation": "E1-V2-E3",
-    "final_score": 0.34670681423611116,
+    "final_score": 0.5689290364583335,
     "st1_res": {
       "backend": "E1",
       "nodes": [
@@ -3666,57 +3348,30 @@
           "name": "donut",
           "attribute": "quantity:14",
           "skipped": false,
-          "bbox": [
-            455,
-            527,
-            800,
-            697
-          ],
           "score": 0.0,
           "calibrated_score": 0.0,
-          "token_probs": {
-            "yes_prob": 0.0,
-            "no_prob": 1.0
-          }
+          "answer": "no"
         },
         {
           "id": 7,
           "name": "room",
           "attribute": "brightly lit",
           "skipped": false,
-          "bbox": [
-            524,
-            861,
-            712,
-            927
-          ],
-          "score": 0.0,
-          "calibrated_score": 0.0,
-          "token_probs": {
-            "yes_prob": 0.0,
-            "no_prob": 1.0
-          }
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
         },
         {
           "id": 11,
           "name": "warning sign",
           "attribute": "white",
           "skipped": false,
-          "bbox": [
-            1042,
-            160,
-            1228,
-            347
-          ],
-          "score": 0.0,
-          "calibrated_score": 0.0,
-          "token_probs": {
-            "yes_prob": 0.0,
-            "no_prob": 1.0
-          }
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
         }
       ],
-      "binding_score": 0.0
+      "binding_score": 0.6666666666666666
     },
     "st3_res": {
       "backend": "E3",
@@ -3765,7 +3420,7 @@
       "swap_accuracy": 0.0
     },
     "latency_ms": {
-      "total": 811.5357380593196
+      "total": 3377.82743194839
     }
   },
   {
@@ -3840,72 +3495,36 @@
           "name": "mountain",
           "attribute": "covered in snow",
           "skipped": false,
-          "bbox": [
-            1,
-            303,
-            1023,
-            927
-          ],
           "score": 1.0,
           "calibrated_score": 1.0,
-          "token_probs": {
-            "yes_prob": 1.0,
-            "no_prob": 0.0
-          }
+          "answer": "yes"
         },
         {
           "id": 11,
           "name": "mountain peak",
           "attribute": "covered in snow",
           "skipped": false,
-          "bbox": [
-            1,
-            303,
-            1023,
-            1020
-          ],
           "score": 1.0,
           "calibrated_score": 1.0,
-          "token_probs": {
-            "yes_prob": 1.0,
-            "no_prob": 0.0
-          }
+          "answer": "yes"
         },
         {
           "id": 12,
           "name": "sky",
           "attribute": "clear",
           "skipped": false,
-          "bbox": [
-            1,
-            303,
-            1023,
-            927
-          ],
           "score": 1.0,
           "calibrated_score": 1.0,
-          "token_probs": {
-            "yes_prob": 1.0,
-            "no_prob": 0.0
-          }
+          "answer": "yes"
         },
         {
           "id": 12,
           "name": "sky",
           "attribute": "color:blue",
           "skipped": false,
-          "bbox": [
-            1,
-            303,
-            1023,
-            927
-          ],
           "score": 1.0,
           "calibrated_score": 1.0,
-          "token_probs": {
-            "yes_prob": 1.0,
-            "no_prob": 0.0
-          }
+          "answer": "yes"
         }
       ],
       "binding_score": 1.0
@@ -3966,14 +3585,14 @@
       "swap_accuracy": 0.3333333333333333
     },
     "latency_ms": {
-      "total": 845.195869973395
+      "total": 2844.940434966702
     }
   },
   {
     "image_id": "0507-5",
     "prompt": "A wooden bed with a striped pattern has a matching wooden headboard, and beside it sits a lamp with lamp shades.",
     "permutation": "E1-V2-E3",
-    "final_score": 0.5346544053819444,
+    "final_score": 0.7013210720486112,
     "st1_res": {
       "backend": "E1",
       "nodes": [
@@ -4041,39 +3660,21 @@
           "name": "bed",
           "attribute": "material:wood/wooden/bamboo/hardwood",
           "skipped": false,
-          "bbox": [
-            1191,
-            569,
-            1600,
-            772
-          ],
-          "score": 0.0,
-          "calibrated_score": 0.0,
-          "token_probs": {
-            "yes_prob": 0.0,
-            "no_prob": 1.0
-          }
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
         },
         {
           "id": 1,
           "name": "bed",
           "attribute": "pattern:striped/lined/pinstriped",
           "skipped": false,
-          "bbox": [
-            1191,
-            569,
-            1600,
-            772
-          ],
           "score": 1.0,
           "calibrated_score": 1.0,
-          "token_probs": {
-            "yes_prob": 1.0,
-            "no_prob": 0.0
-          }
+          "answer": "yes"
         }
       ],
-      "binding_score": 0.5
+      "binding_score": 1.0
     },
     "st3_res": {
       "backend": "E3",
@@ -4131,14 +3732,14 @@
       "swap_accuracy": 0.6666666666666666
     },
     "latency_ms": {
-      "total": 709.6988829434849
+      "total": 3123.3073129551485
     }
   },
   {
     "image_id": "0515-1",
     "prompt": "A prominently visible wing of an airplane flies above a car park and a sprawling residential area, which extends into the distance of a vast landscape.",
     "permutation": "E1-V2-E3",
-    "final_score": 0.0,
+    "final_score": 0.5,
     "st1_res": {
       "backend": "E1",
       "nodes": [
@@ -4193,39 +3794,49 @@
           "id": 102,
           "name": "wing",
           "attribute": "prominently visible",
-          "skipped": true,
-          "skip_reason": "node_not_localized"
+          "skipped": false,
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
         },
         {
           "id": 103,
           "name": "residential area",
           "attribute": "sprawling",
-          "skipped": true,
-          "skip_reason": "node_not_localized"
+          "skipped": false,
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
         },
         {
           "id": 103,
           "name": "residential area",
           "attribute": "many houses",
-          "skipped": true,
-          "skip_reason": "node_not_localized"
+          "skipped": false,
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
         },
         {
           "id": 103,
           "name": "residential area",
           "attribute": "green spaces",
-          "skipped": true,
-          "skip_reason": "node_not_localized"
+          "skipped": false,
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
         },
         {
           "id": 105,
           "name": "landscape",
           "attribute": "vast",
-          "skipped": true,
-          "skip_reason": "node_not_localized"
+          "skipped": false,
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
         }
       ],
-      "binding_score": null
+      "binding_score": 1.0
     },
     "st3_res": {
       "backend": "E3",
@@ -4256,14 +3867,14 @@
       "swap_accuracy": null
     },
     "latency_ms": {
-      "total": 334.52842506812885
+      "total": 4530.894157011062
     }
   },
   {
     "image_id": "0544-2",
     "prompt": "A closed oven sits below the counter space in a galley, with a cabinet that has a dark brown door and a ceiling painted in light yellow and cream.",
     "permutation": "E1-V2-E3",
-    "final_score": 0.44484117296006953,
+    "final_score": 0.5281745062934028,
     "st1_res": {
       "backend": "E1",
       "nodes": [
@@ -4357,75 +3968,39 @@
           "name": "oven",
           "attribute": "state:closed",
           "skipped": false,
-          "bbox": [
-            280,
-            328,
-            411,
-            469
-          ],
           "score": 1.0,
           "calibrated_score": 1.0,
-          "token_probs": {
-            "yes_prob": 1.0,
-            "no_prob": 0.0
-          }
+          "answer": "yes"
         },
         {
           "id": 104,
           "name": "ceiling",
           "attribute": "color:light yellow",
           "skipped": false,
-          "bbox": [
-            287,
-            91,
-            407,
-            230
-          ],
           "score": 0.0,
           "calibrated_score": 0.0,
-          "token_probs": {
-            "yes_prob": 0.0,
-            "no_prob": 1.0
-          }
+          "answer": "no"
         },
         {
           "id": 104,
           "name": "ceiling",
           "attribute": "color:cream",
           "skipped": false,
-          "bbox": [
-            287,
-            91,
-            407,
-            230
-          ],
           "score": 0.0,
           "calibrated_score": 0.0,
-          "token_probs": {
-            "yes_prob": 0.0,
-            "no_prob": 1.0
-          }
+          "answer": "no"
         },
         {
           "id": 110,
           "name": "door",
           "attribute": "color:dark brown",
           "skipped": false,
-          "bbox": [
-            287,
-            91,
-            407,
-            230
-          ],
-          "score": 0.0,
-          "calibrated_score": 0.0,
-          "token_probs": {
-            "yes_prob": 0.0,
-            "no_prob": 1.0
-          }
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
         }
       ],
-      "binding_score": 0.25
+      "binding_score": 0.5
     },
     "st3_res": {
       "backend": "E3",
@@ -4483,7 +4058,7 @@
       "swap_accuracy": 0.6666666666666666
     },
     "latency_ms": {
-      "total": 791.9711459544487
+      "total": 1560.6422860291786
     }
   },
   {
@@ -4558,36 +4133,18 @@
           "name": "door",
           "attribute": "color:dark brown",
           "skipped": false,
-          "bbox": [
-            280,
-            160,
-            921,
-            922
-          ],
           "score": 1.0,
           "calibrated_score": 1.0,
-          "token_probs": {
-            "yes_prob": 1.0,
-            "no_prob": 0.0
-          }
+          "answer": "yes"
         },
         {
           "id": 7,
           "name": "oven",
           "attribute": "state:closed",
           "skipped": false,
-          "bbox": [
-            999,
-            333,
-            1527,
-            837
-          ],
           "score": 1.0,
           "calibrated_score": 1.0,
-          "token_probs": {
-            "yes_prob": 1.0,
-            "no_prob": 0.0
-          }
+          "answer": "yes"
         }
       ],
       "binding_score": 1.0
@@ -4648,7 +4205,7 @@
       "swap_accuracy": 0.6666666666666666
     },
     "latency_ms": {
-      "total": 830.4416680475697
+      "total": 2800.7270289817825
     }
   },
   {
@@ -4736,54 +4293,27 @@
           "name": "zebra",
           "attribute": "quantity:2",
           "skipped": false,
-          "bbox": [
-            141,
-            268,
-            489,
-            829
-          ],
           "score": 1.0,
           "calibrated_score": 1.0,
-          "token_probs": {
-            "yes_prob": 1.0,
-            "no_prob": 0.0
-          }
+          "answer": "yes"
         },
         {
           "id": 100,
           "name": "landscape",
           "attribute": "lush green",
           "skipped": false,
-          "bbox": [
-            141,
-            268,
-            489,
-            829
-          ],
           "score": 1.0,
           "calibrated_score": 1.0,
-          "token_probs": {
-            "yes_prob": 1.0,
-            "no_prob": 0.0
-          }
+          "answer": "yes"
         },
         {
           "id": 107,
           "name": "foliage",
           "attribute": "dense green",
           "skipped": false,
-          "bbox": [
-            432,
-            272,
-            702,
-            820
-          ],
           "score": 1.0,
           "calibrated_score": 1.0,
-          "token_probs": {
-            "yes_prob": 1.0,
-            "no_prob": 0.0
-          }
+          "answer": "yes"
         }
       ],
       "binding_score": 1.0
@@ -4844,14 +4374,14 @@
       "swap_accuracy": 1.0
     },
     "latency_ms": {
-      "total": 700.8456710027531
+      "total": 2383.8934889645316
     }
   },
   {
     "image_id": "0659-1",
     "prompt": "A small bathroom contains a black and white tiled floor, an open toilet, a sink, and a frosted glass window positioned above the sink.",
     "permutation": "E1-V2-E3",
-    "final_score": 0.45103624131944453,
+    "final_score": 0.6177029079861112,
     "st1_res": {
       "backend": "E1",
       "nodes": [
@@ -4932,75 +4462,39 @@
           "name": "bathroom",
           "attribute": "small",
           "skipped": false,
-          "bbox": [
-            572,
-            535,
-            868,
-            949
-          ],
-          "score": 0.0,
-          "calibrated_score": 0.0,
-          "token_probs": {
-            "yes_prob": 0.0,
-            "no_prob": 1.0
-          }
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
         },
         {
           "id": 5,
           "name": "toilet",
           "attribute": "state:open",
           "skipped": false,
-          "bbox": [
-            572,
-            535,
-            868,
-            949
-          ],
           "score": 0.0,
           "calibrated_score": 0.0,
-          "token_probs": {
-            "yes_prob": 0.0,
-            "no_prob": 1.0
-          }
+          "answer": "no"
         },
         {
           "id": 6,
           "name": "window",
           "attribute": "frosted glass",
           "skipped": false,
-          "bbox": [
-            46,
-            24,
-            168,
-            310
-          ],
           "score": 1.0,
           "calibrated_score": 1.0,
-          "token_probs": {
-            "yes_prob": 1.0,
-            "no_prob": 0.0
-          }
+          "answer": "yes"
         },
         {
           "id": 7,
           "name": "floor",
           "attribute": "black and white tiled",
           "skipped": false,
-          "bbox": [
-            46,
-            24,
-            168,
-            310
-          ],
-          "score": 0.0,
-          "calibrated_score": 0.0,
-          "token_probs": {
-            "yes_prob": 0.0,
-            "no_prob": 1.0
-          }
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
         }
       ],
-      "binding_score": 0.25
+      "binding_score": 0.75
     },
     "st3_res": {
       "backend": "E3",
@@ -5058,14 +4552,14 @@
       "swap_accuracy": 0.3333333333333333
     },
     "latency_ms": {
-      "total": 829.3243880034424
+      "total": 3287.1866960194893
     }
   },
   {
     "image_id": "0663-2",
     "prompt": "A mouse with a top and slightly smaller in diameter sits to the left of a keyboard, with a light orange USB dongle with two layers placed next to it, all on a blurred surface.",
     "permutation": "E1-V2-E3",
-    "final_score": 0.125,
+    "final_score": 0.425,
     "st1_res": {
       "backend": "E1",
       "nodes": [
@@ -5118,60 +4612,48 @@
           "name": "mouse",
           "attribute": "top",
           "skipped": false,
-          "bbox": [
-            212,
-            313,
-            944,
-            692
-          ],
           "score": 0.0,
           "calibrated_score": 0.0,
-          "token_probs": {
-            "yes_prob": 0.0,
-            "no_prob": 1.0
-          }
+          "answer": "no"
         },
         {
           "id": 0,
           "name": "mouse",
           "attribute": "slightly smaller in diameter",
           "skipped": false,
-          "bbox": [
-            212,
-            313,
-            944,
-            692
-          ],
           "score": 0.0,
           "calibrated_score": 0.0,
-          "token_probs": {
-            "yes_prob": 0.0,
-            "no_prob": 1.0
-          }
+          "answer": "unclear"
         },
         {
           "id": 2,
           "name": "surface",
           "attribute": "blurred",
-          "skipped": true,
-          "skip_reason": "node_not_localized"
+          "skipped": false,
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
         },
         {
           "id": 5,
           "name": "USB dongle",
           "attribute": "light orange",
-          "skipped": true,
-          "skip_reason": "node_not_localized"
+          "skipped": false,
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
         },
         {
           "id": 5,
           "name": "USB dongle",
           "attribute": "two layers",
-          "skipped": true,
-          "skip_reason": "node_not_localized"
+          "skipped": false,
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
         }
       ],
-      "binding_score": 0.0
+      "binding_score": 0.6
     },
     "st3_res": {
       "backend": "E3",
@@ -5202,14 +4684,14 @@
       "swap_accuracy": null
     },
     "latency_ms": {
-      "total": 501.98906200239435
+      "total": 4606.1867379467
     }
   },
   {
     "image_id": "0681-1",
     "prompt": "A bear with bright, reflective eyes is captured in a nighttime image by a trail camera mounted in the upper left corner, displaying a timestamp of 2010-03-07 10:57:01 PM.",
     "permutation": "E1-V2-E3",
-    "final_score": 0.4702250162760417,
+    "final_score": 0.3591139051649306,
     "st1_res": {
       "backend": "E1",
       "nodes": [
@@ -5303,57 +4785,30 @@
           "name": "eyes",
           "attribute": "bright",
           "skipped": false,
-          "bbox": [
-            123,
-            151,
-            724,
-            778
-          ],
           "score": 0.0,
           "calibrated_score": 0.0,
-          "token_probs": {
-            "yes_prob": 0.0,
-            "no_prob": 1.0
-          }
+          "answer": "no"
         },
         {
           "id": 105,
           "name": "eyes",
           "attribute": "reflective",
           "skipped": false,
-          "bbox": [
-            123,
-            151,
-            724,
-            778
-          ],
-          "score": 1.0,
-          "calibrated_score": 1.0,
-          "token_probs": {
-            "yes_prob": 1.0,
-            "no_prob": 0.0
-          }
+          "score": 0.0,
+          "calibrated_score": 0.0,
+          "answer": "no"
         },
         {
           "id": 110,
           "name": "timestamp",
           "attribute": "2010-03-07 10:57:01 PM",
           "skipped": false,
-          "bbox": [
-            123,
-            151,
-            724,
-            778
-          ],
           "score": 0.0,
           "calibrated_score": 0.0,
-          "token_probs": {
-            "yes_prob": 0.0,
-            "no_prob": 1.0
-          }
+          "answer": "no"
         }
       ],
-      "binding_score": 0.3333333333333333
+      "binding_score": 0.0
     },
     "st3_res": {
       "backend": "E3",
@@ -5411,7 +4866,7 @@
       "swap_accuracy": 0.6666666666666666
     },
     "latency_ms": {
-      "total": 821.6994860558771
+      "total": 3007.96222302597
     }
   },
   {
@@ -5512,108 +4967,54 @@
           "name": "boat",
           "attribute": "quantity:9",
           "skipped": false,
-          "bbox": [
-            119,
-            619,
-            824,
-            961
-          ],
           "score": 0.0,
           "calibrated_score": 0.0,
-          "token_probs": {
-            "yes_prob": 0.0,
-            "no_prob": 1.0
-          }
+          "answer": "no"
         },
         {
           "id": 3,
           "name": "car",
           "attribute": "quantity:4",
           "skipped": false,
-          "bbox": [
-            628,
-            264,
-            952,
-            564
-          ],
           "score": 0.0,
           "calibrated_score": 0.0,
-          "token_probs": {
-            "yes_prob": 0.0,
-            "no_prob": 1.0
-          }
+          "answer": "no"
         },
         {
           "id": 9,
           "name": "boat",
           "attribute": "quantity:2",
           "skipped": false,
-          "bbox": [
-            119,
-            619,
-            824,
-            961
-          ],
           "score": 0.0,
           "calibrated_score": 0.0,
-          "token_probs": {
-            "yes_prob": 0.0,
-            "no_prob": 1.0
-          }
+          "answer": "no"
         },
         {
           "id": 9,
           "name": "boat",
           "attribute": "material:wood/wooden/bamboo/hardwood",
           "skipped": false,
-          "bbox": [
-            119,
-            619,
-            824,
-            961
-          ],
           "score": 1.0,
           "calibrated_score": 1.0,
-          "token_probs": {
-            "yes_prob": 1.0,
-            "no_prob": 0.0
-          }
+          "answer": "yes"
         },
         {
           "id": 13,
           "name": "wooden house",
           "attribute": "green roof",
           "skipped": false,
-          "bbox": [
-            628,
-            264,
-            952,
-            564
-          ],
           "score": 1.0,
           "calibrated_score": 1.0,
-          "token_probs": {
-            "yes_prob": 1.0,
-            "no_prob": 0.0
-          }
+          "answer": "yes"
         },
         {
           "id": 13,
           "name": "wooden house",
           "attribute": "small",
           "skipped": false,
-          "bbox": [
-            628,
-            264,
-            952,
-            564
-          ],
           "score": 1.0,
           "calibrated_score": 1.0,
-          "token_probs": {
-            "yes_prob": 1.0,
-            "no_prob": 0.0
-          }
+          "answer": "yes"
         }
       ],
       "binding_score": 0.5
@@ -5674,7 +5075,7 @@
       "swap_accuracy": 0.3333333333333333
     },
     "latency_ms": {
-      "total": 945.9562660194933
+      "total": 3713.0435940343887
     }
   },
   {
@@ -5746,51 +5147,37 @@
           "id": 101,
           "name": "ground",
           "attribute": "light brown",
-          "skipped": true,
-          "skip_reason": "node_not_localized"
+          "skipped": false,
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
         },
         {
           "id": 101,
           "name": "ground",
           "attribute": "dirt",
-          "skipped": true,
-          "skip_reason": "node_not_localized"
+          "skipped": false,
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
         },
         {
           "id": 102,
           "name": "tree branches",
           "attribute": "large",
           "skipped": false,
-          "bbox": [
-            5,
-            643,
-            999,
-            931
-          ],
           "score": 1.0,
           "calibrated_score": 1.0,
-          "token_probs": {
-            "yes_prob": 1.0,
-            "no_prob": 0.0
-          }
+          "answer": "yes"
         },
         {
           "id": 102,
           "name": "tree branches",
           "attribute": "bare",
           "skipped": false,
-          "bbox": [
-            5,
-            643,
-            999,
-            931
-          ],
           "score": 1.0,
           "calibrated_score": 1.0,
-          "token_probs": {
-            "yes_prob": 1.0,
-            "no_prob": 0.0
-          }
+          "answer": "yes"
         }
       ],
       "binding_score": 1.0
@@ -5824,7 +5211,7 @@
       "swap_accuracy": null
     },
     "latency_ms": {
-      "total": 405.6999199674465
+      "total": 2518.900881987065
     }
   },
   {
@@ -5876,18 +5263,9 @@
           "name": "elephant",
           "attribute": "quantity:2",
           "skipped": false,
-          "bbox": [
-            0,
-            15,
-            512,
-            487
-          ],
           "score": 1.0,
           "calibrated_score": 1.0,
-          "token_probs": {
-            "yes_prob": 1.0,
-            "no_prob": 0.0
-          }
+          "answer": "yes"
         }
       ],
       "binding_score": 1.0
@@ -5921,7 +5299,7 @@
       "swap_accuracy": null
     },
     "latency_ms": {
-      "total": 343.3913470362313
+      "total": 1005.8278529904783
     }
   },
   {
@@ -5996,36 +5374,18 @@
           "name": "body",
           "attribute": "black",
           "skipped": false,
-          "bbox": [
-            71,
-            415,
-            887,
-            826
-          ],
           "score": 1.0,
           "calibrated_score": 1.0,
-          "token_probs": {
-            "yes_prob": 1.0,
-            "no_prob": 0.0
-          }
+          "answer": "yes"
         },
         {
           "id": 11,
           "name": "fence",
           "attribute": "wooden",
           "skipped": false,
-          "bbox": [
-            71,
-            202,
-            888,
-            828
-          ],
           "score": 1.0,
           "calibrated_score": 1.0,
-          "token_probs": {
-            "yes_prob": 1.0,
-            "no_prob": 0.0
-          }
+          "answer": "yes"
         }
       ],
       "binding_score": 1.0
@@ -6086,7 +5446,7 @@
       "swap_accuracy": 0.3333333333333333
     },
     "latency_ms": {
-      "total": 690.7681119628251
+      "total": 2218.2476320303977
     }
   },
   {
@@ -6169,7 +5529,7 @@
       "swap_accuracy": 1.0
     },
     "latency_ms": {
-      "total": 336.3664470380172
+      "total": 313.48697701469064
     }
   },
   {
@@ -6244,54 +5604,27 @@
           "name": "hot dog",
           "attribute": "order:messy/disordered/unordered/disorganized/unorganized/cluttered/untidy",
           "skipped": false,
-          "bbox": [
-            582,
-            270,
-            1553,
-            918
-          ],
           "score": 0.0,
           "calibrated_score": 0.0,
-          "token_probs": {
-            "yes_prob": 0.0,
-            "no_prob": 1.0
-          }
+          "answer": "no"
         },
         {
           "id": 0,
           "name": "hot dog",
           "attribute": "quantity:3",
           "skipped": false,
-          "bbox": [
-            582,
-            270,
-            1553,
-            918
-          ],
           "score": 0.0,
           "calibrated_score": 0.0,
-          "token_probs": {
-            "yes_prob": 0.0,
-            "no_prob": 1.0
-          }
+          "answer": "no"
         },
         {
           "id": 3,
           "name": "sandwich",
           "attribute": "order:messy/disordered/unordered/disorganized/unorganized/cluttered/untidy",
           "skipped": false,
-          "bbox": [
-            67,
-            45,
-            830,
-            688
-          ],
           "score": 0.0,
           "calibrated_score": 0.0,
-          "token_probs": {
-            "yes_prob": 0.0,
-            "no_prob": 1.0
-          }
+          "answer": "no"
         }
       ],
       "binding_score": 0.0
@@ -6352,7 +5685,7 @@
       "swap_accuracy": 0.6666666666666666
     },
     "latency_ms": {
-      "total": 914.2271151067689
+      "total": 4010.6813160236925
     }
   },
   {
@@ -6433,25 +5766,18 @@
           "name": "cup",
           "attribute": "optical property:reflective",
           "skipped": false,
-          "bbox": [
-            781,
-            187,
-            1163,
-            585
-          ],
           "score": 1.0,
           "calibrated_score": 1.0,
-          "token_probs": {
-            "yes_prob": 1.0,
-            "no_prob": 0.0
-          }
+          "answer": "yes"
         },
         {
           "id": 110,
           "name": "doorway",
           "attribute": "state:open",
-          "skipped": true,
-          "skip_reason": "node_not_localized"
+          "skipped": false,
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
         }
       ],
       "binding_score": 1.0
@@ -6494,14 +5820,14 @@
       "swap_accuracy": 1.0
     },
     "latency_ms": {
-      "total": 534.2580460128374
+      "total": 2936.8657770683058
     }
   },
   {
     "image_id": "0904-1",
     "prompt": "A food item is held in both a right hand and a left hand while five donuts rest on a blue plate.",
     "permutation": "E1-V2-E3",
-    "final_score": 0.0,
+    "final_score": 0.375,
     "st1_res": {
       "backend": "E1",
       "nodes": [
@@ -6556,32 +5882,40 @@
           "id": 3,
           "name": "donut",
           "attribute": "quantity:5",
-          "skipped": true,
-          "skip_reason": "node_not_localized"
+          "skipped": false,
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
         },
         {
           "id": 101,
           "name": "hand",
           "attribute": "right",
-          "skipped": true,
-          "skip_reason": "node_not_localized"
+          "skipped": false,
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
         },
         {
           "id": 102,
           "name": "hand",
           "attribute": "left",
-          "skipped": true,
-          "skip_reason": "node_not_localized"
+          "skipped": false,
+          "score": 0.0,
+          "calibrated_score": 0.0,
+          "answer": "no"
         },
         {
           "id": 103,
           "name": "plate",
           "attribute": "color:blue",
-          "skipped": true,
-          "skip_reason": "node_not_localized"
+          "skipped": false,
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
         }
       ],
-      "binding_score": null
+      "binding_score": 0.75
     },
     "st3_res": {
       "backend": "E3",
@@ -6612,14 +5946,14 @@
       "swap_accuracy": null
     },
     "latency_ms": {
-      "total": 231.31220298819244
+      "total": 2914.7907739970833
     }
   },
   {
     "image_id": "0911-1",
     "prompt": "A lettered stop sign stands in the foreground, while a crosswalk with white stripes is painted on the street, and awnings extend from a building in the background.",
     "permutation": "E1-V2-E3",
-    "final_score": 0.16666666666666666,
+    "final_score": 0.41666666666666663,
     "st1_res": {
       "backend": "E1",
       "nodes": [
@@ -6693,39 +6027,21 @@
           "name": "stop sign",
           "attribute": "pattern:lettered",
           "skipped": false,
-          "bbox": [
-            353,
-            86,
-            667,
-            411
-          ],
           "score": 0.0,
           "calibrated_score": 0.0,
-          "token_probs": {
-            "yes_prob": 0.0,
-            "no_prob": 1.0
-          }
+          "answer": "no"
         },
         {
           "id": 17,
           "name": "crosswalk",
           "attribute": "white stripes",
           "skipped": false,
-          "bbox": [
-            353,
-            86,
-            667,
-            411
-          ],
-          "score": 0.0,
-          "calibrated_score": 0.0,
-          "token_probs": {
-            "yes_prob": 0.0,
-            "no_prob": 1.0
-          }
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
         }
       ],
-      "binding_score": 0.0
+      "binding_score": 0.5
     },
     "st3_res": {
       "backend": "E3",
@@ -6756,14 +6072,14 @@
       "swap_accuracy": null
     },
     "latency_ms": {
-      "total": 535.0695490487851
+      "total": 2156.801223929506
     }
   },
   {
     "image_id": "1048-3",
     "prompt": "Calm water stretches in the background as three empty striped boats and one lettered boat rest on darker, wet, light brown sand.",
     "permutation": "E1-V2-E3",
-    "final_score": 0.0,
+    "final_score": 0.4375,
     "st1_res": {
       "backend": "E1",
       "nodes": [
@@ -6810,60 +6126,76 @@
           "id": 3,
           "name": "sand",
           "attribute": "darker",
-          "skipped": true,
-          "skip_reason": "node_not_localized"
+          "skipped": false,
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
         },
         {
           "id": 3,
           "name": "sand",
           "attribute": "wet",
-          "skipped": true,
-          "skip_reason": "node_not_localized"
+          "skipped": false,
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
         },
         {
           "id": 3,
           "name": "sand",
           "attribute": "light brown",
-          "skipped": true,
-          "skip_reason": "node_not_localized"
+          "skipped": false,
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
         },
         {
           "id": 5,
           "name": "boat",
           "attribute": "state:empty",
-          "skipped": true,
-          "skip_reason": "node_not_localized"
+          "skipped": false,
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
         },
         {
           "id": 5,
           "name": "boat",
           "attribute": "quantity:3",
-          "skipped": true,
-          "skip_reason": "node_not_localized"
+          "skipped": false,
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
         },
         {
           "id": 5,
           "name": "boat",
           "attribute": "pattern:striped/lined/pinstriped",
-          "skipped": true,
-          "skip_reason": "node_not_localized"
+          "skipped": false,
+          "score": 0.0,
+          "calibrated_score": 0.0,
+          "answer": "no"
         },
         {
           "id": 7,
           "name": "water",
           "attribute": "calm",
-          "skipped": true,
-          "skip_reason": "node_not_localized"
+          "skipped": false,
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
         },
         {
           "id": 8,
           "name": "boat",
           "attribute": "pattern:lettered",
-          "skipped": true,
-          "skip_reason": "node_not_localized"
+          "skipped": false,
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
         }
       ],
-      "binding_score": null
+      "binding_score": 0.875
     },
     "st3_res": {
       "backend": "E3",
@@ -6894,14 +6226,14 @@
       "swap_accuracy": null
     },
     "latency_ms": {
-      "total": 198.69480206398293
+      "total": 4912.201629020274
     }
   },
   {
     "image_id": "1051-4",
     "prompt": "Two cows with a long, curved pair of horns are grazing in the sunlit field, separated from an open land by a wire fence.",
     "permutation": "E1-V2-E3",
-    "final_score": 0.6074066162109375,
+    "final_score": 0.6907399495442709,
     "st1_res": {
       "backend": "E1",
       "nodes": [
@@ -6982,75 +6314,39 @@
           "name": "cow",
           "attribute": "quantity:2",
           "skipped": false,
-          "bbox": [
-            574,
-            439,
-            904,
-            932
-          ],
-          "score": 0.0,
-          "calibrated_score": 0.0,
-          "token_probs": {
-            "yes_prob": 0.0,
-            "no_prob": 1.0
-          }
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
         },
         {
           "id": 102,
           "name": "horns",
           "attribute": "long",
           "skipped": false,
-          "bbox": [
-            135,
-            356,
-            623,
-            873
-          ],
           "score": 1.0,
           "calibrated_score": 1.0,
-          "token_probs": {
-            "yes_prob": 1.0,
-            "no_prob": 0.0
-          }
+          "answer": "yes"
         },
         {
           "id": 102,
           "name": "horns",
           "attribute": "curved",
           "skipped": false,
-          "bbox": [
-            135,
-            356,
-            623,
-            873
-          ],
           "score": 1.0,
           "calibrated_score": 1.0,
-          "token_probs": {
-            "yes_prob": 1.0,
-            "no_prob": 0.0
-          }
+          "answer": "yes"
         },
         {
           "id": 106,
           "name": "field",
           "attribute": "sunlit",
           "skipped": false,
-          "bbox": [
-            135,
-            356,
-            623,
-            873
-          ],
           "score": 1.0,
           "calibrated_score": 1.0,
-          "token_probs": {
-            "yes_prob": 1.0,
-            "no_prob": 0.0
-          }
+          "answer": "yes"
         }
       ],
-      "binding_score": 0.75
+      "binding_score": 1.0
     },
     "st3_res": {
       "backend": "E3",
@@ -7108,7 +6404,7 @@
       "swap_accuracy": 0.3333333333333333
     },
     "latency_ms": {
-      "total": 864.9669909500517
+      "total": 3044.9213439715095
     }
   },
   {
@@ -7249,14 +6545,14 @@
       "swap_accuracy": 1.0
     },
     "latency_ms": {
-      "total": 400.9447279968299
+      "total": 363.03552507888526
     }
   },
   {
     "image_id": "1071-2",
     "prompt": "A dark clock with black numbers and black hands, featuring a dark brown wooden trim that separates an upper part.",
     "permutation": "E1-V2-E3",
-    "final_score": 0.20523885091145835,
+    "final_score": 0.5385721842447918,
     "st1_res": {
       "backend": "E1",
       "nodes": [
@@ -7326,36 +6622,31 @@
           "id": 0,
           "name": "clock",
           "attribute": "dark",
-          "skipped": true,
-          "skip_reason": "node_not_localized"
+          "skipped": false,
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
         },
         {
           "id": 9,
           "name": "numbers",
           "attribute": "black",
-          "skipped": true,
-          "skip_reason": "node_not_localized"
+          "skipped": false,
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
         },
         {
           "id": 10,
           "name": "hands",
           "attribute": "black",
           "skipped": false,
-          "bbox": [
-            196,
-            630,
-            264,
-            758
-          ],
-          "score": 0.0,
-          "calibrated_score": 0.0,
-          "token_probs": {
-            "yes_prob": 0.0,
-            "no_prob": 1.0
-          }
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
         }
       ],
-      "binding_score": 0.0
+      "binding_score": 1.0
     },
     "st3_res": {
       "backend": "E3",
@@ -7395,14 +6686,14 @@
       "swap_accuracy": 0.0
     },
     "latency_ms": {
-      "total": 443.15029302379116
+      "total": 2629.409510991536
     }
   },
   {
     "image_id": "1085-3",
     "prompt": "A lettered bus, with a blue and green pattern and displaying the number 41, is parked on the side of the road.",
     "permutation": "E1-V2-E3",
-    "final_score": 0.459808349609375,
+    "final_score": 0.5431416829427084,
     "st1_res": {
       "backend": "E1",
       "nodes": [
@@ -7465,53 +6756,39 @@
           "name": "bus",
           "attribute": "pattern:lettered",
           "skipped": false,
-          "bbox": [
-            186,
-            371,
-            897,
-            887
-          ],
           "score": 0.0,
           "calibrated_score": 0.0,
-          "token_probs": {
-            "yes_prob": 0.0,
-            "no_prob": 1.0
-          }
+          "answer": "no"
         },
         {
           "id": 100,
           "name": "pattern",
           "attribute": "color:blue",
-          "skipped": true,
-          "skip_reason": "node_not_localized"
+          "skipped": false,
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
         },
         {
           "id": 100,
           "name": "pattern",
           "attribute": "color:green",
-          "skipped": true,
-          "skip_reason": "node_not_localized"
+          "skipped": false,
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
         },
         {
           "id": 103,
           "name": "number",
           "attribute": "41",
           "skipped": false,
-          "bbox": [
-            449,
-            128,
-            697,
-            366
-          ],
           "score": 1.0,
           "calibrated_score": 1.0,
-          "token_probs": {
-            "yes_prob": 1.0,
-            "no_prob": 0.0
-          }
+          "answer": "yes"
         }
       ],
-      "binding_score": 0.5
+      "binding_score": 0.75
     },
     "st3_res": {
       "backend": "E3",
@@ -7560,14 +6837,14 @@
       "swap_accuracy": 1.0
     },
     "latency_ms": {
-      "total": 663.7602939736098
+      "total": 3223.204418027308
     }
   },
   {
     "image_id": "1177-3",
     "prompt": "Three grilled, seasoned, slightly charred sardines are arranged diagonally across a textured, somewhat rustic metal platter, with their heads pointing toward a brown surface, accompanied by a cooked vegetable including a green bean.",
     "permutation": "E1-V2-E3",
-    "final_score": 0.0,
+    "final_score": 0.35714285714285715,
     "st1_res": {
       "backend": "E1",
       "nodes": [
@@ -7622,53 +6899,67 @@
           "id": 100,
           "name": "sardine",
           "attribute": "grilled",
-          "skipped": true,
-          "skip_reason": "node_not_localized"
+          "skipped": false,
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
         },
         {
           "id": 100,
           "name": "sardine",
           "attribute": "seasoned",
-          "skipped": true,
-          "skip_reason": "node_not_localized"
+          "skipped": false,
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
         },
         {
           "id": 100,
           "name": "sardine",
           "attribute": "slightly charred",
-          "skipped": true,
-          "skip_reason": "node_not_localized"
+          "skipped": false,
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
         },
         {
           "id": 100,
           "name": "sardine",
           "attribute": "quantity:3",
-          "skipped": true,
-          "skip_reason": "node_not_localized"
+          "skipped": false,
+          "score": 0.0,
+          "calibrated_score": 0.0,
+          "answer": "no"
         },
         {
           "id": 101,
           "name": "metal platter",
           "attribute": "textured",
-          "skipped": true,
-          "skip_reason": "node_not_localized"
+          "skipped": false,
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
         },
         {
           "id": 101,
           "name": "metal platter",
           "attribute": "somewhat rustic",
-          "skipped": true,
-          "skip_reason": "node_not_localized"
+          "skipped": false,
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
         },
         {
           "id": 102,
           "name": "vegetable",
           "attribute": "cooked",
-          "skipped": true,
-          "skip_reason": "node_not_localized"
+          "skipped": false,
+          "score": 0.0,
+          "calibrated_score": 0.0,
+          "answer": "no"
         }
       ],
-      "binding_score": null
+      "binding_score": 0.7142857142857143
     },
     "st3_res": {
       "backend": "E3",
@@ -7699,7 +6990,7 @@
       "swap_accuracy": null
     },
     "latency_ms": {
-      "total": 227.12836600840092
+      "total": 4507.734086888377
     }
   },
   {
@@ -7751,36 +7042,18 @@
           "name": "forest",
           "attribute": "lush",
           "skipped": false,
-          "bbox": [
-            2,
-            1,
-            1158,
-            871
-          ],
           "score": 1.0,
           "calibrated_score": 1.0,
-          "token_probs": {
-            "yes_prob": 1.0,
-            "no_prob": 0.0
-          }
+          "answer": "yes"
         },
         {
           "id": 102,
           "name": "forest",
           "attribute": "green",
           "skipped": false,
-          "bbox": [
-            2,
-            1,
-            1158,
-            871
-          ],
           "score": 1.0,
           "calibrated_score": 1.0,
-          "token_probs": {
-            "yes_prob": 1.0,
-            "no_prob": 0.0
-          }
+          "answer": "yes"
         }
       ],
       "binding_score": 1.0
@@ -7800,7 +7073,7 @@
       "swap_accuracy": null
     },
     "latency_ms": {
-      "total": 620.8307560300454
+      "total": 2973.896799958311
     }
   },
   {
@@ -7894,7 +7167,7 @@
       "swap_accuracy": null
     },
     "latency_ms": {
-      "total": 269.2931419587694
+      "total": 250.6641439977102
     }
   },
   {
@@ -7980,18 +7253,9 @@
           "name": "semi-circle",
           "attribute": "quantity:3",
           "skipped": false,
-          "bbox": [
-            531,
-            533,
-            735,
-            756
-          ],
           "score": 0.0,
           "calibrated_score": 0.0,
-          "token_probs": {
-            "yes_prob": 0.0,
-            "no_prob": 1.0
-          }
+          "answer": "no"
         }
       ],
       "binding_score": 0.0
@@ -8034,14 +7298,14 @@
       "swap_accuracy": 1.0
     },
     "latency_ms": {
-      "total": 463.74494599876925
+      "total": 1610.100343998056
     }
   },
   {
     "image_id": "1259-4",
     "prompt": "A cat is resting on a soft, fluffy, furry, hairy couch facing the TV that is off, which sits atop a wooden cabinet, while a patterned curtain adorns two windows behind the couch.",
     "permutation": "E1-V2-E3",
-    "final_score": 0.49152289496527785,
+    "final_score": 0.5915228949652779,
     "st1_res": {
       "backend": "E1",
       "nodes": [
@@ -8130,82 +7394,48 @@
           "name": "couch",
           "attribute": "texture:soft/fluffy/furry/hairy",
           "skipped": false,
-          "bbox": [
-            843,
-            672,
-            1024,
-            936
-          ],
           "score": 1.0,
           "calibrated_score": 1.0,
-          "token_probs": {
-            "yes_prob": 1.0,
-            "no_prob": 0.0
-          }
+          "answer": "yes"
         },
         {
           "id": 4,
           "name": "tv",
           "attribute": "state:off",
           "skipped": false,
-          "bbox": [
-            425,
-            252,
-            636,
-            466
-          ],
           "score": 0.0,
           "calibrated_score": 0.0,
-          "token_probs": {
-            "yes_prob": 0.0,
-            "no_prob": 1.0
-          }
+          "answer": "no"
         },
         {
           "id": 102,
           "name": "window",
           "attribute": "quantity:2",
           "skipped": false,
-          "bbox": [
-            923,
-            524,
-            1024,
-            651
-          ],
-          "score": 0.0,
-          "calibrated_score": 0.0,
-          "token_probs": {
-            "yes_prob": 0.0,
-            "no_prob": 1.0
-          }
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
         },
         {
           "id": 103,
           "name": "curtain",
           "attribute": "patterned",
-          "skipped": true,
-          "skip_reason": "node_not_localized"
+          "skipped": false,
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
         },
         {
           "id": 105,
           "name": "cabinet",
           "attribute": "wooden",
           "skipped": false,
-          "bbox": [
-            923,
-            524,
-            1024,
-            651
-          ],
           "score": 1.0,
           "calibrated_score": 1.0,
-          "token_probs": {
-            "yes_prob": 1.0,
-            "no_prob": 0.0
-          }
+          "answer": "yes"
         }
       ],
-      "binding_score": 0.5
+      "binding_score": 0.8
     },
     "st3_res": {
       "backend": "E3",
@@ -8254,7 +7484,7 @@
       "swap_accuracy": 0.5
     },
     "latency_ms": {
-      "total": 847.5369159714319
+      "total": 4056.699756998569
     }
   },
   {
@@ -8356,14 +7586,14 @@
       "swap_accuracy": null
     },
     "latency_ms": {
-      "total": 277.0099440822378
+      "total": 253.70827200822532
     }
   },
   {
     "image_id": "1321-3",
     "prompt": "A bus displaying the number 1019 on its front is driving toward the opposite direction along the road.",
     "permutation": "E1-V2-E3",
-    "final_score": 0.5765462239583334,
+    "final_score": 0.4654351128472223,
     "st1_res": {
       "backend": "E1",
       "nodes": [
@@ -8434,35 +7664,30 @@
           "name": "bus",
           "attribute": "state:on",
           "skipped": false,
-          "bbox": [
-            352,
-            183,
-            1166,
-            845
-          ],
           "score": 1.0,
           "calibrated_score": 1.0,
-          "token_probs": {
-            "yes_prob": 1.0,
-            "no_prob": 0.0
-          }
+          "answer": "yes"
         },
         {
           "id": 102,
           "name": "number",
           "attribute": "1019",
-          "skipped": true,
-          "skip_reason": "node_not_localized"
+          "skipped": false,
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
         },
         {
           "id": 107,
           "name": "direction",
           "attribute": "opposite",
-          "skipped": true,
-          "skip_reason": "node_not_localized"
+          "skipped": false,
+          "score": 0.0,
+          "calibrated_score": 0.0,
+          "answer": "no"
         }
       ],
-      "binding_score": 1.0
+      "binding_score": 0.6666666666666666
     },
     "st3_res": {
       "backend": "E3",
@@ -8502,14 +7727,14 @@
       "swap_accuracy": 1.0
     },
     "latency_ms": {
-      "total": 524.532656010706
+      "total": 3428.178480011411
     }
   },
   {
     "image_id": "1338-5",
     "prompt": "A plain glazed donut and a white-frosted donut with colorful sprinkles sit in the top row, while a caramel-frosted donut rests in the bottom row.",
     "permutation": "E1-V2-E3",
-    "final_score": 0.2,
+    "final_score": 0.7,
     "st1_res": {
       "backend": "E1",
       "nodes": [
@@ -8575,21 +7800,12 @@
           "name": "white-frosted donut",
           "attribute": "with colorful sprinkles",
           "skipped": false,
-          "bbox": [
-            37,
-            487,
-            724,
-            911
-          ],
-          "score": 0.0,
-          "calibrated_score": 0.0,
-          "token_probs": {
-            "yes_prob": 0.0,
-            "no_prob": 1.0
-          }
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
         }
       ],
-      "binding_score": 0.0
+      "binding_score": 1.0
     },
     "st3_res": {
       "backend": "E3",
@@ -8620,14 +7836,14 @@
       "swap_accuracy": null
     },
     "latency_ms": {
-      "total": 454.76590597536415
+      "total": 1850.0633650110103
     }
   },
   {
     "image_id": "1340-3",
     "prompt": "A wooden beam spans a weathered, light green garage door with peeling paint and glass panes, while a rusty, old light fixture hangs down from the beam, and an arched opening is set into the brick wall beside it.",
     "permutation": "E1-V2-E3",
-    "final_score": 0.6489446730840774,
+    "final_score": 0.6013256254650299,
     "st1_res": {
       "backend": "E1",
       "nodes": [
@@ -8708,129 +7924,66 @@
           "name": "garage door",
           "attribute": "weathered",
           "skipped": false,
-          "bbox": [
-            142,
-            255,
-            877,
-            957
-          ],
           "score": 1.0,
           "calibrated_score": 1.0,
-          "token_probs": {
-            "yes_prob": 1.0,
-            "no_prob": 0.0
-          }
+          "answer": "yes"
         },
         {
           "id": 100,
           "name": "garage door",
           "attribute": "light green",
           "skipped": false,
-          "bbox": [
-            142,
-            255,
-            877,
-            957
-          ],
           "score": 1.0,
           "calibrated_score": 1.0,
-          "token_probs": {
-            "yes_prob": 1.0,
-            "no_prob": 0.0
-          }
+          "answer": "yes"
         },
         {
           "id": 100,
           "name": "garage door",
           "attribute": "multiple glass panes",
           "skipped": false,
-          "bbox": [
-            142,
-            255,
-            877,
-            957
-          ],
           "score": 1.0,
           "calibrated_score": 1.0,
-          "token_probs": {
-            "yes_prob": 1.0,
-            "no_prob": 0.0
-          }
+          "answer": "yes"
         },
         {
           "id": 100,
           "name": "garage door",
           "attribute": "peeling paint",
           "skipped": false,
-          "bbox": [
-            142,
-            255,
-            877,
-            957
-          ],
           "score": 1.0,
           "calibrated_score": 1.0,
-          "token_probs": {
-            "yes_prob": 1.0,
-            "no_prob": 0.0
-          }
+          "answer": "yes"
         },
         {
           "id": 100,
           "name": "garage door",
           "attribute": "wood underneath",
           "skipped": false,
-          "bbox": [
-            142,
-            255,
-            877,
-            957
-          ],
-          "score": 1.0,
-          "calibrated_score": 1.0,
-          "token_probs": {
-            "yes_prob": 1.0,
-            "no_prob": 0.0
-          }
+          "score": 0.0,
+          "calibrated_score": 0.0,
+          "answer": "no"
         },
         {
           "id": 104,
           "name": "light fixture",
           "attribute": "rusty",
           "skipped": false,
-          "bbox": [
-            15,
-            205,
-            88,
-            332
-          ],
           "score": 0.0,
           "calibrated_score": 0.0,
-          "token_probs": {
-            "yes_prob": 0.0,
-            "no_prob": 1.0
-          }
+          "answer": "no"
         },
         {
           "id": 104,
           "name": "light fixture",
           "attribute": "old",
           "skipped": false,
-          "bbox": [
-            15,
-            205,
-            88,
-            332
-          ],
           "score": 1.0,
           "calibrated_score": 1.0,
-          "token_probs": {
-            "yes_prob": 1.0,
-            "no_prob": 0.0
-          }
+          "answer": "yes"
         }
       ],
-      "binding_score": 0.8571428571428571
+      "binding_score": 0.7142857142857143
     },
     "st3_res": {
       "backend": "E3",
@@ -8888,7 +8041,7 @@
       "swap_accuracy": 0.6666666666666666
     },
     "latency_ms": {
-      "total": 1168.4222180047072
+      "total": 4338.111074001063
     }
   },
   {
@@ -8939,51 +8092,37 @@
           "id": 0,
           "name": "backpack",
           "attribute": "quantity:3",
-          "skipped": true,
-          "skip_reason": "node_not_localized"
+          "skipped": false,
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
         },
         {
           "id": 4,
           "name": "suitcase",
           "attribute": "quantity:2",
           "skipped": false,
-          "bbox": [
-            660,
-            525,
-            1498,
-            845
-          ],
           "score": 0.0,
           "calibrated_score": 0.0,
-          "token_probs": {
-            "yes_prob": 0.0,
-            "no_prob": 1.0
-          }
+          "answer": "no"
         },
         {
           "id": 4,
           "name": "suitcase",
           "attribute": "material:polymers/plastic/rubber/styrofoam/polymer",
           "skipped": false,
-          "bbox": [
-            660,
-            525,
-            1498,
-            845
-          ],
           "score": 1.0,
           "calibrated_score": 1.0,
-          "token_probs": {
-            "yes_prob": 1.0,
-            "no_prob": 0.0
-          }
+          "answer": "yes"
         },
         {
           "id": 7,
           "name": "backpack",
           "attribute": "type:Udon",
-          "skipped": true,
-          "skip_reason": "node_not_localized"
+          "skipped": false,
+          "score": 0.0,
+          "calibrated_score": 0.0,
+          "answer": "no"
         }
       ],
       "binding_score": 0.5
@@ -9010,7 +8149,7 @@
       "swap_accuracy": null
     },
     "latency_ms": {
-      "total": 566.3571739569306
+      "total": 4412.810656009242
     }
   },
   {
@@ -9075,43 +8214,27 @@
           "name": "truck",
           "attribute": "pattern:lettered",
           "skipped": false,
-          "bbox": [
-            376,
-            146,
-            1004,
-            778
-          ],
           "score": 1.0,
           "calibrated_score": 1.0,
-          "token_probs": {
-            "yes_prob": 1.0,
-            "no_prob": 0.0
-          }
+          "answer": "yes"
         },
         {
           "id": 9,
           "name": "fairground",
           "attribute": "material:wood",
           "skipped": false,
-          "bbox": [
-            376,
-            146,
-            1004,
-            778
-          ],
           "score": 1.0,
           "calibrated_score": 1.0,
-          "token_probs": {
-            "yes_prob": 1.0,
-            "no_prob": 0.0
-          }
+          "answer": "yes"
         },
         {
           "id": 10,
           "name": "day",
           "attribute": "sunny",
-          "skipped": true,
-          "skip_reason": "node_not_localized"
+          "skipped": false,
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
         }
       ],
       "binding_score": 1.0
@@ -9138,14 +8261,14 @@
       "swap_accuracy": null
     },
     "latency_ms": {
-      "total": 502.7424630243331
+      "total": 2413.6377159738913
     }
   },
   {
     "image_id": "1429-4",
     "prompt": "A striped/lined/pinstriped boat has a deck with a structure resembling a lighthouse on it, set against choppy, rough, white-capped water with white-capped waves.",
     "permutation": "E1-V2-E3",
-    "final_score": 0.5653767903645834,
+    "final_score": 0.4542656792534723,
     "st1_res": {
       "backend": "E1",
       "nodes": [
@@ -9216,100 +8339,57 @@
           "name": "boat",
           "attribute": "pattern:striped/lined/pinstriped",
           "skipped": false,
-          "bbox": [
-            512,
-            575,
-            1077,
-            926
-          ],
-          "score": 1.0,
-          "calibrated_score": 1.0,
-          "token_probs": {
-            "yes_prob": 1.0,
-            "no_prob": 0.0
-          }
+          "score": 0.0,
+          "calibrated_score": 0.0,
+          "answer": "no"
         },
         {
           "id": 100,
           "name": "water",
           "attribute": "choppy",
           "skipped": false,
-          "bbox": [
-            512,
-            575,
-            1077,
-            926
-          ],
           "score": 1.0,
           "calibrated_score": 1.0,
-          "token_probs": {
-            "yes_prob": 1.0,
-            "no_prob": 0.0
-          }
+          "answer": "yes"
         },
         {
           "id": 100,
           "name": "water",
           "attribute": "rough",
           "skipped": false,
-          "bbox": [
-            512,
-            575,
-            1077,
-            926
-          ],
           "score": 1.0,
           "calibrated_score": 1.0,
-          "token_probs": {
-            "yes_prob": 1.0,
-            "no_prob": 0.0
-          }
+          "answer": "yes"
         },
         {
           "id": 100,
           "name": "water",
           "attribute": "white-capped",
           "skipped": false,
-          "bbox": [
-            512,
-            575,
-            1077,
-            926
-          ],
           "score": 1.0,
           "calibrated_score": 1.0,
-          "token_probs": {
-            "yes_prob": 1.0,
-            "no_prob": 0.0
-          }
+          "answer": "yes"
         },
         {
           "id": 102,
           "name": "structure",
           "attribute": "resembling a lighthouse",
-          "skipped": true,
-          "skip_reason": "node_not_localized"
+          "skipped": false,
+          "score": 0.0,
+          "calibrated_score": 0.0,
+          "answer": "no"
         },
         {
           "id": 104,
           "name": "waves",
           "attribute": "white-capped",
           "skipped": false,
-          "bbox": [
-            512,
-            575,
-            1077,
-            926
-          ],
           "score": 1.0,
           "calibrated_score": 1.0,
-          "token_probs": {
-            "yes_prob": 1.0,
-            "no_prob": 0.0
-          }
+          "answer": "yes"
         }
       ],
-      "binding_score": 1.0
+      "binding_score": 0.6666666666666666
     },
     "st3_res": {
       "backend": "E3",
@@ -9349,14 +8429,14 @@
       "swap_accuracy": 0.0
     },
     "latency_ms": {
-      "total": 805.2837210707366
+      "total": 4547.090442036279
     }
   },
   {
     "image_id": "1435-5",
     "prompt": "Two wooden teddy bears hold a rectangular board displaying \"TEDDY BEAR TEA ROOMS UPSTAIRS\" while standing on a wet, paved surface.",
     "permutation": "E1-V2-E3",
-    "final_score": 0.125,
+    "final_score": 0.625,
     "st1_res": {
       "backend": "E1",
       "nodes": [
@@ -9408,68 +8488,58 @@
           "id": 0,
           "name": "teddy bear",
           "attribute": "material:wood/wooden/bamboo/hardwood",
-          "skipped": true,
-          "skip_reason": "node_not_localized"
+          "skipped": false,
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
         },
         {
           "id": 0,
           "name": "teddy bear",
           "attribute": "quantity:2",
-          "skipped": true,
-          "skip_reason": "node_not_localized"
+          "skipped": false,
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
         },
         {
           "id": 101,
           "name": "surface",
           "attribute": "wet",
           "skipped": false,
-          "bbox": [
-            302,
-            1,
-            464,
-            106
-          ],
-          "score": 0.0,
-          "calibrated_score": 0.0,
-          "token_probs": {
-            "yes_prob": 0.0,
-            "no_prob": 1.0
-          }
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
         },
         {
           "id": 101,
           "name": "surface",
           "attribute": "paved",
           "skipped": false,
-          "bbox": [
-            302,
-            1,
-            464,
-            106
-          ],
-          "score": 0.0,
-          "calibrated_score": 0.0,
-          "token_probs": {
-            "yes_prob": 0.0,
-            "no_prob": 1.0
-          }
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
         },
         {
           "id": 102,
           "name": "board",
           "attribute": "rectangular",
-          "skipped": true,
-          "skip_reason": "node_not_localized"
+          "skipped": false,
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
         },
         {
           "id": 103,
           "name": "text",
           "attribute": "TEDDY BEAR TEA ROOMS UPSTAIRS",
-          "skipped": true,
-          "skip_reason": "node_not_localized"
+          "skipped": false,
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
         }
       ],
-      "binding_score": 0.0
+      "binding_score": 1.0
     },
     "st3_res": {
       "backend": "E3",
@@ -9500,14 +8570,14 @@
       "swap_accuracy": null
     },
     "latency_ms": {
-      "total": 472.6423170068301
+      "total": 4331.9187149754725
     }
   },
   {
     "image_id": "1457-3",
     "prompt": "Two toothbrushes are in front of a mouth, set against two sinks in the foreground.",
     "permutation": "E1-V2-E3",
-    "final_score": 0.0,
+    "final_score": 0.25,
     "st1_res": {
       "backend": "E1",
       "nodes": [
@@ -9554,18 +8624,22 @@
           "id": 1,
           "name": "toothbrush",
           "attribute": "quantity:2",
-          "skipped": true,
-          "skip_reason": "node_not_localized"
+          "skipped": false,
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
         },
         {
           "id": 3,
           "name": "sink",
           "attribute": "quantity:2",
-          "skipped": true,
-          "skip_reason": "node_not_localized"
+          "skipped": false,
+          "score": 0.0,
+          "calibrated_score": 0.0,
+          "answer": "no"
         }
       ],
-      "binding_score": null
+      "binding_score": 0.5
     },
     "st3_res": {
       "backend": "E3",
@@ -9589,7 +8663,7 @@
       "swap_accuracy": null
     },
     "latency_ms": {
-      "total": 273.7136770156212
+      "total": 1193.3354749926366
     }
   },
   {
@@ -9662,43 +8736,27 @@
           "name": "vase",
           "attribute": "thick",
           "skipped": false,
-          "bbox": [
-            553,
-            17,
-            936,
-            495
-          ],
           "score": 1.0,
           "calibrated_score": 1.0,
-          "token_probs": {
-            "yes_prob": 1.0,
-            "no_prob": 0.0
-          }
+          "answer": "yes"
         },
         {
           "id": 3,
           "name": "book",
           "attribute": "pattern:lettered",
           "skipped": false,
-          "bbox": [
-            141,
-            510,
-            902,
-            889
-          ],
           "score": 1.0,
           "calibrated_score": 1.0,
-          "token_probs": {
-            "yes_prob": 1.0,
-            "no_prob": 0.0
-          }
+          "answer": "yes"
         },
         {
           "id": 11,
           "name": "coffee table",
           "attribute": "dark wooden",
-          "skipped": true,
-          "skip_reason": "node_not_localized"
+          "skipped": false,
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
         }
       ],
       "binding_score": 1.0
@@ -9741,14 +8799,14 @@
       "swap_accuracy": 0.0
     },
     "latency_ms": {
-      "total": 584.3561629881151
+      "total": 2680.394434079062
     }
   },
   {
     "image_id": "1498-5",
     "prompt": "Pictures and posters, including a white-background poster with black Roman numerals, are displayed on the walls.",
     "permutation": "E1-V2-E3",
-    "final_score": 0.3530714246961806,
+    "final_score": 0.6030714246961806,
     "st1_res": {
       "backend": "E1",
       "nodes": [
@@ -9816,75 +8874,39 @@
           "name": "posters",
           "attribute": "overcast",
           "skipped": false,
-          "bbox": [
-            55,
-            1,
-            228,
-            270
-          ],
           "score": 0.0,
           "calibrated_score": 0.0,
-          "token_probs": {
-            "yes_prob": 0.0,
-            "no_prob": 1.0
-          }
+          "answer": "no"
         },
         {
           "id": 10,
           "name": "poster",
           "attribute": "white background",
           "skipped": false,
-          "bbox": [
-            55,
-            1,
-            228,
-            270
-          ],
-          "score": 0.0,
-          "calibrated_score": 0.0,
-          "token_probs": {
-            "yes_prob": 0.0,
-            "no_prob": 1.0
-          }
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
         },
         {
           "id": 10,
           "name": "poster",
           "attribute": "multiple",
           "skipped": false,
-          "bbox": [
-            55,
-            1,
-            228,
-            270
-          ],
-          "score": 0.0,
-          "calibrated_score": 0.0,
-          "token_probs": {
-            "yes_prob": 0.0,
-            "no_prob": 1.0
-          }
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
         },
         {
           "id": 10,
           "name": "poster",
           "attribute": "black Roman numerals",
           "skipped": false,
-          "bbox": [
-            55,
-            1,
-            228,
-            270
-          ],
-          "score": 0.0,
-          "calibrated_score": 0.0,
-          "token_probs": {
-            "yes_prob": 0.0,
-            "no_prob": 1.0
-          }
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
         }
       ],
-      "binding_score": 0.0
+      "binding_score": 0.75
     },
     "st3_res": {
       "backend": "E3",
@@ -9942,14 +8964,14 @@
       "swap_accuracy": 0.3333333333333333
     },
     "latency_ms": {
-      "total": 754.9681579694152
+      "total": 3843.4753240435384
     }
   },
   {
     "image_id": "1528-3",
     "prompt": "A fork rests in the upper right corner beside a small pile of fillings that includes green lettuce.",
     "permutation": "E1-V2-E3",
-    "final_score": 0.4,
+    "final_score": 0.3666666666666667,
     "st1_res": {
       "backend": "E1",
       "nodes": [
@@ -10014,25 +9036,31 @@
           "id": 10,
           "name": "lettuce",
           "attribute": "green",
-          "skipped": true,
-          "skip_reason": "node_not_localized"
+          "skipped": false,
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
         },
         {
           "id": 11,
           "name": "pile",
           "attribute": "small",
-          "skipped": true,
-          "skip_reason": "node_not_localized"
+          "skipped": false,
+          "score": 0.0,
+          "calibrated_score": 0.0,
+          "answer": "no"
         },
         {
           "id": 15,
           "name": "corner",
           "attribute": "upper right",
-          "skipped": true,
-          "skip_reason": "node_not_localized"
+          "skipped": false,
+          "score": 0.0,
+          "calibrated_score": 0.0,
+          "answer": "no"
         }
       ],
-      "binding_score": null
+      "binding_score": 0.3333333333333333
     },
     "st3_res": {
       "backend": "E3",
@@ -10063,14 +9091,14 @@
       "swap_accuracy": null
     },
     "latency_ms": {
-      "total": 232.35396295785904
+      "total": 1188.6873310431838
     }
   },
   {
     "image_id": "1568-3",
     "prompt": "A circular emblem is on a fuselage, with a \u201cDesrosiers Photo\u201d watermark in the bottom right corner.",
     "permutation": "E1-V2-E3",
-    "final_score": 0.0,
+    "final_score": 0.16666666666666666,
     "st1_res": {
       "backend": "E1",
       "nodes": [
@@ -10117,25 +9145,31 @@
           "id": 9,
           "name": "emblem",
           "attribute": "circular",
-          "skipped": true,
-          "skip_reason": "node_not_localized"
+          "skipped": false,
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
         },
         {
           "id": 11,
           "name": "corner",
           "attribute": "bottom right",
-          "skipped": true,
-          "skip_reason": "node_not_localized"
+          "skipped": false,
+          "score": 0.0,
+          "calibrated_score": 0.0,
+          "answer": "no"
         },
         {
           "id": 12,
           "name": "watermark",
           "attribute": "text:\"Desrosiers Photo\"",
-          "skipped": true,
-          "skip_reason": "node_not_localized"
+          "skipped": false,
+          "score": 0.0,
+          "calibrated_score": 0.0,
+          "answer": "no"
         }
       ],
-      "binding_score": null
+      "binding_score": 0.3333333333333333
     },
     "st3_res": {
       "backend": "E3",
@@ -10159,7 +9193,7 @@
       "swap_accuracy": null
     },
     "latency_ms": {
-      "total": 207.325144961942
+      "total": 1347.6154319941998
     }
   },
   {
@@ -10221,36 +9255,18 @@
           "name": "word \"BIBLE\"",
           "attribute": "red letters",
           "skipped": false,
-          "bbox": [
-            2,
-            17,
-            1023,
-            960
-          ],
           "score": 1.0,
           "calibrated_score": 1.0,
-          "token_probs": {
-            "yes_prob": 1.0,
-            "no_prob": 0.0
-          }
+          "answer": "yes"
         },
         {
           "id": 5,
           "name": "word \"BIBLE\"",
           "attribute": "prominently displayed",
           "skipped": false,
-          "bbox": [
-            2,
-            17,
-            1023,
-            960
-          ],
           "score": 1.0,
           "calibrated_score": 1.0,
-          "token_probs": {
-            "yes_prob": 1.0,
-            "no_prob": 0.0
-          }
+          "answer": "yes"
         }
       ],
       "binding_score": 1.0
@@ -10295,7 +9311,7 @@
       "swap_accuracy": 1.0
     },
     "latency_ms": {
-      "total": 678.9093420375139
+      "total": 2330.8270340203308
     }
   },
   {
@@ -10449,14 +9465,14 @@
       "swap_accuracy": 0.3333333333333333
     },
     "latency_ms": {
-      "total": 402.00411796104163
+      "total": 361.036661954131
     }
   },
   {
     "image_id": "1589-3",
     "prompt": "A cat walks on a rug-covered floor, near a stop sign with text.",
     "permutation": "E1-V2-E3",
-    "final_score": 0.2,
+    "final_score": 0.1,
     "st1_res": {
       "backend": "E1",
       "nodes": [
@@ -10516,11 +9532,13 @@
           "id": 1,
           "name": "stop sign",
           "attribute": "pattern:lettered",
-          "skipped": true,
-          "skip_reason": "node_not_localized"
+          "skipped": false,
+          "score": 0.0,
+          "calibrated_score": 0.0,
+          "answer": "no"
         }
       ],
-      "binding_score": null
+      "binding_score": 0.0
     },
     "st3_res": {
       "backend": "E3",
@@ -10551,14 +9569,14 @@
       "swap_accuracy": null
     },
     "latency_ms": {
-      "total": 216.92271798383445
+      "total": 1555.5393229587935
     }
   },
   {
     "image_id": "1802-3",
     "prompt": "A vending machine contains a microwave made of polymers/plastic/rubber/styrofoam/polymer in its lower section, with the warning \u201cMICROWAVED HOT\u201d displayed on its top.",
     "permutation": "E1-V2-E3",
-    "final_score": 0.3013753255208334,
+    "final_score": 0.4680419921875001,
     "st1_res": {
       "backend": "E1",
       "nodes": [
@@ -10634,39 +9652,21 @@
           "name": "microwave",
           "attribute": "material:polymers/plastic/rubber/styrofoam/polymer",
           "skipped": false,
-          "bbox": [
-            107,
-            88,
-            882,
-            959
-          ],
-          "score": 0.0,
-          "calibrated_score": 0.0,
-          "token_probs": {
-            "yes_prob": 0.0,
-            "no_prob": 1.0
-          }
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
         },
         {
           "id": 3,
           "name": "words",
           "attribute": "MICROWAVED HOT",
           "skipped": false,
-          "bbox": [
-            299,
-            572,
-            585,
-            637
-          ],
           "score": 0.0,
           "calibrated_score": 0.0,
-          "token_probs": {
-            "yes_prob": 0.0,
-            "no_prob": 1.0
-          }
+          "answer": "no"
         }
       ],
-      "binding_score": 0.0
+      "binding_score": 0.5
     },
     "st3_res": {
       "backend": "E3",
@@ -10715,7 +9715,7 @@
       "swap_accuracy": 1.0
     },
     "latency_ms": {
-      "total": 628.8370670517907
+      "total": 2644.4872790016234
     }
   },
   {
@@ -10798,7 +9798,7 @@
       "swap_accuracy": 1.0
     },
     "latency_ms": {
-      "total": 287.92333393357694
+      "total": 266.4330489351414
     }
   },
   {
@@ -10860,36 +9860,18 @@
           "name": "salmon",
           "attribute": "reddish-orange",
           "skipped": false,
-          "bbox": [
-            109,
-            270,
-            1560,
-            721
-          ],
           "score": 1.0,
           "calibrated_score": 1.0,
-          "token_probs": {
-            "yes_prob": 1.0,
-            "no_prob": 0.0
-          }
+          "answer": "yes"
         },
         {
           "id": 2,
           "name": "salmon",
           "attribute": "crispy-looking",
           "skipped": false,
-          "bbox": [
-            109,
-            270,
-            1560,
-            721
-          ],
           "score": 1.0,
           "calibrated_score": 1.0,
-          "token_probs": {
-            "yes_prob": 1.0,
-            "no_prob": 0.0
-          }
+          "answer": "yes"
         }
       ],
       "binding_score": 1.0
@@ -10918,7 +9900,7 @@
       "swap_accuracy": 1.0
     },
     "latency_ms": {
-      "total": 538.7186310254037
+      "total": 2208.193527010735
     }
   },
   {
@@ -11006,18 +9988,9 @@
           "name": "banana",
           "attribute": "quantity:2",
           "skipped": false,
-          "bbox": [
-            228,
-            88,
-            361,
-            512
-          ],
           "score": 0.0,
           "calibrated_score": 0.0,
-          "token_probs": {
-            "yes_prob": 0.0,
-            "no_prob": 1.0
-          }
+          "answer": "no"
         }
       ],
       "binding_score": 0.0
@@ -11078,7 +10051,7 @@
       "swap_accuracy": 0.3333333333333333
     },
     "latency_ms": {
-      "total": 495.00186095247045
+      "total": 1201.2854180065915
     }
   },
   {
@@ -11153,36 +10126,18 @@
           "name": "giraffe",
           "attribute": "maturity:young/baby",
           "skipped": false,
-          "bbox": [
-            343,
-            3,
-            1633,
-            924
-          ],
           "score": 1.0,
           "calibrated_score": 1.0,
-          "token_probs": {
-            "yes_prob": 1.0,
-            "no_prob": 0.0
-          }
+          "answer": "yes"
         },
         {
           "id": 100,
           "name": "coat",
           "attribute": "brown and white patterned",
           "skipped": false,
-          "bbox": [
-            343,
-            3,
-            1633,
-            924
-          ],
           "score": 1.0,
           "calibrated_score": 1.0,
-          "token_probs": {
-            "yes_prob": 1.0,
-            "no_prob": 0.0
-          }
+          "answer": "yes"
         }
       ],
       "binding_score": 1.0
@@ -11243,14 +10198,14 @@
       "swap_accuracy": 0.3333333333333333
     },
     "latency_ms": {
-      "total": 786.5160400397144
+      "total": 3089.674230024684
     }
   },
   {
     "image_id": "2014-4",
     "prompt": "A bright orange traffic cone lies to the left of a fire hydrant, whose rusty two-main nozzle has a chain hanging from it, while a red brick building with numerous windows is partially obscured by green trees.",
     "permutation": "E1-V2-E3",
-    "final_score": 0.37695312500000006,
+    "final_score": 0.43250868055555564,
     "st1_res": {
       "backend": "E1",
       "nodes": [
@@ -11329,46 +10284,30 @@
           "name": "nozzle",
           "attribute": "two main",
           "skipped": false,
-          "bbox": [
-            1415,
-            139,
-            1600,
-            390
-          ],
           "score": 0.0,
           "calibrated_score": 0.0,
-          "token_probs": {
-            "yes_prob": 0.0,
-            "no_prob": 1.0
-          }
+          "answer": "no"
         },
         {
           "id": 100,
           "name": "nozzle",
           "attribute": "rusty",
           "skipped": false,
-          "bbox": [
-            1415,
-            139,
-            1600,
-            390
-          ],
           "score": 1.0,
           "calibrated_score": 1.0,
-          "token_probs": {
-            "yes_prob": 1.0,
-            "no_prob": 0.0
-          }
+          "answer": "yes"
         },
         {
           "id": 102,
           "name": "red brick building",
           "attribute": "numerous windows",
-          "skipped": true,
-          "skip_reason": "node_not_localized"
+          "skipped": false,
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
         }
       ],
-      "binding_score": 0.5
+      "binding_score": 0.6666666666666666
     },
     "st3_res": {
       "backend": "E3",
@@ -11408,14 +10347,14 @@
       "swap_accuracy": 1.0
     },
     "latency_ms": {
-      "total": 645.7140569691546
+      "total": 3183.2536759320647
     }
   },
   {
     "image_id": "2098-2",
     "prompt": "A closed leather handbag rests on a bench, which is separated by a chain-link fence, while a dark striped cardigan is worn over a light-colored polka-dotted dress or skirt.",
     "permutation": "E1-V2-E3",
-    "final_score": 0.16322021484375004,
+    "final_score": 0.3854424370659723,
     "st1_res": {
       "backend": "E1",
       "nodes": [
@@ -11480,90 +10419,58 @@
           "id": 2,
           "name": "handbag",
           "attribute": "material:leather",
-          "skipped": true,
-          "skip_reason": "node_not_localized"
+          "skipped": false,
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
         },
         {
           "id": 2,
           "name": "handbag",
           "attribute": "state:closed",
-          "skipped": true,
-          "skip_reason": "node_not_localized"
+          "skipped": false,
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
         },
         {
           "id": 105,
           "name": "cardigan",
           "attribute": "color:dark",
           "skipped": false,
-          "bbox": [
-            510,
-            36,
-            640,
-            384
-          ],
           "score": 0.0,
           "calibrated_score": 0.0,
-          "token_probs": {
-            "yes_prob": 0.0,
-            "no_prob": 1.0
-          }
+          "answer": "no"
         },
         {
           "id": 105,
           "name": "cardigan",
           "attribute": "pattern:striped",
           "skipped": false,
-          "bbox": [
-            510,
-            36,
-            640,
-            384
-          ],
           "score": 0.0,
           "calibrated_score": 0.0,
-          "token_probs": {
-            "yes_prob": 0.0,
-            "no_prob": 1.0
-          }
+          "answer": "no"
         },
         {
           "id": 106,
           "name": "dress or skirt",
           "attribute": "color:light-colored",
           "skipped": false,
-          "bbox": [
-            656,
-            802,
-            741,
-            978
-          ],
-          "score": 0.0,
-          "calibrated_score": 0.0,
-          "token_probs": {
-            "yes_prob": 0.0,
-            "no_prob": 1.0
-          }
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
         },
         {
           "id": 106,
           "name": "dress or skirt",
           "attribute": "pattern:polka-dotted",
           "skipped": false,
-          "bbox": [
-            656,
-            802,
-            741,
-            978
-          ],
-          "score": 0.0,
-          "calibrated_score": 0.0,
-          "token_probs": {
-            "yes_prob": 0.0,
-            "no_prob": 1.0
-          }
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
         }
       ],
-      "binding_score": 0.0
+      "binding_score": 0.6666666666666666
     },
     "st3_res": {
       "backend": "E3",
@@ -11603,7 +10510,7 @@
       "swap_accuracy": 0.0
     },
     "latency_ms": {
-      "total": 644.1557020298205
+      "total": 4225.480384018738
     }
   },
   {
@@ -11665,18 +10572,9 @@
           "name": "wave",
           "attribute": "calm",
           "skipped": false,
-          "bbox": [
-            444,
-            437,
-            599,
-            701
-          ],
           "score": 0.0,
           "calibrated_score": 0.0,
-          "token_probs": {
-            "yes_prob": 0.0,
-            "no_prob": 1.0
-          }
+          "answer": "no"
         }
       ],
       "binding_score": 0.0
@@ -11705,14 +10603,14 @@
       "swap_accuracy": 1.0
     },
     "latency_ms": {
-      "total": 391.7317309533246
+      "total": 1663.8790190336294
     }
   },
   {
     "image_id": "2134-2",
     "prompt": "A festive decorative structure with lights is visible in both a train station and a public hall, while a large Nespresso advertisement reading \u201chimmlisch Nespresso. What else?\u201d is displayed nearby.",
     "permutation": "E1-V2-E3",
-    "final_score": 0.30004679361979164,
+    "final_score": 0.383380126953125,
     "st1_res": {
       "backend": "E1",
       "nodes": [
@@ -11783,89 +10681,57 @@
           "name": "decorative structure",
           "attribute": "large",
           "skipped": false,
-          "bbox": [
-            505,
-            779,
-            553,
-            897
-          ],
-          "score": 0.0,
-          "calibrated_score": 0.0,
-          "token_probs": {
-            "yes_prob": 0.0,
-            "no_prob": 1.0
-          }
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
         },
         {
           "id": 104,
           "name": "decorative structure",
           "attribute": "with lights",
           "skipped": false,
-          "bbox": [
-            505,
-            779,
-            553,
-            897
-          ],
           "score": 1.0,
           "calibrated_score": 1.0,
-          "token_probs": {
-            "yes_prob": 1.0,
-            "no_prob": 0.0
-          }
+          "answer": "yes"
         },
         {
           "id": 104,
           "name": "decorative structure",
           "attribute": "possibly a Christmas tree or a festive display",
           "skipped": false,
-          "bbox": [
-            505,
-            779,
-            553,
-            897
-          ],
-          "score": 0.0,
-          "calibrated_score": 0.0,
-          "token_probs": {
-            "yes_prob": 0.0,
-            "no_prob": 1.0
-          }
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
         },
         {
           "id": 106,
           "name": "advertisement",
           "attribute": "large",
-          "skipped": true,
-          "skip_reason": "node_not_localized"
+          "skipped": false,
+          "score": 0.0,
+          "calibrated_score": 0.0,
+          "answer": "no"
         },
         {
           "id": 106,
           "name": "advertisement",
           "attribute": "for Nespresso",
-          "skipped": true,
-          "skip_reason": "node_not_localized"
+          "skipped": false,
+          "score": 0.0,
+          "calibrated_score": 0.0,
+          "answer": "no"
         },
         {
           "id": 107,
           "name": "text",
           "attribute": "reads \"himmlisch Nespresso. What else?\"",
           "skipped": false,
-          "bbox": [
-            402,
-            763,
-            497,
-            929
-          ],
           "score": 0.0,
           "calibrated_score": 0.0,
-          "token_probs": {
-            "yes_prob": 0.0,
-            "no_prob": 1.0
-          }
+          "answer": "no"
         }
       ],
-      "binding_score": 0.25
+      "binding_score": 0.5
     },
     "st3_res": {
       "backend": "E3",
@@ -11905,14 +10771,14 @@
       "swap_accuracy": 1.0
     },
     "latency_ms": {
-      "total": 660.3106390102766
+      "total": 4091.9026249903254
     }
   },
   {
     "image_id": "2182-2",
     "prompt": "A raised right arm waves above a string, while dark clouds with a dramatic atmosphere hover over waves crashing left of a sandy shore.",
     "permutation": "E1-V2-E3",
-    "final_score": 0.0,
+    "final_score": 0.3,
     "st1_res": {
       "backend": "E1",
       "nodes": [
@@ -11975,39 +10841,49 @@
           "id": 5,
           "name": "arm",
           "attribute": "raised",
-          "skipped": true,
-          "skip_reason": "node_not_localized"
+          "skipped": false,
+          "score": 0.0,
+          "calibrated_score": 0.0,
+          "answer": "no"
         },
         {
           "id": 5,
           "name": "arm",
           "attribute": "right",
-          "skipped": true,
-          "skip_reason": "node_not_localized"
+          "skipped": false,
+          "score": 0.0,
+          "calibrated_score": 0.0,
+          "answer": "no"
         },
         {
           "id": 13,
           "name": "shore",
           "attribute": "sandy",
-          "skipped": true,
-          "skip_reason": "node_not_localized"
+          "skipped": false,
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
         },
         {
           "id": 14,
           "name": "clouds",
           "attribute": "dark",
-          "skipped": true,
-          "skip_reason": "node_not_localized"
+          "skipped": false,
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
         },
         {
           "id": 15,
           "name": "atmosphere",
           "attribute": "dramatic",
-          "skipped": true,
-          "skip_reason": "node_not_localized"
+          "skipped": false,
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
         }
       ],
-      "binding_score": null
+      "binding_score": 0.6
     },
     "st3_res": {
       "backend": "E3",
@@ -12038,7 +10914,7 @@
       "swap_accuracy": null
     },
     "latency_ms": {
-      "total": 173.56624797685072
+      "total": 3404.5188610325567
     }
   },
   {
@@ -12134,18 +11010,9 @@
           "name": "boat",
           "attribute": "state:on",
           "skipped": false,
-          "bbox": [
-            205,
-            265,
-            471,
-            397
-          ],
           "score": 1.0,
           "calibrated_score": 1.0,
-          "token_probs": {
-            "yes_prob": 1.0,
-            "no_prob": 0.0
-          }
+          "answer": "yes"
         }
       ],
       "binding_score": 1.0
@@ -12197,14 +11064,14 @@
       "swap_accuracy": 0.0
     },
     "latency_ms": {
-      "total": 451.6838150448166
+      "total": 1099.489430023823
     }
   },
   {
     "image_id": "2219-5",
     "prompt": "Two vases sit on the upper shelf of a shelf unit, with a potted plant in a white pot above the bottom shelf.",
     "permutation": "E1-V2-E3",
-    "final_score": 0.42449001736111114,
+    "final_score": 0.3967122395833334,
     "st1_res": {
       "backend": "E1",
       "nodes": [
@@ -12279,65 +11146,40 @@
           "id": 3,
           "name": "vase",
           "attribute": "quantity:2",
-          "skipped": true,
-          "skip_reason": "node_not_localized"
+          "skipped": false,
+          "score": 0.0,
+          "calibrated_score": 0.0,
+          "answer": "no"
         },
         {
           "id": 7,
           "name": "potted plant",
           "attribute": "clothes color:white",
           "skipped": false,
-          "bbox": [
-            864,
-            24,
-            1338,
-            452
-          ],
           "score": 0.0,
           "calibrated_score": 0.0,
-          "token_probs": {
-            "yes_prob": 0.0,
-            "no_prob": 1.0
-          }
+          "answer": "no"
         },
         {
           "id": 15,
           "name": "shelf unit",
           "attribute": "hair type:straight",
           "skipped": false,
-          "bbox": [
-            152,
-            4,
-            1573,
-            919
-          ],
           "score": 0.0,
           "calibrated_score": 0.0,
-          "token_probs": {
-            "yes_prob": 0.0,
-            "no_prob": 1.0
-          }
+          "answer": "no"
         },
         {
           "id": 18,
           "name": "shelf",
           "attribute": "bottom",
           "skipped": false,
-          "bbox": [
-            152,
-            4,
-            1573,
-            919
-          ],
           "score": 1.0,
           "calibrated_score": 1.0,
-          "token_probs": {
-            "yes_prob": 1.0,
-            "no_prob": 0.0
-          }
+          "answer": "yes"
         }
       ],
-      "binding_score": 0.3333333333333333
+      "binding_score": 0.25
     },
     "st3_res": {
       "backend": "E3",
@@ -12386,7 +11228,7 @@
       "swap_accuracy": 0.5
     },
     "latency_ms": {
-      "total": 849.9614460160956
+      "total": 3853.0914210132323
     }
   },
   {
@@ -12461,36 +11303,18 @@
           "name": "tail feathers",
           "attribute": "fanned out",
           "skipped": false,
-          "bbox": [
-            2,
-            0,
-            1274,
-            926
-          ],
           "score": 0.0,
           "calibrated_score": 0.0,
-          "token_probs": {
-            "yes_prob": 0.0,
-            "no_prob": 1.0
-          }
+          "answer": "no"
         },
         {
           "id": 103,
           "name": "pattern",
           "attribute": "light and dark brown",
           "skipped": false,
-          "bbox": [
-            2,
-            0,
-            1274,
-            926
-          ],
           "score": 1.0,
           "calibrated_score": 1.0,
-          "token_probs": {
-            "yes_prob": 1.0,
-            "no_prob": 0.0
-          }
+          "answer": "yes"
         }
       ],
       "binding_score": 0.5
@@ -12535,14 +11359,14 @@
       "swap_accuracy": 1.0
     },
     "latency_ms": {
-      "total": 684.2370599042624
+      "total": 2724.9405100010335
     }
   },
   {
     "image_id": "2287-5",
     "prompt": "A small blue sign is attached to the handlebars of a bicycle whose front wheel is turned along a dirt path.",
     "permutation": "E1-V2-E3",
-    "final_score": 0.37679036458333337,
+    "final_score": 0.7101236979166667,
     "st1_res": {
       "backend": "E1",
       "nodes": [
@@ -12610,21 +11434,12 @@
           "name": "blue sign",
           "attribute": "small",
           "skipped": false,
-          "bbox": [
-            384,
-            251,
-            653,
-            590
-          ],
-          "score": 0.0,
-          "calibrated_score": 0.0,
-          "token_probs": {
-            "yes_prob": 0.0,
-            "no_prob": 1.0
-          }
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
         }
       ],
-      "binding_score": 0.0
+      "binding_score": 1.0
     },
     "st3_res": {
       "backend": "E3",
@@ -12666,14 +11481,14 @@
       "swap_accuracy": 0.5
     },
     "latency_ms": {
-      "total": 532.1170869865455
+      "total": 1738.2639520219527
     }
   },
   {
     "image_id": "2304-4",
     "prompt": "Two giraffes break around bushes while several warthogs face a snout, set in a landscape of surrounding vegetation.",
     "permutation": "E1-V2-E3",
-    "final_score": 0.4625664605034723,
+    "final_score": 0.5736775716145834,
     "st1_res": {
       "backend": "E1",
       "nodes": [
@@ -12744,57 +11559,30 @@
           "name": "giraffe",
           "attribute": "quantity:2",
           "skipped": false,
-          "bbox": [
-            497,
-            189,
-            945,
-            664
-          ],
-          "score": 0.0,
-          "calibrated_score": 0.0,
-          "token_probs": {
-            "yes_prob": 0.0,
-            "no_prob": 1.0
-          }
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
         },
         {
           "id": 9,
           "name": "warthog",
           "attribute": "several",
           "skipped": false,
-          "bbox": [
-            203,
-            601,
-            846,
-            864
-          ],
           "score": 1.0,
           "calibrated_score": 1.0,
-          "token_probs": {
-            "yes_prob": 1.0,
-            "no_prob": 0.0
-          }
+          "answer": "yes"
         },
         {
           "id": 11,
           "name": "vegetation",
           "attribute": "surrounding",
           "skipped": false,
-          "bbox": [
-            497,
-            189,
-            945,
-            664
-          ],
           "score": 1.0,
           "calibrated_score": 1.0,
-          "token_probs": {
-            "yes_prob": 1.0,
-            "no_prob": 0.0
-          }
+          "answer": "yes"
         }
       ],
-      "binding_score": 0.6666666666666666
+      "binding_score": 1.0
     },
     "st3_res": {
       "backend": "E3",
@@ -12834,7 +11622,7 @@
       "swap_accuracy": 0.0
     },
     "latency_ms": {
-      "total": 607.1730830008164
+      "total": 2353.031656006351
     }
   },
   {
@@ -12930,72 +11718,36 @@
           "name": "couch",
           "attribute": "texture:soft/fluffy/furry/hairy",
           "skipped": false,
-          "bbox": [
-            24,
-            380,
-            1001,
-            990
-          ],
           "score": 1.0,
           "calibrated_score": 1.0,
-          "token_probs": {
-            "yes_prob": 1.0,
-            "no_prob": 0.0
-          }
+          "answer": "yes"
         },
         {
           "id": 105,
           "name": "coffee table",
           "attribute": "light-colored",
           "skipped": false,
-          "bbox": [
-            24,
-            380,
-            1001,
-            990
-          ],
           "score": 1.0,
           "calibrated_score": 1.0,
-          "token_probs": {
-            "yes_prob": 1.0,
-            "no_prob": 0.0
-          }
+          "answer": "yes"
         },
         {
           "id": 105,
           "name": "coffee table",
           "attribute": "wooden",
           "skipped": false,
-          "bbox": [
-            24,
-            380,
-            1001,
-            990
-          ],
           "score": 1.0,
           "calibrated_score": 1.0,
-          "token_probs": {
-            "yes_prob": 1.0,
-            "no_prob": 0.0
-          }
+          "answer": "yes"
         },
         {
           "id": 114,
           "name": "area",
           "attribute": "carpeted",
           "skipped": false,
-          "bbox": [
-            138,
-            668,
-            917,
-            992
-          ],
           "score": 1.0,
           "calibrated_score": 1.0,
-          "token_probs": {
-            "yes_prob": 1.0,
-            "no_prob": 0.0
-          }
+          "answer": "yes"
         }
       ],
       "binding_score": 1.0
@@ -13047,14 +11799,14 @@
       "swap_accuracy": 0.0
     },
     "latency_ms": {
-      "total": 752.5052049895748
+      "total": 2882.491466065403
     }
   },
   {
     "image_id": "2378-4",
     "prompt": "White blinds cover a large window, allowing natural light to stream in, while two flooring pieces are installed on a tile floor.",
     "permutation": "E1-V2-E3",
-    "final_score": 0.2,
+    "final_score": 0.26666666666666666,
     "st1_res": {
       "backend": "E1",
       "nodes": [
@@ -13114,25 +11866,31 @@
           "id": 16,
           "name": "windows",
           "attribute": "large",
-          "skipped": true,
-          "skip_reason": "node_not_localized"
+          "skipped": false,
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
         },
         {
           "id": 18,
           "name": "blinds",
           "attribute": "white",
-          "skipped": true,
-          "skip_reason": "node_not_localized"
+          "skipped": false,
+          "score": 0.0,
+          "calibrated_score": 0.0,
+          "answer": "no"
         },
         {
           "id": 20,
           "name": "flooring",
           "attribute": "quantity:2",
-          "skipped": true,
-          "skip_reason": "node_not_localized"
+          "skipped": false,
+          "score": 0.0,
+          "calibrated_score": 0.0,
+          "answer": "no"
         }
       ],
-      "binding_score": null
+      "binding_score": 0.3333333333333333
     },
     "st3_res": {
       "backend": "E3",
@@ -13163,7 +11921,7 @@
       "swap_accuracy": null
     },
     "latency_ms": {
-      "total": 237.22660797648132
+      "total": 2534.5791169675067
     }
   },
   {
@@ -13238,18 +11996,9 @@
           "name": "accents",
           "attribute": "purple",
           "skipped": false,
-          "bbox": [
-            153,
-            316,
-            862,
-            875
-          ],
           "score": 1.0,
           "calibrated_score": 1.0,
-          "token_probs": {
-            "yes_prob": 1.0,
-            "no_prob": 0.0
-          }
+          "answer": "yes"
         }
       ],
       "binding_score": 1.0
@@ -13310,7 +12059,7 @@
       "swap_accuracy": 1.0
     },
     "latency_ms": {
-      "total": 566.6381100309081
+      "total": 1672.914751979988
     }
   },
   {
@@ -13372,18 +12121,9 @@
           "name": "outline",
           "attribute": "faint",
           "skipped": false,
-          "bbox": [
-            2,
-            547,
-            1022,
-            1019
-          ],
           "score": 1.0,
           "calibrated_score": 1.0,
-          "token_probs": {
-            "yes_prob": 1.0,
-            "no_prob": 0.0
-          }
+          "answer": "yes"
         }
       ],
       "binding_score": 1.0
@@ -13412,7 +12152,7 @@
       "swap_accuracy": 1.0
     },
     "latency_ms": {
-      "total": 428.3182989456691
+      "total": 1605.8956669876352
     }
   },
   {
@@ -13474,18 +12214,9 @@
           "name": "coffee table",
           "attribute": "material:wood/wooden/bamboo/hardwood",
           "skipped": false,
-          "bbox": [
-            1,
-            239,
-            532,
-            768
-          ],
           "score": 1.0,
           "calibrated_score": 1.0,
-          "token_probs": {
-            "yes_prob": 1.0,
-            "no_prob": 0.0
-          }
+          "answer": "yes"
         }
       ],
       "binding_score": 1.0
@@ -13514,7 +12245,7 @@
       "swap_accuracy": 1.0
     },
     "latency_ms": {
-      "total": 543.0893369484693
+      "total": 2285.4110240004957
     }
   },
   {
@@ -13589,72 +12320,36 @@
           "name": "bridge",
           "attribute": "overhead",
           "skipped": false,
-          "bbox": [
-            14,
-            452,
-            806,
-            980
-          ],
           "score": 1.0,
           "calibrated_score": 1.0,
-          "token_probs": {
-            "yes_prob": 1.0,
-            "no_prob": 0.0
-          }
+          "answer": "yes"
         },
         {
           "id": 101,
           "name": "bridge",
           "attribute": "concrete",
           "skipped": false,
-          "bbox": [
-            14,
-            452,
-            806,
-            980
-          ],
           "score": 1.0,
           "calibrated_score": 1.0,
-          "token_probs": {
-            "yes_prob": 1.0,
-            "no_prob": 0.0
-          }
+          "answer": "yes"
         },
         {
           "id": 103,
           "name": "area",
           "attribute": "green",
           "skipped": false,
-          "bbox": [
-            14,
-            452,
-            806,
-            980
-          ],
           "score": 1.0,
           "calibrated_score": 1.0,
-          "token_probs": {
-            "yes_prob": 1.0,
-            "no_prob": 0.0
-          }
+          "answer": "yes"
         },
         {
           "id": 103,
           "name": "area",
           "attribute": "wooded",
           "skipped": false,
-          "bbox": [
-            14,
-            452,
-            806,
-            980
-          ],
           "score": 1.0,
           "calibrated_score": 1.0,
-          "token_probs": {
-            "yes_prob": 1.0,
-            "no_prob": 0.0
-          }
+          "answer": "yes"
         }
       ],
       "binding_score": 1.0
@@ -13715,14 +12410,14 @@
       "swap_accuracy": 0.6666666666666666
     },
     "latency_ms": {
-      "total": 770.3709249617532
+      "total": 2606.3582480419427
     }
   },
   {
     "image_id": "2524-4",
     "prompt": "A gaze is directed at a viewer, with a chin resting on the floor in front of the white bathtub.",
     "permutation": "E1-V2-E3",
-    "final_score": 0.4,
+    "final_score": 0.7,
     "st1_res": {
       "backend": "E1",
       "nodes": [
@@ -13787,11 +12482,13 @@
           "id": 8,
           "name": "bathtub",
           "attribute": "color:white",
-          "skipped": true,
-          "skip_reason": "node_not_localized"
+          "skipped": false,
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
         }
       ],
-      "binding_score": null
+      "binding_score": 1.0
     },
     "st3_res": {
       "backend": "E3",
@@ -13822,7 +12519,7 @@
       "swap_accuracy": null
     },
     "latency_ms": {
-      "total": 229.35542702907696
+      "total": 1570.8106470410712
     }
   },
   {
@@ -13884,18 +12581,9 @@
           "name": "green grass",
           "attribute": "color:green",
           "skipped": false,
-          "bbox": [
-            645,
-            342,
-            925,
-            550
-          ],
           "score": 1.0,
           "calibrated_score": 1.0,
-          "token_probs": {
-            "yes_prob": 1.0,
-            "no_prob": 0.0
-          }
+          "answer": "yes"
         }
       ],
       "binding_score": 1.0
@@ -13924,7 +12612,7 @@
       "swap_accuracy": 0.0
     },
     "latency_ms": {
-      "total": 423.66518708877265
+      "total": 1637.1811379794963
     }
   },
   {
@@ -13983,14 +12671,14 @@
       "swap_accuracy": null
     },
     "latency_ms": {
-      "total": 174.7300760471262
+      "total": 168.6749390210025
     }
   },
   {
     "image_id": "2579-3",
     "prompt": "The suitcase features two latches and a thick patch, with sparse vegetation crossing the upper right corner of the frame.",
     "permutation": "E1-V2-E3",
-    "final_score": 0.45305040147569453,
+    "final_score": 0.36971706814236116,
     "st1_res": {
       "backend": "E1",
       "nodes": [
@@ -14071,75 +12759,39 @@
           "name": "latches",
           "attribute": "two",
           "skipped": false,
-          "bbox": [
-            401,
-            104,
-            613,
-            192
-          ],
           "score": 0.0,
           "calibrated_score": 0.0,
-          "token_probs": {
-            "yes_prob": 0.0,
-            "no_prob": 1.0
-          }
+          "answer": "no"
         },
         {
           "id": 5,
           "name": "patch",
           "attribute": "thick",
           "skipped": false,
-          "bbox": [
-            401,
-            104,
-            613,
-            192
-          ],
           "score": 0.0,
           "calibrated_score": 0.0,
-          "token_probs": {
-            "yes_prob": 0.0,
-            "no_prob": 1.0
-          }
+          "answer": "no"
         },
         {
           "id": 11,
           "name": "corner",
           "attribute": "upper right",
           "skipped": false,
-          "bbox": [
-            401,
-            104,
-            613,
-            192
-          ],
           "score": 0.0,
           "calibrated_score": 0.0,
-          "token_probs": {
-            "yes_prob": 0.0,
-            "no_prob": 1.0
-          }
+          "answer": "no"
         },
         {
           "id": 12,
           "name": "vegetation",
           "attribute": "sparse",
           "skipped": false,
-          "bbox": [
-            401,
-            104,
-            613,
-            192
-          ],
-          "score": 1.0,
-          "calibrated_score": 1.0,
-          "token_probs": {
-            "yes_prob": 1.0,
-            "no_prob": 0.0
-          }
+          "score": 0.0,
+          "calibrated_score": 0.0,
+          "answer": "no"
         }
       ],
-      "binding_score": 0.25
+      "binding_score": 0.0
     },
     "st3_res": {
       "backend": "E3",
@@ -14197,7 +12849,7 @@
       "swap_accuracy": 1.0
     },
     "latency_ms": {
-      "total": 705.7414939627051
+      "total": 2972.804164979607
     }
   },
   {
@@ -14285,162 +12937,81 @@
           "name": "desk",
           "attribute": "light wooden color",
           "skipped": false,
-          "bbox": [
-            583,
-            549,
-            1023,
-            1022
-          ],
           "score": 1.0,
           "calibrated_score": 1.0,
-          "token_probs": {
-            "yes_prob": 1.0,
-            "no_prob": 0.0
-          }
+          "answer": "yes"
         },
         {
           "id": 100,
           "name": "desk",
           "attribute": "arranged in a corner",
           "skipped": false,
-          "bbox": [
-            583,
-            549,
-            1023,
-            1022
-          ],
           "score": 0.0,
           "calibrated_score": 0.0,
-          "token_probs": {
-            "yes_prob": 0.0,
-            "no_prob": 1.0
-          }
+          "answer": "no"
         },
         {
           "id": 103,
           "name": "keyboard",
           "attribute": "standard",
           "skipped": false,
-          "bbox": [
-            84,
-            402,
-            809,
-            877
-          ],
           "score": 1.0,
           "calibrated_score": 1.0,
-          "token_probs": {
-            "yes_prob": 1.0,
-            "no_prob": 0.0
-          }
+          "answer": "yes"
         },
         {
           "id": 103,
           "name": "keyboard",
           "attribute": "white",
           "skipped": false,
-          "bbox": [
-            84,
-            402,
-            809,
-            877
-          ],
           "score": 1.0,
           "calibrated_score": 1.0,
-          "token_probs": {
-            "yes_prob": 1.0,
-            "no_prob": 0.0
-          }
+          "answer": "yes"
         },
         {
           "id": 104,
           "name": "keyboard",
           "attribute": "ergonomic",
           "skipped": false,
-          "bbox": [
-            84,
-            402,
-            809,
-            877
-          ],
           "score": 0.0,
           "calibrated_score": 0.0,
-          "token_probs": {
-            "yes_prob": 0.0,
-            "no_prob": 1.0
-          }
+          "answer": "no"
         },
         {
           "id": 104,
           "name": "keyboard",
           "attribute": "black",
           "skipped": false,
-          "bbox": [
-            84,
-            402,
-            809,
-            877
-          ],
           "score": 0.0,
           "calibrated_score": 0.0,
-          "token_probs": {
-            "yes_prob": 0.0,
-            "no_prob": 1.0
-          }
+          "answer": "no"
         },
         {
           "id": 104,
           "name": "keyboard",
           "attribute": "with a wrist rest",
           "skipped": false,
-          "bbox": [
-            84,
-            402,
-            809,
-            877
-          ],
           "score": 0.0,
           "calibrated_score": 0.0,
-          "token_probs": {
-            "yes_prob": 0.0,
-            "no_prob": 1.0
-          }
+          "answer": "no"
         },
         {
           "id": 106,
           "name": "mouse",
           "attribute": "white",
           "skipped": false,
-          "bbox": [
-            656,
-            309,
-            875,
-            409
-          ],
           "score": 1.0,
           "calibrated_score": 1.0,
-          "token_probs": {
-            "yes_prob": 1.0,
-            "no_prob": 0.0
-          }
+          "answer": "yes"
         },
         {
           "id": 110,
           "name": "tablet or drawing pad",
           "attribute": "silver",
           "skipped": false,
-          "bbox": [
-            583,
-            855,
-            951,
-            1014
-          ],
           "score": 0.0,
           "calibrated_score": 0.0,
-          "token_probs": {
-            "yes_prob": 0.0,
-            "no_prob": 1.0
-          }
+          "answer": "no"
         }
       ],
       "binding_score": 0.4444444444444444
@@ -14501,7 +13072,7 @@
       "swap_accuracy": 0.3333333333333333
     },
     "latency_ms": {
-      "total": 1285.8785579446703
+      "total": 5813.6997660622
     }
   },
   {
@@ -14627,7 +13198,7 @@
       "swap_accuracy": 0.0
     },
     "latency_ms": {
-      "total": 274.31609499035403
+      "total": 250.65608602017164
     }
   },
   {
@@ -14753,14 +13324,14 @@
       "swap_accuracy": 0.0
     },
     "latency_ms": {
-      "total": 293.26541599584743
+      "total": 274.3982350220904
     }
   },
   {
     "image_id": "2694-1",
     "prompt": "A shower area includes a shallow white shower base, with a roll of toilet paper resting on a holder mounted near a brown door.",
     "permutation": "E1-V2-E3",
-    "final_score": 0.5197279188368056,
+    "final_score": 0.6863945855034723,
     "st1_res": {
       "backend": "E1",
       "nodes": [
@@ -14841,75 +13412,39 @@
           "name": "shower base",
           "attribute": "shallow",
           "skipped": false,
-          "bbox": [
-            213,
-            661,
-            767,
-            1019
-          ],
           "score": 1.0,
           "calibrated_score": 1.0,
-          "token_probs": {
-            "yes_prob": 1.0,
-            "no_prob": 0.0
-          }
+          "answer": "yes"
         },
         {
           "id": 107,
           "name": "shower base",
           "attribute": "white",
           "skipped": false,
-          "bbox": [
-            213,
-            661,
-            767,
-            1019
-          ],
           "score": 1.0,
           "calibrated_score": 1.0,
-          "token_probs": {
-            "yes_prob": 1.0,
-            "no_prob": 0.0
-          }
+          "answer": "yes"
         },
         {
           "id": 114,
           "name": "toilet paper",
           "attribute": "a roll",
           "skipped": false,
-          "bbox": [
-            213,
-            661,
-            767,
-            1019
-          ],
-          "score": 0.0,
-          "calibrated_score": 0.0,
-          "token_probs": {
-            "yes_prob": 0.0,
-            "no_prob": 1.0
-          }
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
         },
         {
           "id": 116,
           "name": "door",
           "attribute": "brown",
           "skipped": false,
-          "bbox": [
-            213,
-            661,
-            767,
-            1019
-          ],
-          "score": 0.0,
-          "calibrated_score": 0.0,
-          "token_probs": {
-            "yes_prob": 0.0,
-            "no_prob": 1.0
-          }
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
         }
       ],
-      "binding_score": 0.5
+      "binding_score": 1.0
     },
     "st3_res": {
       "backend": "E3",
@@ -14967,14 +13502,14 @@
       "swap_accuracy": 0.3333333333333333
     },
     "latency_ms": {
-      "total": 782.6517209177837
+      "total": 3238.6844790307805
     }
   },
   {
     "image_id": "2732-2",
     "prompt": "A white plume of smoke rises from a smokestack.",
     "permutation": "E1-V2-E3",
-    "final_score": 0.37567138671875006,
+    "final_score": 0.7090047200520834,
     "st1_res": {
       "backend": "E1",
       "nodes": [
@@ -15029,21 +13564,12 @@
           "name": "plume",
           "attribute": "color:white",
           "skipped": false,
-          "bbox": [
-            435,
-            658,
-            590,
-            1021
-          ],
-          "score": 0.0,
-          "calibrated_score": 0.0,
-          "token_probs": {
-            "yes_prob": 0.0,
-            "no_prob": 1.0
-          }
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
         }
       ],
-      "binding_score": 0.0
+      "binding_score": 1.0
     },
     "st3_res": {
       "backend": "E3",
@@ -15085,7 +13611,7 @@
       "swap_accuracy": 0.5
     },
     "latency_ms": {
-      "total": 449.4705169927329
+      "total": 1619.0010599675588
     }
   },
   {
@@ -15147,36 +13673,18 @@
           "name": "stone tower",
           "attribute": "tall",
           "skipped": false,
-          "bbox": [
-            342,
-            131,
-            522,
-            830
-          ],
           "score": 1.0,
           "calibrated_score": 1.0,
-          "token_probs": {
-            "yes_prob": 1.0,
-            "no_prob": 0.0
-          }
+          "answer": "yes"
         },
         {
           "id": 101,
           "name": "stone tower",
           "attribute": "narrow",
           "skipped": false,
-          "bbox": [
-            342,
-            131,
-            522,
-            830
-          ],
           "score": 1.0,
           "calibrated_score": 1.0,
-          "token_probs": {
-            "yes_prob": 1.0,
-            "no_prob": 0.0
-          }
+          "answer": "yes"
         }
       ],
       "binding_score": 1.0
@@ -15237,14 +13745,14 @@
       "swap_accuracy": 1.0
     },
     "latency_ms": {
-      "total": 557.4975829804316
+      "total": 2072.7543969405815
     }
   },
   {
     "image_id": "2808-3",
     "prompt": "A cozy living room with rustic charm features light-colored hardwood flooring and a large glass sliding door, radiating a comfortable and inviting ambiance.",
     "permutation": "E1-V2-E3",
-    "final_score": 0.4446055094401042,
+    "final_score": 0.5557166205512154,
     "st1_res": {
       "backend": "E1",
       "nodes": [
@@ -15307,89 +13815,57 @@
           "name": "living room",
           "attribute": "cozy",
           "skipped": false,
-          "bbox": [
-            276,
-            204,
-            512,
-            316
-          ],
           "score": 1.0,
           "calibrated_score": 1.0,
-          "token_probs": {
-            "yes_prob": 1.0,
-            "no_prob": 0.0
-          }
+          "answer": "yes"
         },
         {
           "id": 100,
           "name": "living room",
           "attribute": "rustic charm",
           "skipped": false,
-          "bbox": [
-            276,
-            204,
-            512,
-            316
-          ],
           "score": 0.0,
           "calibrated_score": 0.0,
-          "token_probs": {
-            "yes_prob": 0.0,
-            "no_prob": 1.0
-          }
+          "answer": "no"
         },
         {
           "id": 101,
           "name": "hardwood flooring",
           "attribute": "light-colored",
           "skipped": false,
-          "bbox": [
-            124,
-            309,
-            229,
-            438
-          ],
-          "score": 0.0,
-          "calibrated_score": 0.0,
-          "token_probs": {
-            "yes_prob": 0.0,
-            "no_prob": 1.0
-          }
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
         },
         {
           "id": 103,
           "name": "glass sliding door",
           "attribute": "large",
           "skipped": false,
-          "bbox": [
-            29,
-            228,
-            212,
-            381
-          ],
           "score": 1.0,
           "calibrated_score": 1.0,
-          "token_probs": {
-            "yes_prob": 1.0,
-            "no_prob": 0.0
-          }
+          "answer": "yes"
         },
         {
           "id": 108,
           "name": "ambiance",
           "attribute": "comfortable",
-          "skipped": true,
-          "skip_reason": "node_not_localized"
+          "skipped": false,
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
         },
         {
           "id": 108,
           "name": "ambiance",
           "attribute": "inviting",
-          "skipped": true,
-          "skip_reason": "node_not_localized"
+          "skipped": false,
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
         }
       ],
-      "binding_score": 0.5
+      "binding_score": 0.8333333333333334
     },
     "st3_res": {
       "backend": "E3",
@@ -15438,14 +13914,14 @@
       "swap_accuracy": 0.0
     },
     "latency_ms": {
-      "total": 744.1095390240662
+      "total": 1727.83172596246
     }
   },
   {
     "image_id": "2837-5",
     "prompt": "A dish, consisting primarily of pieces, is being prepared in a rectangular aluminum foil pan, with small, cubed, orange cheese scattered throughout.",
     "permutation": "E1-V2-E3",
-    "final_score": 0.0,
+    "final_score": 0.375,
     "st1_res": {
       "backend": "E1",
       "nodes": [
@@ -15492,32 +13968,40 @@
           "id": 101,
           "name": "aluminum foil pan",
           "attribute": "rectangular",
-          "skipped": true,
-          "skip_reason": "node_not_localized"
+          "skipped": false,
+          "score": 0.0,
+          "calibrated_score": 0.0,
+          "answer": "no"
         },
         {
           "id": 102,
           "name": "cheese",
           "attribute": "orange",
-          "skipped": true,
-          "skip_reason": "node_not_localized"
+          "skipped": false,
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
         },
         {
           "id": 102,
           "name": "cheese",
           "attribute": "small",
-          "skipped": true,
-          "skip_reason": "node_not_localized"
+          "skipped": false,
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
         },
         {
           "id": 102,
           "name": "cheese",
           "attribute": "cubed",
-          "skipped": true,
-          "skip_reason": "node_not_localized"
+          "skipped": false,
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
         }
       ],
-      "binding_score": null
+      "binding_score": 0.75
     },
     "st3_res": {
       "backend": "E3",
@@ -15548,7 +14032,7 @@
       "swap_accuracy": null
     },
     "latency_ms": {
-      "total": 253.4996349713765
+      "total": 1458.388804050628
     }
   },
   {
@@ -15599,33 +14083,28 @@
           "id": 8,
           "name": "contrast",
           "attribute": "stark",
-          "skipped": true,
-          "skip_reason": "node_not_localized"
+          "skipped": false,
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
         },
         {
           "id": 9,
           "name": "features",
           "attribute": "hair type:straight",
-          "skipped": true,
-          "skip_reason": "node_not_localized"
+          "skipped": false,
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
         },
         {
           "id": 4,
           "name": "beak",
           "attribute": "sharp",
           "skipped": false,
-          "bbox": [
-            10,
-            350,
-            314,
-            521
-          ],
           "score": 1.0,
           "calibrated_score": 1.0,
-          "token_probs": {
-            "yes_prob": 1.0,
-            "no_prob": 0.0
-          }
+          "answer": "yes"
         }
       ],
       "binding_score": 1.0
@@ -15645,14 +14124,14 @@
       "swap_accuracy": null
     },
     "latency_ms": {
-      "total": 337.7607479924336
+      "total": 2050.7164020091295
     }
   },
   {
     "image_id": "2958-2",
     "prompt": "Dry grass rests on a slight incline with two backpacks resting on the incline.",
     "permutation": "E1-V2-E3",
-    "final_score": 0.3333333333333333,
+    "final_score": 0.41666666666666663,
     "st1_res": {
       "backend": "E1",
       "nodes": [
@@ -15696,18 +14175,22 @@
           "id": 13,
           "name": "incline",
           "attribute": "slight",
-          "skipped": true,
-          "skip_reason": "node_not_localized"
+          "skipped": false,
+          "score": 0.0,
+          "calibrated_score": 0.0,
+          "answer": "no"
         },
         {
           "id": 4,
           "name": "backpack",
           "attribute": "quantity:2",
-          "skipped": true,
-          "skip_reason": "node_not_localized"
+          "skipped": false,
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
         }
       ],
-      "binding_score": null
+      "binding_score": 0.5
     },
     "st3_res": {
       "backend": "E3",
@@ -15724,14 +14207,14 @@
       "swap_accuracy": null
     },
     "latency_ms": {
-      "total": 208.35654804250225
+      "total": 1758.2657800521702
     }
   },
   {
     "image_id": "3009-1",
     "prompt": "White waves crash near a shore, where wet sand lies at the water\u2019s edge.",
     "permutation": "E1-V2-E3",
-    "final_score": 0.0,
+    "final_score": 0.5,
     "st1_res": {
       "backend": "E1",
       "nodes": [
@@ -15778,11 +14261,13 @@
           "id": 8,
           "name": "waves",
           "attribute": "white",
-          "skipped": true,
-          "skip_reason": "node_not_localized"
+          "skipped": false,
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
         }
       ],
-      "binding_score": null
+      "binding_score": 1.0
     },
     "st3_res": {
       "backend": "E3",
@@ -15806,7 +14291,7 @@
       "swap_accuracy": null
     },
     "latency_ms": {
-      "total": 174.32367900619283
+      "total": 1520.674078958109
     }
   },
   {
@@ -15852,32 +14337,40 @@
           "id": 11,
           "name": "skate park",
           "attribute": "material:dirt",
-          "skipped": true,
-          "skip_reason": "node_not_localized"
+          "skipped": false,
+          "score": 0.0,
+          "calibrated_score": 0.0,
+          "answer": "no"
         },
         {
           "id": 12,
           "name": "ramps",
           "attribute": "texture:soft/fluffy/furry/hairy",
-          "skipped": true,
-          "skip_reason": "node_not_localized"
+          "skipped": false,
+          "score": 0.0,
+          "calibrated_score": 0.0,
+          "answer": "no"
         },
         {
           "id": 12,
           "name": "ramps",
           "attribute": "material:textile/cloth/fabric/denim/cotton/jean/silk/plush",
-          "skipped": true,
-          "skip_reason": "node_not_localized"
+          "skipped": false,
+          "score": 0.0,
+          "calibrated_score": 0.0,
+          "answer": "no"
         },
         {
           "id": 13,
           "name": "ledges",
           "attribute": "concrete",
-          "skipped": true,
-          "skip_reason": "node_not_localized"
+          "skipped": false,
+          "score": 0.0,
+          "calibrated_score": 0.0,
+          "answer": "no"
         }
       ],
-      "binding_score": null
+      "binding_score": 0.0
     },
     "st3_res": {
       "backend": "E3",
@@ -15901,14 +14394,14 @@
       "swap_accuracy": null
     },
     "latency_ms": {
-      "total": 208.69600400328636
+      "total": 1713.9042239869013
     }
   },
   {
     "image_id": "3093-4",
     "prompt": "A baggage cart faces a wing of an airplane, while a jet bridge is connected to the front door, and an orange and red stripe stretches along the lower fuselage.",
     "permutation": "E1-V2-E3",
-    "final_score": 0.16666666666666666,
+    "final_score": 0.41666666666666663,
     "st1_res": {
       "backend": "E1",
       "nodes": [
@@ -15976,25 +14469,31 @@
           "id": 5,
           "name": "stripe",
           "attribute": "color:orange",
-          "skipped": true,
-          "skip_reason": "node_not_localized"
+          "skipped": false,
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
         },
         {
           "id": 5,
           "name": "stripe",
           "attribute": "color:red",
-          "skipped": true,
-          "skip_reason": "node_not_localized"
+          "skipped": false,
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
         },
         {
           "id": 6,
           "name": "fuselage",
           "attribute": "position:lower",
-          "skipped": true,
-          "skip_reason": "node_not_localized"
+          "skipped": false,
+          "score": 0.0,
+          "calibrated_score": 0.0,
+          "answer": "no"
         }
       ],
-      "binding_score": null
+      "binding_score": 0.6666666666666666
     },
     "st3_res": {
       "backend": "E3",
@@ -16025,7 +14524,7 @@
       "swap_accuracy": null
     },
     "latency_ms": {
-      "total": 253.6307830014266
+      "total": 2570.8055599825457
     }
   }
 ]

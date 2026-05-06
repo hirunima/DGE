@@ -1,0 +1,1313 @@
+dataset,type,term,count
+TIIF-Bench,object,it,374
+TIIF-Bench,object,text,332
+TIIF-Bench,object,picture,279
+TIIF-Bench,object,scene,226
+TIIF-Bench,object,table,145
+TIIF-Bench,object,man,143
+TIIF-Bench,object,person,103
+TIIF-Bench,object,woman,91
+TIIF-Bench,object,style,89
+TIIF-Bench,object,cat,83
+TIIF-Bench,object,book,79
+TIIF-Bench,object,tree,77
+TIIF-Bench,object,background,76
+TIIF-Bench,object,boy,65
+TIIF-Bench,object,glass,62
+TIIF-Bench,object,side,60
+TIIF-Bench,object,bottom,60
+TIIF-Bench,object,right,59
+TIIF-Bench,object,girl,59
+TIIF-Bench,object,left,56
+TIIF-Bench,object,dog,56
+TIIF-Bench,object,desk,56
+TIIF-Bench,object,car,55
+TIIF-Bench,object,bird,53
+TIIF-Bench,object,top,52
+TIIF-Bench,object,room,52
+TIIF-Bench,object,people,51
+TIIF-Bench,object,hat,50
+TIIF-Bench,object,light,50
+TIIF-Bench,object,child,46
+TIIF-Bench,object,image,45
+TIIF-Bench,object,rabbit,44
+TIIF-Bench,object,surface,42
+TIIF-Bench,object,apple,41
+TIIF-Bench,object,chair,39
+TIIF-Bench,object,view,39
+TIIF-Bench,object,bowl,39
+TIIF-Bench,object,vase,38
+TIIF-Bench,object,sky,37
+TIIF-Bench,object,frog,36
+TIIF-Bench,object,that,35
+TIIF-Bench,object,design,35
+TIIF-Bench,object,cup,34
+TIIF-Bench,object,fish,34
+TIIF-Bench,object,shadow,32
+TIIF-Bench,object,hair,31
+TIIF-Bench,object,ghibli style,30
+TIIF-Bench,object,lego style,30
+TIIF-Bench,object,gogh style,30
+TIIF-Bench,object,disney style,30
+TIIF-Bench (long),object,that,1486
+TIIF-Bench (long),object,scene,764
+TIIF-Bench (long),object,light,703
+TIIF-Bench (long),object,surface,661
+TIIF-Bench (long),object,shadow,652
+TIIF-Bench (long),object,it,499
+TIIF-Bench (long),object,hue,471
+TIIF-Bench (long),object,tableau,433
+TIIF-Bench (long),object,contrast,422
+TIIF-Bench (long),object,presence,415
+TIIF-Bench (long),object,edge,370
+TIIF-Bench (long),object,image,366
+TIIF-Bench (long),object,air,364
+TIIF-Bench (long),object,they,364
+TIIF-Bench (long),object,which,354
+TIIF-Bench (long),object,background,330
+TIIF-Bench (long),object,eye,325
+TIIF-Bench (long),object,glow,316
+TIIF-Bench (long),object,color,304
+TIIF-Bench (long),object,sky,288
+TIIF-Bench (long),object,room,286
+TIIF-Bench (long),object,composition,279
+TIIF-Bench (long),object,form,269
+TIIF-Bench (long),object,texture,262
+TIIF-Bench (long),object,depth,251
+TIIF-Bench (long),object,elegance,242
+TIIF-Bench (long),object,text,242
+TIIF-Bench (long),object,word,234
+TIIF-Bench (long),object,lighting,216
+TIIF-Bench (long),object,tone,211
+TIIF-Bench (long),object,sunlight,209
+TIIF-Bench (long),object,backdrop,205
+TIIF-Bench (long),object,warmth,187
+TIIF-Bench (long),object,table,186
+TIIF-Bench (long),object,gradient,177
+TIIF-Bench (long),object,embrace,165
+TIIF-Bench (long),object,pattern,165
+TIIF-Bench (long),object,side,164
+TIIF-Bench (long),object,each,164
+TIIF-Bench (long),object,wall,160
+TIIF-Bench (long),object,juxtaposition,158
+TIIF-Bench (long),object,energy,158
+TIIF-Bench (long),object,element,156
+TIIF-Bench (long),object,he,154
+TIIF-Bench (long),object,design,154
+TIIF-Bench (long),object,man,153
+TIIF-Bench (long),object,simplicity,152
+TIIF-Bench (long),object,hand,147
+TIIF-Bench (long),object,sense,143
+TIIF-Bench (long),object,expanse,142
+DPGBench,object,that,419
+DPGBench,object,it,223
+DPGBench,object,surface,218
+DPGBench,object,scene,213
+DPGBench,object,they,210
+DPGBench,object,light,171
+DPGBench,object,background,159
+DPGBench,object,texture,143
+DPGBench,object,backdrop,142
+DPGBench,object,sky,141
+DPGBench,object,color,138
+DPGBench,object,table,136
+DPGBench,object,contrast,132
+DPGBench,object,which,123
+DPGBench,object,room,115
+DPGBench,object,wall,114
+DPGBench,object,hue,112
+DPGBench,object,shadow,110
+DPGBench,object,glow,110
+DPGBench,object,side,105
+DPGBench,object,image,89
+DPGBench,object,tree,89
+DPGBench,object,window,87
+DPGBench,object,sunlight,79
+DPGBench,object,array,77
+DPGBench,object,edge,77
+DPGBench,object,hand,76
+DPGBench,object,space,74
+DPGBench,object,arm,69
+DPGBench,object,grass,66
+DPGBench,object,water,63
+DPGBench,object,pattern,62
+DPGBench,object,design,62
+DPGBench,object,line,62
+DPGBench,object,ground,60
+DPGBench,object,pair,59
+DPGBench,object,each,59
+DPGBench,object,floor,58
+DPGBench,object,head,57
+DPGBench,object,center,57
+DPGBench,object,leaf,55
+DPGBench,object,touch,55
+DPGBench,object,detail,55
+DPGBench,object,leg,53
+DPGBench,object,setting,51
+DPGBench,object,landscape,49
+DPGBench,object,distance,49
+DPGBench,object,eye,49
+DPGBench,object,area,49
+DPGBench,object,figure,49
+T2I-CompBench++,object,person,102
+T2I-CompBench++,object,woman,81
+T2I-CompBench++,object,man,80
+T2I-CompBench++,object,dog,73
+T2I-CompBench++,object,book,62
+T2I-CompBench++,object,chair,60
+T2I-CompBench++,object,cup,60
+T2I-CompBench++,object,right,59
+T2I-CompBench++,object,cat,58
+T2I-CompBench++,object,left,57
+T2I-CompBench++,object,top,56
+T2I-CompBench++,object,horse,55
+T2I-CompBench++,object,table,52
+T2I-CompBench++,object,bottom,52
+T2I-CompBench++,object,desk,51
+T2I-CompBench++,object,car,50
+T2I-CompBench++,object,vase,50
+T2I-CompBench++,object,bowl,50
+T2I-CompBench++,object,frog,50
+T2I-CompBench++,object,pig,49
+T2I-CompBench++,object,chicken,46
+T2I-CompBench++,object,balloon,46
+T2I-CompBench++,object,backpack,46
+T2I-CompBench++,object,mouse,45
+T2I-CompBench++,object,giraffe,45
+T2I-CompBench++,object,clock,45
+T2I-CompBench++,object,candle,44
+T2I-CompBench++,object,train,43
+T2I-CompBench++,object,bird,43
+T2I-CompBench++,object,phone,42
+T2I-CompBench++,object,child,42
+T2I-CompBench++,object,sheep,41
+T2I-CompBench++,object,girl,41
+T2I-CompBench++,object,rabbit,41
+T2I-CompBench++,object,fish,41
+T2I-CompBench++,object,bee,40
+T2I-CompBench++,object,cow,39
+T2I-CompBench++,object,apple,39
+T2I-CompBench++,object,boy,38
+T2I-CompBench++,object,bag,37
+T2I-CompBench++,object,suitcase,37
+T2I-CompBench++,object,sofa,36
+T2I-CompBench++,object,plate,36
+T2I-CompBench++,object,couch,35
+T2I-CompBench++,object,banana,34
+T2I-CompBench++,object,key,33
+T2I-CompBench++,object,butterfly,33
+T2I-CompBench++,object,airplane,33
+T2I-CompBench++,object,bicycle,33
+T2I-CompBench++,object,computer,32
+GenAI-Bench,object,one,78
+GenAI-Bench,object,table,69
+GenAI-Bench,object,cat,67
+GenAI-Bench,object,man,61
+GenAI-Bench,object,child,61
+GenAI-Bench,object,person,55
+GenAI-Bench,object,book,52
+GenAI-Bench,object,right,51
+GenAI-Bench,object,left,50
+GenAI-Bench,object,tree,49
+GenAI-Bench,object,girl,47
+GenAI-Bench,object,boy,47
+GenAI-Bench,object,dog,47
+GenAI-Bench,object,it,46
+GenAI-Bench,object,flower,42
+GenAI-Bench,object,hat,41
+GenAI-Bench,object,woman,40
+GenAI-Bench,object,that,40
+GenAI-Bench,object,garden,37
+GenAI-Bench,object,sky,35
+GenAI-Bench,object,side,30
+GenAI-Bench,object,group,30
+GenAI-Bench,object,glass,30
+GenAI-Bench,object,pair,29
+GenAI-Bench,object,light,27
+GenAI-Bench,object,bird,27
+GenAI-Bench,object,beach,25
+GenAI-Bench,object,apple,25
+GenAI-Bench,object,desk,24
+GenAI-Bench,object,chair,24
+GenAI-Bench,object,they,24
+GenAI-Bench,object,people,24
+GenAI-Bench,object,car,23
+GenAI-Bench,object,shoe,23
+GenAI-Bench,object,hand,23
+GenAI-Bench,object,field,22
+GenAI-Bench,object,water,21
+GenAI-Bench,object,student,21
+GenAI-Bench,object,leaf,21
+GenAI-Bench,object,which,21
+GenAI-Bench,object,forest,20
+GenAI-Bench,object,cup,20
+GenAI-Bench,object,room,19
+GenAI-Bench,object,park,19
+GenAI-Bench,object,window,18
+GenAI-Bench,object,door,18
+GenAI-Bench,object,floor,18
+GenAI-Bench,object,ball,17
+GenAI-Bench,object,classroom,17
+GenAI-Bench,object,wall,16
+GenEval,object,photo,553
+GenEval,object,dog,23
+GenEval,object,stop sign,17
+GenEval,object,cow,16
+GenEval,object,bear,16
+GenEval,object,suitcase,15
+GenEval,object,plant,15
+GenEval,object,computer keyboard,15
+GenEval,object,pizza,15
+GenEval,object,parking meter,14
+GenEval,object,couch,14
+GenEval,object,cell phone,14
+GenEval,object,dining table,14
+GenEval,object,bench,13
+GenEval,object,carrot,13
+GenEval,object,zebra,13
+GenEval,object,laptop,13
+GenEval,object,broccoli,13
+GenEval,object,refrigerator,12
+GenEval,object,skateboard,12
+GenEval,object,car,12
+GenEval,object,baseball bat,12
+GenEval,object,train,12
+GenEval,object,tv,12
+GenEval,object,handbag,12
+GenEval,object,giraffe,12
+GenEval,object,sink,12
+GenEval,object,book,11
+GenEval,object,backpack,11
+GenEval,object,frisbee,11
+GenEval,object,toilet,11
+GenEval,object,vase,11
+GenEval,object,toothbrush,11
+GenEval,object,baseball glove,11
+GenEval,object,wine glass,11
+GenEval,object,apple,11
+GenEval,object,umbrella,11
+GenEval,object,sport ball,11
+GenEval,object,chair,10
+GenEval,object,scissor,10
+GenEval,object,elephant,10
+GenEval,object,horse,10
+GenEval,object,cake,10
+GenEval,object,bus,10
+GenEval,object,tennis racket,10
+GenEval,object,clock,9
+GenEval,object,fork,9
+GenEval,object,cup,9
+GenEval,object,motorcycle,9
+GenEval,object,bowl,9
+GenEval2,object,left,119
+GenEval2,object,right,108
+GenEval2,object,sheep,54
+GenEval2,object,elephant,53
+GenEval2,object,dog,53
+GenEval2,object,suitcase,52
+GenEval2,object,rabbit,50
+GenEval2,object,kangaroo,50
+GenEval2,object,candle,50
+GenEval2,object,car,49
+GenEval2,object,chair,49
+GenEval2,object,bicycle,48
+GenEval2,object,pig,46
+GenEval2,object,bear,46
+GenEval2,object,bird,46
+GenEval2,object,giraffe,46
+GenEval2,object,violin,46
+GenEval2,object,trumpet,45
+GenEval2,object,truck,44
+GenEval2,object,umbrella,44
+GenEval2,object,motorcycle,44
+GenEval2,object,clock,44
+GenEval2,object,toy,43
+GenEval2,object,horse,43
+GenEval2,object,mushroom,43
+GenEval2,object,bagel,42
+GenEval2,object,lion,42
+GenEval2,object,raccoon,41
+GenEval2,object,penguin,41
+GenEval2,object,flamingo,41
+GenEval2,object,cat,41
+GenEval2,object,flower,40
+GenEval2,object,guitar,40
+GenEval2,object,monkey,39
+GenEval2,object,donut,37
+GenEval2,object,koala,37
+GenEval2,object,cow,36
+GenEval2,object,backpack,35
+GenEval2,object,turtle,35
+GenEval2,object,croissant,34
+GenEval2,object,zebra,34
+GenEval2,object,cookie,26
+GenEval2,object,cooky,26
+GenEval2,object,glass turtle,6
+GenEval2,object,stone motorcycle,6
+GenEval2,object,metal turtle,5
+GenEval2,object,stone raccoon,4
+GenEval2,object,metal elephant,4
+GenEval2,object,glass lion,4
+GenEval2,object,glass pig,4
+LongT2IBench,object,image,1878
+LongT2IBench,object,it,1309
+LongT2IBench,object,that,1103
+LongT2IBench,object,background,825
+LongT2IBench,object,side,812
+LongT2IBench,object,scene,786
+LongT2IBench,object,view,782
+LongT2IBench,object,sky,757
+LongT2IBench,object,tree,734
+LongT2IBench,object,right,710
+LongT2IBench,object,color,581
+LongT2IBench,object,left,581
+LongT2IBench,object,light,570
+LongT2IBench,object,wall,537
+LongT2IBench,object,water,480
+LongT2IBench,object,air,403
+LongT2IBench,object,they,399
+LongT2IBench,object,shadow,395
+LongT2IBench,object,leaf,393
+LongT2IBench,object,top,380
+LongT2IBench,object,corner,358
+LongT2IBench,object,building,346
+LongT2IBench,object,sunlight,331
+LongT2IBench,object,surface,317
+LongT2IBench,object,window,314
+LongT2IBench,object,center,290
+LongT2IBench,object,grass,271
+LongT2IBench,object,atmosphere,267
+LongT2IBench,object,which,267
+LongT2IBench,object,car,264
+LongT2IBench,object,hand,262
+LongT2IBench,object,man,254
+LongT2IBench,object,frame,252
+LongT2IBench,object,cat,248
+LongT2IBench,object,text,248
+LongT2IBench,object,sense,245
+LongT2IBench,object,child,230
+LongT2IBench,object,flower,229
+LongT2IBench,object,sun,226
+LongT2IBench,object,bottom,224
+LongT2IBench,object,ground,217
+LongT2IBench,object,cloud,217
+LongT2IBench,object,sign,217
+LongT2IBench,object,branch,214
+LongT2IBench,object,table,214
+LongT2IBench,object,people,208
+LongT2IBench,object,head,208
+LongT2IBench,object,bird,203
+LongT2IBench,object,line,203
+LongT2IBench,object,body,201
+GECKONUM,object,apple,141
+GECKONUM,object,image,123
+GECKONUM,object,mushroom,120
+GECKONUM,object,bottle,111
+GECKONUM,object,koala,104
+GECKONUM,object,cat,103
+GECKONUM,object,table,89
+GECKONUM,object,fish,65
+GECKONUM,object,pizza,55
+GECKONUM,object,olive,55
+GECKONUM,object,samosa,51
+GECKONUM,object,pencil,49
+GECKONUM,object,fly,44
+GECKONUM,object,book,44
+GECKONUM,object,lychee,43
+GECKONUM,object,crib,43
+GECKONUM,object,trowel,41
+GECKONUM,object,corkscrew,41
+GECKONUM,object,kangaroo,40
+GECKONUM,object,burger,40
+GECKONUM,object,parsnip,40
+GECKONUM,object,manatee,39
+GECKONUM,object,ant,38
+GECKONUM,object,okra,38
+GECKONUM,object,spoon,38
+GECKONUM,object,paperclip,38
+GECKONUM,object,flute,37
+GECKONUM,object,axolotls,36
+GECKONUM,object,cooky,35
+GECKONUM,object,coconut,35
+GECKONUM,object,egg,34
+GECKONUM,object,leaf,34
+GECKONUM,object,flower,34
+GECKONUM,object,chocolate,33
+GECKONUM,object,pistachio,33
+GECKONUM,object,dog,32
+GECKONUM,object,seahorse,31
+GECKONUM,object,durian,31
+GECKONUM,object,bonsais,27
+GECKONUM,object,left,26
+GECKONUM,object,right,26
+GECKONUM,object,picture,25
+GECKONUM,object,stick,24
+GECKONUM,object,tree,24
+GECKONUM,object,piece,21
+GECKONUM,object,half,20
+GECKONUM,object,cake,19
+GECKONUM,object,plate,18
+GECKONUM,object,cinnamon stick,15
+GECKONUM,object,loaf,15
+Ours,object,it,256
+Ours,object,that,253
+Ours,object,side,183
+Ours,object,background,178
+Ours,object,right,149
+Ours,object,left,143
+Ours,object,person,139
+Ours,object,which,122
+Ours,object,wall,121
+Ours,object,tree,117
+Ours,object,building,110
+Ours,object,window,101
+Ours,object,surface,98
+Ours,object,hand,98
+Ours,object,pattern,92
+Ours,object,sky,87
+Ours,object,water,87
+Ours,object,pair,86
+Ours,object,light,83
+Ours,object,part,82
+Ours,object,line,81
+Ours,object,foreground,77
+Ours,object,scene,76
+Ours,object,field,76
+Ours,object,hair,72
+Ours,object,grass,71
+Ours,object,area,71
+Ours,object,plate,69
+Ours,object,body,68
+Ours,object,ground,68
+Ours,object,sign,64
+Ours,object,table,63
+Ours,object,desk,62
+Ours,object,group,61
+Ours,object,frame,60
+Ours,object,dog,59
+Ours,object,shirt,56
+Ours,object,room,56
+Ours,object,road,56
+Ours,object,foliage,56
+Ours,object,shadow,56
+Ours,object,landscape,53
+Ours,object,beach,52
+Ours,object,they,51
+Ours,object,sink,51
+Ours,object,clothe,50
+Ours,object,image,50
+Ours,object,car,49
+Ours,object,pole,49
+Ours,object,head,48
+TIIF-Bench,attribute,a,3575
+TIIF-Bench,attribute,the,2779
+TIIF-Bench,attribute,two,212
+TIIF-Bench,attribute,four,201
+TIIF-Bench,attribute,an,195
+TIIF-Bench,attribute,three,192
+TIIF-Bench,attribute,red,188
+TIIF-Bench,attribute,white,168
+TIIF-Bench,attribute,metallic,165
+TIIF-Bench,attribute,wooden,163
+TIIF-Bench,attribute,blue,154
+TIIF-Bench,attribute,one,145
+TIIF-Bench,attribute,brown,143
+TIIF-Bench,attribute,green,126
+TIIF-Bench,attribute,fluffy,105
+TIIF-Bench,attribute,black,98
+TIIF-Bench,attribute,yellow,84
+TIIF-Bench,attribute,small,61
+TIIF-Bench,attribute,no,59
+TIIF-Bench,attribute,large,55
+TIIF-Bench,attribute,vibrant,50
+TIIF-Bench,attribute,3d,49
+TIIF-Bench,attribute,plastic,49
+TIIF-Bench,attribute,rectangular,46
+TIIF-Bench,attribute,colorful,42
+TIIF-Bench,attribute,another,42
+TIIF-Bench,attribute,spherical,40
+TIIF-Bench,attribute,chinese,39
+TIIF-Bench,attribute,more,37
+TIIF-Bench,attribute,soft,36
+TIIF-Bench,attribute,american,34
+TIIF-Bench,attribute,conical,34
+TIIF-Bench,attribute,short,33
+TIIF-Bench,attribute,tall,32
+TIIF-Bench,attribute,oblong,31
+TIIF-Bench,attribute,old,30
+TIIF-Bench,attribute,pentagonal,30
+TIIF-Bench,attribute,young,29
+TIIF-Bench,attribute,cylindrical,29
+TIIF-Bench,attribute,any,28
+TIIF-Bench,attribute,pink,27
+TIIF-Bench,attribute,clear,25
+TIIF-Bench,attribute,light,25
+TIIF-Bench,attribute,this,24
+TIIF-Bench,attribute,round,23
+TIIF-Bench,attribute,modern,23
+TIIF-Bench,attribute,cubic,23
+TIIF-Bench,attribute,long,22
+TIIF-Bench,attribute,warm,22
+TIIF-Bench,attribute,sleek,21
+TIIF-Bench (long),attribute,the,14389
+TIIF-Bench (long),attribute,a,8527
+TIIF-Bench (long),attribute,an,1119
+TIIF-Bench (long),attribute,soft,777
+TIIF-Bench (long),attribute,gentle,642
+TIIF-Bench (long),attribute,vibrant,607
+TIIF-Bench (long),attribute,subtle,442
+TIIF-Bench (long),attribute,warm,436
+TIIF-Bench (long),attribute,delicate,409
+TIIF-Bench (long),attribute,this,391
+TIIF-Bench (long),attribute,metallic,377
+TIIF-Bench (long),attribute,quiet,363
+TIIF-Bench (long),attribute,serene,360
+TIIF-Bench (long),attribute,wooden,356
+TIIF-Bench (long),attribute,red,344
+TIIF-Bench (long),attribute,white,334
+TIIF-Bench (long),attribute,blue,323
+TIIF-Bench (long),attribute,faint,322
+TIIF-Bench (long),attribute,two,295
+TIIF-Bench (long),attribute,golden,277
+TIIF-Bench (long),attribute,small,274
+TIIF-Bench (long),attribute,each,268
+TIIF-Bench (long),attribute,silent,266
+TIIF-Bench (long),attribute,intricate,255
+TIIF-Bench (long),attribute,polished,252
+TIIF-Bench (long),attribute,ambient,251
+TIIF-Bench (long),attribute,sleek,249
+TIIF-Bench (long),attribute,harmonious,227
+TIIF-Bench (long),attribute,deep,222
+TIIF-Bench (long),attribute,green,222
+TIIF-Bench (long),attribute,black,212
+TIIF-Bench (long),attribute,light,208
+TIIF-Bench (long),attribute,overall,202
+TIIF-Bench (long),attribute,crisp,196
+TIIF-Bench (long),attribute,four,195
+TIIF-Bench (long),attribute,stark,192
+TIIF-Bench (long),attribute,three,191
+TIIF-Bench (long),attribute,smooth,180
+TIIF-Bench (long),attribute,brown,180
+TIIF-Bench (long),attribute,vivid,178
+TIIF-Bench (long),attribute,dynamic,177
+TIIF-Bench (long),attribute,texture,173
+TIIF-Bench (long),attribute,earthy,171
+TIIF-Bench (long),attribute,yellow,168
+TIIF-Bench (long),attribute,mute,164
+TIIF-Bench (long),attribute,playful,147
+TIIF-Bench (long),attribute,geometric,147
+TIIF-Bench (long),attribute,rich,146
+TIIF-Bench (long),attribute,striking,145
+TIIF-Bench (long),attribute,elegant,144
+DPGBench,attribute,the,5471
+DPGBench,attribute,a,4704
+DPGBench,attribute,an,596
+DPGBench,attribute,white,291
+DPGBench,attribute,wooden,243
+DPGBench,attribute,vibrant,242
+DPGBench,attribute,green,200
+DPGBench,attribute,soft,176
+DPGBench,attribute,black,169
+DPGBench,attribute,blue,168
+DPGBench,attribute,small,146
+DPGBench,attribute,red,145
+DPGBench,attribute,large,142
+DPGBench,attribute,sleek,137
+DPGBench,attribute,intricate,112
+DPGBench,attribute,warm,104
+DPGBench,attribute,clear,104
+DPGBench,attribute,smooth,102
+DPGBench,attribute,two,101
+DPGBench,attribute,dark,100
+DPGBench,attribute,bright,100
+DPGBench,attribute,yellow,97
+DPGBench,attribute,this,94
+DPGBench,attribute,polished,88
+DPGBench,attribute,brown,87
+DPGBench,attribute,colorful,85
+DPGBench,attribute,glossy,81
+DPGBench,attribute,stark,78
+DPGBench,attribute,each,73
+DPGBench,attribute,light,68
+DPGBench,attribute,dynamic,66
+DPGBench,attribute,deep,63
+DPGBench,attribute,lush,63
+DPGBench,attribute,gentle,62
+DPGBench,attribute,natural,61
+DPGBench,attribute,golden,61
+DPGBench,attribute,three,60
+DPGBench,attribute,gray,57
+DPGBench,attribute,delicate,55
+DPGBench,attribute,tall,55
+DPGBench,attribute,whimsical,55
+DPGBench,attribute,left,55
+DPGBench,attribute,detailed,54
+DPGBench,attribute,metallic,53
+DPGBench,attribute,right,52
+DPGBench,attribute,bold,51
+DPGBench,attribute,rich,49
+DPGBench,attribute,subtle,49
+DPGBench,attribute,striking,47
+DPGBench,attribute,various,47
+T2I-CompBench++,attribute,a,3320
+T2I-CompBench++,attribute,the,1515
+T2I-CompBench++,attribute,two,204
+T2I-CompBench++,attribute,three,177
+T2I-CompBench++,attribute,four,163
+T2I-CompBench++,attribute,one,131
+T2I-CompBench++,attribute,blue,130
+T2I-CompBench++,attribute,brown,129
+T2I-CompBench++,attribute,wooden,127
+T2I-CompBench++,attribute,metallic,127
+T2I-CompBench++,attribute,red,119
+T2I-CompBench++,attribute,fluffy,112
+T2I-CompBench++,attribute,green,106
+T2I-CompBench++,attribute,white,100
+T2I-CompBench++,attribute,black,92
+T2I-CompBench++,attribute,plastic,57
+T2I-CompBench++,attribute,yellow,55
+T2I-CompBench++,attribute,rectangular,51
+T2I-CompBench++,attribute,soft,45
+T2I-CompBench++,attribute,an,44
+T2I-CompBench++,attribute,small,43
+T2I-CompBench++,attribute,smooth,40
+T2I-CompBench++,attribute,pentagonal,38
+T2I-CompBench++,attribute,cylindrical,37
+T2I-CompBench++,attribute,round,36
+T2I-CompBench++,attribute,spherical,36
+T2I-CompBench++,attribute,big,32
+T2I-CompBench++,attribute,oblong,32
+T2I-CompBench++,attribute,teardrop,32
+T2I-CompBench++,attribute,square,31
+T2I-CompBench++,attribute,rough,31
+T2I-CompBench++,attribute,cubic,31
+T2I-CompBench++,attribute,pyramidal,25
+T2I-CompBench++,attribute,short,23
+T2I-CompBench++,attribute,conical,23
+T2I-CompBench++,attribute,circular,21
+T2I-CompBench++,attribute,tall,21
+T2I-CompBench++,attribute,warm,19
+T2I-CompBench++,attribute,sleek,19
+T2I-CompBench++,attribute,pink,15
+T2I-CompBench++,attribute,long,15
+T2I-CompBench++,attribute,seven,14
+T2I-CompBench++,attribute,hard,13
+T2I-CompBench++,attribute,sharp,13
+T2I-CompBench++,attribute,six,13
+T2I-CompBench++,attribute,five,13
+T2I-CompBench++,attribute,shiny,12
+T2I-CompBench++,attribute,cool,11
+T2I-CompBench++,attribute,triangular,11
+T2I-CompBench++,attribute,cozy,10
+GenAI-Bench,attribute,a,2441
+GenAI-Bench,attribute,the,1053
+GenAI-Bench,attribute,two,166
+GenAI-Bench,attribute,an,152
+GenAI-Bench,attribute,no,108
+GenAI-Bench,attribute,three,85
+GenAI-Bench,attribute,red,55
+GenAI-Bench,attribute,four,46
+GenAI-Bench,attribute,blue,43
+GenAI-Bench,attribute,one,43
+GenAI-Bench,attribute,wooden,42
+GenAI-Bench,attribute,green,40
+GenAI-Bench,attribute,small,35
+GenAI-Bench,attribute,white,35
+GenAI-Bench,attribute,five,32
+GenAI-Bench,attribute,colorful,26
+GenAI-Bench,attribute,another,26
+GenAI-Bench,attribute,large,25
+GenAI-Bench,attribute,old,24
+GenAI-Bench,attribute,every,24
+GenAI-Bench,attribute,more,23
+GenAI-Bench,attribute,little,22
+GenAI-Bench,attribute,yellow,21
+GenAI-Bench,attribute,young,20
+GenAI-Bench,attribute,sunny,19
+GenAI-Bench,attribute,vibrant,17
+GenAI-Bench,attribute,each,16
+GenAI-Bench,attribute,any,16
+GenAI-Bench,attribute,full,15
+GenAI-Bench,attribute,vintage,15
+GenAI-Bench,attribute,bright,15
+GenAI-Bench,attribute,black,15
+GenAI-Bench,attribute,ceramic,15
+GenAI-Bench,attribute,right,14
+GenAI-Bench,attribute,bustling,14
+GenAI-Bench,attribute,left,14
+GenAI-Bench,attribute,long,14
+GenAI-Bench,attribute,several,14
+GenAI-Bench,attribute,cozy,14
+GenAI-Bench,attribute,sleek,13
+GenAI-Bench,attribute,single,13
+GenAI-Bench,attribute,soft,13
+GenAI-Bench,attribute,tall,12
+GenAI-Bench,attribute,pink,12
+GenAI-Bench,attribute,short,12
+GenAI-Bench,attribute,busy,12
+GenAI-Bench,attribute,other,12
+GenAI-Bench,attribute,tiny,12
+GenAI-Bench,attribute,ancient,11
+GenAI-Bench,attribute,open,11
+GenEval,attribute,a,1264
+GenEval,attribute,an,49
+GenEval,attribute,red,34
+GenEval,attribute,black,31
+GenEval,attribute,blue,30
+GenEval,attribute,purple,29
+GenEval,attribute,yellow,29
+GenEval,attribute,green,29
+GenEval,attribute,three,28
+GenEval,attribute,four,26
+GenEval,attribute,white,26
+GenEval,attribute,two,25
+GenEval,attribute,brown,25
+GenEval,attribute,pink,22
+GenEval,attribute,orange,15
+GenEval,attribute,hot,11
+GenEval,attribute,potted,8
+GenEval,attribute,pot,7
+GenEval,attribute,right,5
+GenEval,attribute,donut,1
+GenEval,attribute,vase,1
+GenEval2,attribute,a,793
+GenEval2,attribute,three,236
+GenEval2,attribute,the,227
+GenEval2,attribute,four,203
+GenEval2,attribute,six,201
+GenEval2,attribute,five,199
+GenEval2,attribute,seven,181
+GenEval2,attribute,two,176
+GenEval2,attribute,white,77
+GenEval2,attribute,brown,73
+GenEval2,attribute,wooden,69
+GenEval2,attribute,red,66
+GenEval2,attribute,blue,65
+GenEval2,attribute,purple,64
+GenEval2,attribute,black,61
+GenEval2,attribute,green,59
+GenEval2,attribute,pink,59
+GenEval2,attribute,striped,58
+GenEval2,attribute,checker,58
+GenEval2,attribute,yellow,56
+GenEval2,attribute,plastic,55
+GenEval2,attribute,sparkling,44
+GenEval2,attribute,spot,36
+GenEval2,attribute,sparkle,28
+GenEval2,attribute,spotted,19
+GenEval2,attribute,checkered,9
+GenEval2,attribute,strip,6
+GenEval2,attribute,croissant,3
+GenEval2,attribute,donut,1
+LongT2IBench,attribute,the,23835
+LongT2IBench,attribute,a,15285
+LongT2IBench,attribute,white,1252
+LongT2IBench,attribute,an,999
+LongT2IBench,attribute,black,966
+LongT2IBench,attribute,blue,640
+LongT2IBench,attribute,green,599
+LongT2IBench,attribute,small,598
+LongT2IBench,attribute,wooden,572
+LongT2IBench,attribute,large,571
+LongT2IBench,attribute,right,530
+LongT2IBench,attribute,vibrant,501
+LongT2IBench,attribute,left,501
+LongT2IBench,attribute,two,458
+LongT2IBench,attribute,gray,424
+LongT2IBench,attribute,brown,406
+LongT2IBench,attribute,light,392
+LongT2IBench,attribute,red,366
+LongT2IBench,attribute,dark,363
+LongT2IBench,attribute,top,331
+LongT2IBench,attribute,colorful,298
+LongT2IBench,attribute,overall,296
+LongT2IBench,attribute,yellow,295
+LongT2IBench,attribute,bustling,273
+LongT2IBench,attribute,serene,261
+LongT2IBench,attribute,tall,257
+LongT2IBench,attribute,clear,247
+LongT2IBench,attribute,bottom,227
+LongT2IBench,attribute,warm,216
+LongT2IBench,attribute,this,208
+LongT2IBench,attribute,lively,205
+LongT2IBench,attribute,outdoor,192
+LongT2IBench,attribute,close,186
+LongT2IBench,attribute,soft,175
+LongT2IBench,attribute,front,173
+LongT2IBench,attribute,long,158
+LongT2IBench,attribute,bright,156
+LongT2IBench,attribute,pink,154
+LongT2IBench,attribute,upper,146
+LongT2IBench,attribute,other,146
+LongT2IBench,attribute,visible,137
+LongT2IBench,attribute,fresh,132
+LongT2IBench,attribute,colored,126
+LongT2IBench,attribute,three,123
+LongT2IBench,attribute,digital,118
+LongT2IBench,attribute,natural,117
+LongT2IBench,attribute,low,117
+LongT2IBench,attribute,urban,115
+LongT2IBench,attribute,golden,108
+LongT2IBench,attribute,gentle,107
+GECKONUM,attribute,2,191
+GECKONUM,attribute,3,185
+GECKONUM,attribute,four,180
+GECKONUM,attribute,4,178
+GECKONUM,attribute,one,175
+GECKONUM,attribute,three,161
+GECKONUM,attribute,two,156
+GECKONUM,attribute,1,155
+GECKONUM,attribute,5,132
+GECKONUM,attribute,the,121
+GECKONUM,attribute,five,106
+GECKONUM,attribute,an,100
+GECKONUM,attribute,black,92
+GECKONUM,attribute,red,92
+GECKONUM,attribute,some,90
+GECKONUM,attribute,white,89
+GECKONUM,attribute,green,87
+GECKONUM,attribute,a,64
+GECKONUM,attribute,6,40
+GECKONUM,attribute,7,40
+GECKONUM,attribute,8,40
+GECKONUM,attribute,9,40
+GECKONUM,attribute,10,40
+GECKONUM,attribute,this,25
+GECKONUM,attribute,cinnamon,24
+GECKONUM,attribute,another,24
+GECKONUM,attribute,few,23
+GECKONUM,attribute,many,22
+GECKONUM,attribute,more,15
+GECKONUM,attribute,no,8
+GECKONUM,attribute,other,4
+Ours,attribute,a,8717
+Ours,attribute,the,1850
+Ours,attribute,white,616
+Ours,attribute,an,562
+Ours,attribute,green,414
+Ours,attribute,two,356
+Ours,attribute,black,335
+Ours,attribute,wooden,249
+Ours,attribute,dark,246
+Ours,attribute,blue,232
+Ours,attribute,red,228
+Ours,attribute,brown,198
+Ours,attribute,large,197
+Ours,attribute,small,149
+Ours,attribute,right,148
+Ours,attribute,light,127
+Ours,attribute,left,122
+Ours,attribute,lettered,121
+Ours,attribute,yellow,104
+Ours,attribute,three,97
+Ours,attribute,bright,94
+Ours,attribute,open,89
+Ours,attribute,grassy,85
+Ours,attribute,color,83
+Ours,attribute,closed,79
+Ours,attribute,hairy,77
+Ours,attribute,vibrant,75
+Ours,attribute,lush,74
+Ours,attribute,messy,72
+Ours,attribute,outdoor,72
+Ours,attribute,soft,71
+Ours,attribute,strip,70
+Ours,attribute,gray,66
+Ours,attribute,empty,65
+Ours,attribute,visible,64
+Ours,attribute,tall,64
+Ours,attribute,striped,63
+Ours,attribute,dry,62
+Ours,attribute,wet,54
+Ours,attribute,pink,54
+Ours,attribute,cover,53
+Ours,attribute,natural,52
+Ours,attribute,colorful,51
+Ours,attribute,reflective,50
+Ours,attribute,four,48
+Ours,attribute,long,45
+Ours,attribute,sandy,45
+Ours,attribute,fluffy,44
+Ours,attribute,tile,43
+Ours,attribute,another,41
+TIIF-Bench,relation,in,961
+TIIF-Bench,relation,with,881
+TIIF-Bench,relation,of,796
+TIIF-Bench,relation,on,725
+TIIF-Bench,relation,beside,185
+TIIF-Bench,relation,at,72
+TIIF-Bench,relation,without,71
+TIIF-Bench,relation,wearing,71
+TIIF-Bench,relation,behind,69
+TIIF-Bench,relation,next to,64
+TIIF-Bench,relation,from,64
+TIIF-Bench,relation,featuring,62
+TIIF-Bench,relation,near,61
+TIIF-Bench,relation,to,55
+TIIF-Bench,relation,against,50
+TIIF-Bench,relation,under,47
+TIIF-Bench,relation,features,45
+TIIF-Bench,relation,for,42
+TIIF-Bench,relation,than,39
+TIIF-Bench,relation,holding,35
+TIIF-Bench,relation,as,34
+TIIF-Bench,relation,above,30
+TIIF-Bench,relation,through,29
+TIIF-Bench,relation,hidden,25
+TIIF-Bench,relation,sits on,25
+TIIF-Bench,relation,showcasing,23
+TIIF-Bench,relation,over,22
+TIIF-Bench,relation,includes,21
+TIIF-Bench,relation,into,20
+TIIF-Bench,relation,beneath,19
+TIIF-Bench,relation,has,19
+TIIF-Bench,relation,around,19
+TIIF-Bench,relation,is,19
+TIIF-Bench,relation,across,15
+TIIF-Bench,relation,alongside,15
+TIIF-Bench,relation,like,14
+TIIF-Bench,relation,sit on,14
+TIIF-Bench,relation,holds,14
+TIIF-Bench,relation,wears,14
+TIIF-Bench,relation,in front of,13
+TIIF-Bench,relation,sitting on,13
+TIIF-Bench,relation,between,11
+TIIF-Bench,relation,symbolizing,11
+TIIF-Bench,relation,obscures,10
+TIIF-Bench,relation,playing,10
+TIIF-Bench,relation,shows,10
+TIIF-Bench,relation,inside,10
+TIIF-Bench,relation,by,9
+TIIF-Bench,relation,higher than,9
+TIIF-Bench,relation,devoid of,9
+TIIF-Bench (long),relation,of,7087
+TIIF-Bench (long),relation,with,3590
+TIIF-Bench (long),relation,in,3434
+TIIF-Bench (long),relation,on,654
+TIIF-Bench (long),relation,to,623
+TIIF-Bench (long),relation,from,432
+TIIF-Bench (long),relation,through,428
+TIIF-Bench (long),relation,against,424
+TIIF-Bench (long),relation,like,385
+TIIF-Bench (long),relation,between,333
+TIIF-Bench (long),relation,features,329
+TIIF-Bench (long),relation,beneath,288
+TIIF-Bench (long),relation,across,283
+TIIF-Bench (long),relation,at,269
+TIIF-Bench (long),relation,under,239
+TIIF-Bench (long),relation,as,230
+TIIF-Bench (long),relation,upon,225
+TIIF-Bench (long),relation,for,214
+TIIF-Bench (long),relation,beside,201
+TIIF-Bench (long),relation,into,201
+TIIF-Bench (long),relation,around,195
+TIIF-Bench (long),relation,amidst,176
+TIIF-Bench (long),relation,casts,171
+TIIF-Bench (long),relation,before,161
+TIIF-Bench (long),relation,balances,157
+TIIF-Bench (long),relation,behind,152
+TIIF-Bench (long),relation,along,150
+TIIF-Bench (long),relation,near,134
+TIIF-Bench (long),relation,over,124
+TIIF-Bench (long),relation,casting,108
+TIIF-Bench (long),relation,within,104
+TIIF-Bench (long),relation,above,94
+TIIF-Bench (long),relation,reflecting,93
+TIIF-Bench (long),relation,is,91
+TIIF-Bench (long),relation,depicts,83
+TIIF-Bench (long),relation,create,78
+TIIF-Bench (long),relation,toward,77
+TIIF-Bench (long),relation,creating,76
+TIIF-Bench (long),relation,catching,75
+TIIF-Bench (long),relation,has,75
+TIIF-Bench (long),relation,add,74
+TIIF-Bench (long),relation,cast,65
+TIIF-Bench (long),relation,resembling,65
+TIIF-Bench (long),relation,exudes,59
+TIIF-Bench (long),relation,reflects,57
+TIIF-Bench (long),relation,creates,56
+TIIF-Bench (long),relation,below,56
+TIIF-Bench (long),relation,reminiscent of,54
+TIIF-Bench (long),relation,atop,53
+TIIF-Bench (long),relation,captures,53
+DPGBench,relation,of,2704
+DPGBench,relation,with,1188
+DPGBench,relation,in,741
+DPGBench,relation,on,472
+DPGBench,relation,to,261
+DPGBench,relation,against,165
+DPGBench,relation,from,146
+DPGBench,relation,at,107
+DPGBench,relation,through,98
+DPGBench,relation,for,97
+DPGBench,relation,featuring,87
+DPGBench,relation,features,82
+DPGBench,relation,is,81
+DPGBench,relation,around,77
+DPGBench,relation,between,69
+DPGBench,relation,beside,62
+DPGBench,relation,reflects,58
+DPGBench,relation,into,56
+DPGBench,relation,over,53
+DPGBench,relation,across,50
+DPGBench,relation,casts,49
+DPGBench,relation,captures,48
+DPGBench,relation,above,46
+DPGBench,relation,under,45
+DPGBench,relation,as,44
+DPGBench,relation,amidst,43
+DPGBench,relation,behind,42
+DPGBench,relation,reminiscent of,42
+DPGBench,relation,has,41
+DPGBench,relation,including,33
+DPGBench,relation,atop,32
+DPGBench,relation,wearing,32
+DPGBench,relation,by,29
+DPGBench,relation,reflecting,27
+DPGBench,relation,showcases,25
+DPGBench,relation,along,24
+DPGBench,relation,holds,24
+DPGBench,relation,surrounded,24
+DPGBench,relation,within,24
+DPGBench,relation,towards,23
+DPGBench,relation,like,23
+DPGBench,relation,sits on,23
+DPGBench,relation,next to,22
+DPGBench,relation,depicting,22
+DPGBench,relation,accentuates,22
+DPGBench,relation,beneath,21
+DPGBench,relation,casting,20
+DPGBench,relation,depicts,20
+DPGBench,relation,cast,18
+DPGBench,relation,suggests,18
+T2I-CompBench++,relation,of,474
+T2I-CompBench++,relation,on,365
+T2I-CompBench++,relation,in,126
+T2I-CompBench++,relation,in front of,104
+T2I-CompBench++,relation,with,103
+T2I-CompBench++,relation,behind,85
+T2I-CompBench++,relation,were,61
+T2I-CompBench++,relation,holding,54
+T2I-CompBench++,relation,next to,52
+T2I-CompBench++,relation,at,47
+T2I-CompBench++,relation,for,47
+T2I-CompBench++,relation,on side of,37
+T2I-CompBench++,relation,near,35
+T2I-CompBench++,relation,playing with,29
+T2I-CompBench++,relation,hold,28
+T2I-CompBench++,relation,through,25
+T2I-CompBench++,relation,over,22
+T2I-CompBench++,relation,by,19
+T2I-CompBench++,relation,to,17
+T2I-CompBench++,relation,wearing,12
+T2I-CompBench++,relation,above,11
+T2I-CompBench++,relation,playing,11
+T2I-CompBench++,relation,against,10
+T2I-CompBench++,relation,provide,10
+T2I-CompBench++,relation,sitting on,9
+T2I-CompBench++,relation,features,9
+T2I-CompBench++,relation,provided,8
+T2I-CompBench++,relation,from,8
+T2I-CompBench++,relation,practicing,8
+T2I-CompBench++,relation,mix,8
+T2I-CompBench++,relation,has,7
+T2I-CompBench++,relation,across,7
+T2I-CompBench++,relation,display,7
+T2I-CompBench++,relation,past,6
+T2I-CompBench++,relation,covered,6
+T2I-CompBench++,relation,illuminated,6
+T2I-CompBench++,relation,created,6
+T2I-CompBench++,relation,was,6
+T2I-CompBench++,relation,down,5
+T2I-CompBench++,relation,reflected,5
+T2I-CompBench++,relation,into,5
+T2I-CompBench++,relation,after,5
+T2I-CompBench++,relation,performing,5
+T2I-CompBench++,relation,sit on,4
+T2I-CompBench++,relation,sat on,4
+T2I-CompBench++,relation,embraced,4
+T2I-CompBench++,relation,lit,4
+T2I-CompBench++,relation,adorned,4
+T2I-CompBench++,relation,filled,4
+T2I-CompBench++,relation,creating,4
+GenAI-Bench,relation,in,541
+GenAI-Bench,relation,with,422
+GenAI-Bench,relation,on,397
+GenAI-Bench,relation,of,334
+GenAI-Bench,relation,at,96
+GenAI-Bench,relation,without,68
+GenAI-Bench,relation,to,59
+GenAI-Bench,relation,wearing,54
+GenAI-Bench,relation,under,36
+GenAI-Bench,relation,next to,34
+GenAI-Bench,relation,beside,32
+GenAI-Bench,relation,over,31
+GenAI-Bench,relation,above,30
+GenAI-Bench,relation,holding,30
+GenAI-Bench,relation,through,26
+GenAI-Bench,relation,from,25
+GenAI-Bench,relation,than,25
+GenAI-Bench,relation,by,22
+GenAI-Bench,relation,against,22
+GenAI-Bench,relation,has,21
+GenAI-Bench,relation,into,19
+GenAI-Bench,relation,around,18
+GenAI-Bench,relation,for,17
+GenAI-Bench,relation,as,15
+GenAI-Bench,relation,sitting on,14
+GenAI-Bench,relation,full of,11
+GenAI-Bench,relation,across,10
+GenAI-Bench,relation,towards,10
+GenAI-Bench,relation,between,10
+GenAI-Bench,relation,contains,10
+GenAI-Bench,relation,wear,9
+GenAI-Bench,relation,along,9
+GenAI-Bench,relation,have,9
+GenAI-Bench,relation,casting,8
+GenAI-Bench,relation,holds,8
+GenAI-Bench,relation,sits on,8
+GenAI-Bench,relation,near,7
+GenAI-Bench,relation,chasing,7
+GenAI-Bench,relation,displaying,7
+GenAI-Bench,relation,reading,7
+GenAI-Bench,relation,sit on,6
+GenAI-Bench,relation,behind,6
+GenAI-Bench,relation,down,6
+GenAI-Bench,relation,running on,6
+GenAI-Bench,relation,playing,6
+GenAI-Bench,relation,reflecting,5
+GenAI-Bench,relation,in front of,5
+GenAI-Bench,relation,casts,5
+GenAI-Bench,relation,having,5
+GenAI-Bench,relation,containing,5
+GenEval,relation,of,788
+GenEval,relation,below,28
+GenEval,relation,above,26
+GenEval,relation,right of,3
+GenEval2,relation,to,268
+GenEval2,relation,of,223
+GenEval2,relation,under,125
+GenEval2,relation,in front of,123
+GenEval2,relation,behind,123
+GenEval2,relation,on top of,111
+GenEval2,relation,chasing,31
+GenEval2,relation,playing with,30
+GenEval2,relation,over,28
+GenEval2,relation,jumping,4
+GenEval2,relation,with,3
+GenEval2,relation,on,3
+GenEval2,relation,in,1
+GenEval2,relation,croissant to,1
+GenEval2,relation,striped,1
+LongT2IBench,relation,of,9132
+LongT2IBench,relation,with,3015
+LongT2IBench,relation,in,2741
+LongT2IBench,relation,on,2439
+LongT2IBench,relation,to,943
+LongT2IBench,relation,is,910
+LongT2IBench,relation,has,729
+LongT2IBench,relation,from,637
+LongT2IBench,relation,at,562
+LongT2IBench,relation,through,524
+LongT2IBench,relation,against,329
+LongT2IBench,relation,captures,298
+LongT2IBench,relation,wearing,284
+LongT2IBench,relation,over,260
+LongT2IBench,relation,near,249
+LongT2IBench,relation,along,239
+LongT2IBench,relation,behind,214
+LongT2IBench,relation,across,211
+LongT2IBench,relation,around,201
+LongT2IBench,relation,under,175
+LongT2IBench,relation,towards,174
+LongT2IBench,relation,between,171
+LongT2IBench,relation,above,170
+LongT2IBench,relation,into,142
+LongT2IBench,relation,for,140
+LongT2IBench,relation,features,138
+LongT2IBench,relation,holding,134
+LongT2IBench,relation,by,130
+LongT2IBench,relation,line,110
+LongT2IBench,relation,suggests,101
+LongT2IBench,relation,are,100
+LongT2IBench,relation,have,100
+LongT2IBench,relation,reflecting,95
+LongT2IBench,relation,creating,88
+LongT2IBench,relation,as,85
+LongT2IBench,relation,presents,81
+LongT2IBench,relation,reads,77
+LongT2IBench,relation,casting,76
+LongT2IBench,relation,onto,76
+LongT2IBench,relation,sitting on,74
+LongT2IBench,relation,display,71
+LongT2IBench,relation,facing,69
+LongT2IBench,relation,plays,66
+LongT2IBench,relation,reflects,65
+LongT2IBench,relation,beside,64
+LongT2IBench,relation,casts,63
+LongT2IBench,relation,featuring,62
+LongT2IBench,relation,below,58
+LongT2IBench,relation,including,58
+LongT2IBench,relation,next to,56
+GECKONUM,relation,of,154
+GECKONUM,relation,with,90
+GECKONUM,relation,on,61
+GECKONUM,relation,to,45
+GECKONUM,relation,in,34
+GECKONUM,relation,than,30
+GECKONUM,relation,showing,25
+GECKONUM,relation,above,17
+GECKONUM,relation,below,16
+GECKONUM,relation,as,14
+GECKONUM,relation,into,11
+GECKONUM,relation,is,2
+Ours,relation,with,1846
+Ours,relation,of,1172
+Ours,relation,on,879
+Ours,relation,in,655
+Ours,relation,to,257
+Ours,relation,has,170
+Ours,relation,features,148
+Ours,relation,sits on,145
+Ours,relation,near,139
+Ours,relation,wearing,135
+Ours,relation,holds,134
+Ours,relation,featuring,118
+Ours,relation,next to,111
+Ours,relation,behind,100
+Ours,relation,from,93
+Ours,relation,beside,92
+Ours,relation,under,88
+Ours,relation,above,77
+Ours,relation,inside,66
+Ours,relation,at,65
+Ours,relation,including,64
+Ours,relation,contains,62
+Ours,relation,against,60
+Ours,relation,within,59
+Ours,relation,over,55
+Ours,relation,includes,51
+Ours,relation,across,50
+Ours,relation,is,45
+Ours,relation,displays,44
+Ours,relation,along,42
+Ours,relation,sits in,41
+Ours,relation,holding,38
+Ours,relation,as,38
+Ours,relation,through,37
+Ours,relation,below,35
+Ours,relation,displaying,34
+Ours,relation,casts,33
+Ours,relation,containing,32
+Ours,relation,around,32
+Ours,relation,into,31
+Ours,relation,toward,29
+Ours,relation,sit on,28
+Ours,relation,reading,27
+Ours,relation,reflects,25
+Ours,relation,alongside,25
+Ours,relation,beneath,24
+Ours,relation,suggests,22
+Ours,relation,creates,21
+Ours,relation,surrounded,21
+Ours,relation,atop,21

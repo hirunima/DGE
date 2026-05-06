@@ -1,0 +1,84 @@
+{
+  "eval_v1": {
+    "E1-E2-E3": {
+      "pearson": 0.12153449033867317,
+      "spearman": 0.22609036320529433,
+      "kendall_tau_b": 0.16704814637854895,
+      "pairwise_accuracy": 0.6265060240963856,
+      "n": 83,
+      "survey_ties": 23
+    },
+    "E1-E2-V3": {
+      "pearson": 0.1687292141834389,
+      "spearman": 0.23573174826384463,
+      "kendall_tau_b": 0.17352721793362333,
+      "pairwise_accuracy": 0.6024096385542169,
+      "n": 83,
+      "survey_ties": 23
+    },
+    "E1-V2-E3": {
+      "pearson": 0.16376138130241594,
+      "spearman": 0.2578613395888972,
+      "kendall_tau_b": 0.19488054643488548,
+      "pairwise_accuracy": 0.6626506024096386,
+      "n": 83,
+      "survey_ties": 23
+    },
+    "E1-V2-V3": {
+      "pearson": 0.19582461621381714,
+      "spearman": 0.2609644289036457,
+      "kendall_tau_b": 0.20023105454255022,
+      "pairwise_accuracy": 0.5542168674698795,
+      "n": 83,
+      "survey_ties": 23
+    },
+    "V1-E2-E3": {
+      "pearson": 0.27143064866451944,
+      "spearman": 0.3820478152749818,
+      "kendall_tau_b": 0.2986462826926087,
+      "pairwise_accuracy": 0.7108433734939759,
+      "n": 83,
+      "survey_ties": 23
+    },
+    "V1-E2-V3": {
+      "pearson": 0.2841320887485284,
+      "spearman": 0.3696860968219508,
+      "kendall_tau_b": 0.2829438239428548,
+      "pairwise_accuracy": 0.6867469879518072,
+      "n": 83,
+      "survey_ties": 23
+    },
+    "V1-V2-E3": {
+      "pearson": 0.31107613358387526,
+      "spearman": 0.39523308722852496,
+      "kendall_tau_b": 0.3054035399236589,
+      "pairwise_accuracy": 0.6987951807228916,
+      "n": 83,
+      "survey_ties": 23
+    },
+    "V1-V2-V3": {
+      "pearson": 0.298546826227541,
+      "spearman": 0.38553774870027196,
+      "kendall_tau_b": 0.2998373799283704,
+      "pairwise_accuracy": 0.5421686746987951,
+      "n": 83,
+      "survey_ties": 23
+    }
+  },
+  "dsg": {
+    "pearson": 0.5131605115447095,
+    "spearman": 0.6059093061095666,
+    "kendall_tau_b": 0.5113243564753205,
+    "pairwise_accuracy": 0.42168674698795183,
+    "n": 83,
+    "survey_ties": 23
+  },
+  "vqa": {
+    "pearson": 0.5202433709895466,
+    "spearman": 0.6336043455773411,
+    "kendall_tau_b": 0.47242057082733546,
+    "pairwise_accuracy": 0.8072289156626506,
+    "n": 83,
+    "survey_ties": 23
+  }
+}

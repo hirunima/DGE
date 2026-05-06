@@ -56,12 +56,12 @@ build_cmd() {
     local cmd=(
         python src/eval/ablation.py
         --output-dir ./reports/ablation
-        --images-dir /fs/nexus-projects/scene_graph_sd/DGE-T2I/data/images/survey_samples/image2
+        --images-dir /fs/nexus-projects/scene_graph_sd/DGE-T2I/data/images/survey_samples/image1
         --prompts-file /fs/nexus-projects/scene_graph_sd/DGE-T2I/data/raw/qwen8b_t2i_prompts_aug_v1.json
         --low-vram
     )
 
-    Add vLLM when any Qwen-backed V-stage is selected.
+    # Add vLLM when any Qwen-backed V-stage is selected.
     if [[ "$p0" == V1 || "$p1" == V2 || "$p2" == V3 || "${parts[3]:-}" == V3 ]]; then
         cmd+=(--use-vllm)
     fi
