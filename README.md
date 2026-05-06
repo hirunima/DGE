@@ -29,9 +29,7 @@ Our experiments demonstrate that the combined framework provides a more holistic
 
 ```bash
 .
-├── prompt_generation/
-│   ├── text_to_image/
-│   ├── image_editing/
+├── candidate_generation/
 │   └── scene_graphs/
 │
 ├── evaluation/
@@ -43,8 +41,6 @@ Our experiments demonstrate that the combined framework provides a more holistic
 │   │
 │   └── global/
 │       ├── graph_embeddings/
-│       ├── semantic_alignment/
-│       └── consistency_metrics/
 │
 ├── benchmarks/
 │   ├── t2i/
@@ -154,8 +150,8 @@ python scripts/run_global_eval.py
 # Citation
 
 ```bibtex
-@article{yourpaper2026,
-  title={Fine-Grained and Global Evaluation Framework for Text-to-Image and Image Editing Models},
+@article{dge2026,
+  title={DGE - A Dynamic Metric and Grounded Evaluation Benchmarks for Text-to-Image and Image Editing Models},
   author={Anonymous},
   year={2026}
 }
