@@ -240,12 +240,12 @@ def load_benchmarks(ours_path: Path) -> list[DatasetSpec]:
     tiif_path = ROOT / "TIIF-Bench/data/test_prompts/all_prompts.jsonl"
     specs = [
         DatasetSpec("TIIF-Bench", load_jsonl(tiif_path, "short_description"), str(tiif_path)),
-        DatasetSpec("TIIF-Bench (long)", load_jsonl(tiif_path, "long_description"), str(tiif_path)),
-        DatasetSpec(
-            "DPGBench",
-            load_jsonl(ROOT / "ELLA/dpg_bench/prompts.jsonl", "prompt"),
-            str(ROOT / "ELLA/dpg_bench/prompts.jsonl"),
-        ),
+        # DatasetSpec("TIIF-Bench (long)", load_jsonl(tiif_path, "long_description"), str(tiif_path)),
+        # DatasetSpec(
+        #     "DPGBench",
+        #     load_jsonl(ROOT / "ELLA/dpg_bench/prompts.jsonl", "prompt"),
+        #     str(ROOT / "ELLA/dpg_bench/prompts.jsonl"),
+        # ),
         DatasetSpec("T2I-CompBench++", load_t2i_compbench(), str(ROOT / "T2I-CompBench/**/*val*.parquet")),
         DatasetSpec("GenAI-Bench", load_json_prompts(ROOT / "GenAI-Bench/genai_image.json"), str(ROOT / "GenAI-Bench/genai_image.json")),
         DatasetSpec("GenEval", load_geneval(), str(ROOT / "geneval/prompts/evaluation_metadata.jsonl")),
@@ -544,8 +544,8 @@ def plot_attributes_per_object_ranked(detail_df: pd.DataFrame, output_dir: Path)
 
 def plot_key_metric_rankings(summary_df: pd.DataFrame, output_dir: Path) -> None:
     metrics = [
-        ("Avg Relations/Object", "Avg Relations per Object", "relations / object"),
-        ("Avg Attributes/Entity", "Avg Attributes per Entity", "attributes / entity"),
+        ("Avg Relations/Object", "", "Average Relations Per Object"),
+        ("Avg Attributes/Entity", "", "Average Attributes Per Object"),
         ("Pct Entities w/Attributes", "% Entities with Attributes", "%"),
     ]
     fig, axes = plt.subplots(1, 3, figsize=(21, 7), constrained_layout=True)

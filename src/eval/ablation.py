@@ -112,12 +112,38 @@ def _default_qwen_model_path() -> str:
 def _default_siglip_model_path() -> str:
     return "google/siglip2-so400m-patch14-384"
 
+def _default_eva_clip_model_path() -> str:
+    return "EVA02-CLIP-L-14-336"
+
+def _default_eva_clip_checkpoint_path() -> str:
+    return os.environ.get("EVA_CLIP_CHECKPOINT_PATH") or "https://huggingface.co/QuanSun/EVA-CLIP/blob/main/EVA02_CLIP_L_psz14_224to336.pt"
+
+
+def _default_reitr_model_path() -> str:
+    return os.environ.get("REITR_CODE_DIR") or os.environ.get("RELTR_CODE_DIR") or "/fs/nexus-projects/scene_graph_sd/RelTR"
+
+def _default_reitr_checkpoint_path() -> Optional[str]:
+    return os.environ.get("REITR_CHECKPOINT_PATH") or os.environ.get("RELTR_CHECKPOINT_PATH")
+
+def _default_relation_text_embedding_model_path() -> str:
+    return os.environ.get("QWEN3_EMBEDDING_MODEL_PATH") or "Qwen/Qwen3-Embedding-0.6B"
+
 def _backend_runtime_key(backend_id: str, spec: BackendSpec, config: ExperimentConfig) -> Optional[Tuple[Any, ...]]:
     kind = (spec.kind or "").lower()
 
     if backend_id in {"E2", "E3"} and "siglip" in kind:
         model_path = resolve_siglip_model_path(spec.model_path) if spec.model_path else _default_siglip_model_path()
         return ("siglip", model_path, spec.checkpoint_path, config.use_cpu)
+
+    if backend_id in {"E2", "E3"} and kind in {"eva", "eva-clip", "evaclip"}:
+        model_path = spec.model_path or _default_eva_clip_model_path()
+        checkpoint_path = spec.checkpoint_path or _default_eva_clip_checkpoint_path()
+        return ("eva-clip", model_path, checkpoint_path, config.use_cpu)
+
+    if backend_id == "E3" and kind in {"reitr", "reltr"}:
+        model_path = spec.model_path or _default_reitr_model_path()
+        checkpoint_path = spec.checkpoint_path or _default_reitr_checkpoint_path()
+        return ("reitr", model_path, checkpoint_path, config.use_cpu)
 
     if backend_id in {"V1", "V2", "V3"} and "qwen" in kind:
         model_path = spec.model_path or _default_qwen_model_path()
@@ -204,7 +230,7 @@ class DinoClipNodeDetector(NodeDetectorBackend, _TransformersBackendMixin):
         super().__init__(*args)
         import torch
         from transformers import AutoProcessor, AutoModelForZeroShotObjectDetection, CLIPProcessor, CLIPModel
-
+    
         start = time.perf_counter()
 
         # Determine device: respect --use-cpu flag, otherwise use auto placement
@@ -237,8 +263,11 @@ class DinoClipNodeDetector(NodeDetectorBackend, _TransformersBackendMixin):
 
     def detect_nodes(self, image: Image.Image, item: ExperimentItem) -> Dict[str, Any]:
         import torch
-        # 1. Propose bounding boxes using DINO (using a generic 'object' prompt to capture proposals)
-        dino_inputs = self.dino_proc(images=image, text="object .", return_tensors="pt").to(self.device)
+        from scipy.optimize import linear_sum_assignment
+        labels = [e.get("name", "") for e in item.scene_graph.get("objects", [])]
+        print("finding labels, ",labels)
+        dino_text = " . ".join(labels) + " ."
+        dino_inputs = self.dino_proc(images=image, text=dino_text, return_tensors="pt").to(self.device)
         with torch.inference_mode():
             dino_outputs = self.dino_model(**dino_inputs)
             
@@ -270,36 +299,73 @@ class DinoClipNodeDetector(NodeDetectorBackend, _TransformersBackendMixin):
                 nodes.append({"id": entity.get("id"), "name": entity.get("name"), "bbox": None, "confidence": 0.0, "passed": False, "score": 0.0})
             return {"backend": self.backend_id, "nodes": nodes, "fidelity_score": 0.0}
 
-        # 3. Compute CLIP similarities to match proposed crops with node labels
-        labels = [e.get("name", "") for e in item.scene_graph.get("objects", [])]
+        # 3. Compute CLIP features separately to get a proper (num_labels x num_crops) matrix
         clip_texts = [f"a photo of a {label}" for label in labels]
-        print("Number of clip texts: ", len(clip_texts))
-        clip_inputs = self.clip_proc(text=clip_texts, images=crops, return_tensors="pt", padding=True).to(self.device)
-        with torch.inference_mode():
-            clip_outputs = self.clip_model(**clip_inputs)
-            # logits_per_text shape: (num_labels, num_crops)
-            logits_per_text = clip_outputs.logits_per_text
-            
-            # Softmax to find which crop best matches each individual label
-            probs = logits_per_text.softmax(dim=-1)
 
-        # 4. Assign the best bounding box to each object based on CLIP
+        text_inputs = self.clip_proc(
+            text=clip_texts, return_tensors="pt", padding=True, truncation=True
+        ).to(self.device)
+        image_inputs = self.clip_proc(
+            images=crops, return_tensors="pt"
+        ).to(self.device)
+
+        with torch.inference_mode():
+            text_features = self.clip_model.get_text_features(**text_inputs)    # (num_labels, D)
+            image_features = self.clip_model.get_image_features(**image_inputs) # (num_crops, D)
+
+        # L2-normalize for cosine similarity
+        text_features = text_features / text_features.norm(dim=-1, keepdim=True)
+        image_features = image_features / image_features.norm(dim=-1, keepdim=True)
+
+        # similarity[i, j] = cosine similarity between label i and crop j
+        similarity = (text_features @ image_features.T).cpu().float().numpy()  # (num_labels, num_crops)
+
+        # 4. Hungarian matching: unique 1-to-1 assignment of labels to crops
+        #    Pad with dummy columns if there are fewer crops than labels so every
+        #    label gets a slot (dummy slots will have similarity = -1).
+        num_labels, num_crops = similarity.shape
+        if num_crops < num_labels:
+            padding = -1.0 * torch.ones(num_labels, num_labels - num_crops).numpy()
+            import numpy as np
+            similarity = np.concatenate([similarity, padding], axis=1)
+
+        row_ind, col_ind = linear_sum_assignment(-similarity)  # maximise similarity
+
+        # 5. Build node results
         for i, entity in enumerate(item.scene_graph.get("objects", [])):
-            best_idx = torch.argmax(logits_per_text[i]).item()
-            best_conf = probs[i][best_idx].item()
-            best_box = valid_boxes[best_idx]
-            
-            passed = bool(best_box and best_conf >= self.config.node_confidence_threshold)
+            assigned_col = col_ind[row_ind == i]
+
+            # Label got a dummy column (no real crop available)
+            if len(assigned_col) == 0 or assigned_col[0] >= num_crops:
+                nodes.append({
+                    "id": entity.get("id"),
+                    "name": entity.get("name"),
+                    "bbox": None,
+                    "confidence": 0.0,
+                    "passed": False,
+                    "score": 0.0,
+                })
+                continue
+
+            j = int(assigned_col[0])
+            confidence = float(similarity[i, j])
+            best_box = valid_boxes[j]
+            passed = confidence >= self.config.node_confidence_threshold
+
             nodes.append({
                 "id": entity.get("id"),
                 "name": entity.get("name"),
                 "bbox": best_box if passed else None,
-                "confidence": best_conf,
+                "confidence": confidence,
                 "passed": passed,
-                "score": 1.0 if passed else 0.0
+                "score": 1.0 if passed else 0.0,
             })
-            
-        return {"backend": self.backend_id, "nodes": nodes, "fidelity_score": safe_mean(n["score"] for n in nodes)}
+
+        return {
+            "backend": self.backend_id,
+            "nodes": nodes,
+            "fidelity_score": safe_mean(n["score"] for n in nodes),
+        }
 # --- END UPDATED COMPONENT ---
 
 
@@ -731,6 +797,76 @@ class SigLIPAttributeScorer(SigLIPMixin, AttributeScorerBackend):
     def _evaluate_attribute(self, crop, entity_name, attribute):
         return self.image_text_sim(crop, f"A photo of a {attribute} {entity_name}"), {}
 
+class EVAClipMixin(_TransformersBackendMixin):
+    @classmethod
+    def load_shared_runtime(cls, spec: BackendSpec, config: ExperimentConfig) -> Tuple[Dict[str, Any], float]:
+        import sys
+        import torch
+
+        start = time.perf_counter()
+        model_path = spec.model_path or _default_eva_clip_model_path()
+        checkpoint_path = _resolve_checkpoint_path(spec.checkpoint_path or _default_eva_clip_checkpoint_path())
+        use_cuda = torch.cuda.is_available() and not config.use_cpu
+        device = "cuda" if use_cuda else "cpu"
+
+        eva_code_dir = os.environ.get("EVA_CLIP_CODE_DIR")
+        if eva_code_dir and eva_code_dir not in sys.path:
+            sys.path.insert(0, eva_code_dir)
+        try:
+            from eva_clip import create_model_and_transforms, get_tokenizer
+        except ImportError as exc:
+            raise ImportError(
+                "EVA-CLIP backend requires the BAAI EVA-CLIP code on PYTHONPATH. "
+                "Set EVA_CLIP_CODE_DIR to the EVA-CLIP/rei directory, or install the eva_clip package."
+            ) from exc
+
+        precision = "fp16" if use_cuda else "fp32"
+        model, _, preprocess = create_model_and_transforms(
+            model_path,
+            checkpoint_path,
+            precision=precision,
+            device=device,
+        )
+        tokenizer = get_tokenizer(model_path)
+        model.eval()
+        load_time_ms = (time.perf_counter() - start) * 1000.0
+        return ({
+            "preprocess": preprocess,
+            "tokenizer": tokenizer,
+            "model": model,
+            "device": device,
+            "use_cuda": use_cuda,
+        }, load_time_ms)
+
+    def __init__(self, *args, shared_runtime: Optional[Dict[str, Any]] = None):
+        super().__init__(*args)
+        runtime = shared_runtime
+        if runtime is None:
+            runtime, self.model_load_time_ms = self.load_shared_runtime(self.spec, self.config)
+        self.preprocess = runtime["preprocess"]
+        self.tokenizer = runtime["tokenizer"]
+        self.model = runtime["model"]
+        self.device = runtime["device"]
+        self.use_cuda = runtime["use_cuda"]
+
+    def image_text_sim(self, image: Image.Image, text: str) -> float:
+        import torch
+
+        image = image.convert("RGB")
+        input_pixels = self.preprocess(image).unsqueeze(0).to(self.device)
+        input_ids = self.tokenizer([text]).to(self.device)
+        autocast_enabled = bool(self.use_cuda)
+        with torch.no_grad(), torch.cuda.amp.autocast(enabled=autocast_enabled):
+            image_features = self.model.encode_image(input_pixels)
+            text_features = self.model.encode_text(input_ids)
+            image_features = torch.nn.functional.normalize(image_features, dim=-1)
+            text_features = torch.nn.functional.normalize(text_features, dim=-1)
+            return float((image_features @ text_features.T)[0][0].item())
+
+class EVAClipAttributeScorer(EVAClipMixin, AttributeScorerBackend):
+    def _evaluate_attribute(self, crop, entity_name, attribute):
+        return self.image_text_sim(crop, f"A photo of a {attribute} {entity_name}"), {}
+
 class VLMAttributeScorer(_VisionLanguageMixin, AttributeScorerBackend):
     def score_attributes(self, image: Image.Image, item: ExperimentItem, stage1_result: Dict[str, Any]) -> Dict[str, Any]:
         results = []
@@ -758,6 +894,241 @@ class SigLIPRelationScorer(SigLIPMixin, RelationScorerBackend):
     def _evaluate_relation(self, image, subj_bbox, obj_bbox, relation, subj_name, obj_name):
         crop = image.crop(tuple(union_bbox(subj_bbox, obj_bbox, self.config.stage3_margin_ratio, image.size)))
         return self.image_text_sim(crop, f"{subj_name} {relation} {obj_name}"), self.image_text_sim(crop, f"{obj_name} {relation} {subj_name}"), {"union_bbox": crop.getbbox()}
+
+class EVAClipRelationScorer(EVAClipMixin, RelationScorerBackend):
+    def _evaluate_relation(self, image, subj_bbox, obj_bbox, relation, subj_name, obj_name):
+        crop = image.crop(tuple(union_bbox(subj_bbox, obj_bbox, self.config.stage3_margin_ratio, image.size)))
+        return self.image_text_sim(crop, f"{subj_name} {relation} {obj_name}"), self.image_text_sim(crop, f"{obj_name} {relation} {subj_name}"), {"union_bbox": crop.getbbox()}
+
+class ReITRRelationScorer(RelationScorerBackend):
+    """RelTR/ReITR-style visual relationship scorer for stage 3."""
+
+    CLASSES = [
+        'N/A', 'airplane', 'animal', 'arm', 'bag', 'banana', 'basket', 'beach', 'bear', 'bed', 'bench',
+        'bike', 'bird', 'board', 'boat', 'book', 'boot', 'bottle', 'bowl', 'box', 'boy', 'branch',
+        'building', 'bus', 'cabinet', 'cap', 'car', 'cat', 'chair', 'child', 'clock', 'coat', 'counter',
+        'cow', 'cup', 'curtain', 'desk', 'dog', 'door', 'drawer', 'ear', 'elephant', 'engine', 'eye',
+        'face', 'fence', 'finger', 'flag', 'flower', 'food', 'fork', 'fruit', 'giraffe', 'girl', 'glass',
+        'glove', 'guy', 'hair', 'hand', 'handle', 'hat', 'head', 'helmet', 'hill', 'horse', 'house',
+        'jacket', 'jean', 'kid', 'kite', 'lady', 'lamp', 'laptop', 'leaf', 'leg', 'letter', 'light',
+        'logo', 'man', 'men', 'motorcycle', 'mountain', 'mouth', 'neck', 'nose', 'number', 'orange',
+        'pant', 'paper', 'paw', 'people', 'person', 'phone', 'pillow', 'pizza', 'plane', 'plant', 'plate',
+        'player', 'pole', 'post', 'pot', 'racket', 'railing', 'rock', 'roof', 'room', 'screen', 'seat',
+        'sheep', 'shelf', 'shirt', 'shoe', 'short', 'sidewalk', 'sign', 'sink', 'skateboard', 'ski',
+        'skier', 'sneaker', 'snow', 'sock', 'stand', 'street', 'surfboard', 'table', 'tail', 'tie',
+        'tile', 'tire', 'toilet', 'towel', 'tower', 'track', 'train', 'tree', 'truck', 'trunk',
+        'umbrella', 'vase', 'vegetable', 'vehicle', 'wave', 'wheel', 'window', 'windshield', 'wing',
+        'wire', 'woman', 'zebra'
+    ]
+    REL_CLASSES = [
+        '__background__', 'above', 'across', 'against', 'along', 'and', 'at', 'attached to', 'behind',
+        'belonging to', 'between', 'carrying', 'covered in', 'covering', 'eating', 'flying in', 'for',
+        'from', 'growing on', 'hanging from', 'has', 'holding', 'in', 'in front of', 'laying on',
+        'looking at', 'lying on', 'made of', 'mounted on', 'near', 'of', 'on', 'on back of', 'over',
+        'painted on', 'parked on', 'part of', 'playing', 'riding', 'says', 'sitting on', 'standing on',
+        'to', 'under', 'using', 'walking in', 'walking on', 'watching', 'wearing', 'wears', 'with'
+    ]
+
+    @classmethod
+    def load_shared_runtime(cls, spec: BackendSpec, config: ExperimentConfig) -> Tuple[Dict[str, Any], float]:
+        import sys
+        import torch
+        import torchvision.transforms as T
+        from transformers import AutoModel, AutoTokenizer
+        from types import SimpleNamespace
+
+        start = time.perf_counter()
+        code_dir = Path(spec.model_path or _default_reitr_model_path()).expanduser()
+        checkpoint_path = spec.checkpoint_path or _default_reitr_checkpoint_path()
+        if not checkpoint_path:
+            raise ValueError("ReITR/RelTR backend requires --reitr-checkpoint-path or RELTR_CHECKPOINT_PATH.")
+        if not code_dir.exists():
+            raise FileNotFoundError(f"ReITR/RelTR code directory not found: {code_dir}")
+
+        if str(code_dir) not in sys.path:
+            sys.path.insert(0, str(code_dir))
+        from models import build_model
+
+        device = "cuda" if torch.cuda.is_available() and not config.use_cpu else "cpu"
+        args = SimpleNamespace(
+            lr_backbone=1e-5, dataset="vg", backbone="resnet50", dilation=False,
+            position_embedding="sine", enc_layers=6, dec_layers=6, dim_feedforward=2048,
+            hidden_dim=256, dropout=0.1, nheads=8, num_entities=100, num_triplets=200,
+            pre_norm=False, aux_loss=True, device=device, resume=checkpoint_path,
+            set_cost_class=1, set_cost_bbox=5, set_cost_giou=2, set_iou_threshold=0.7,
+            bbox_loss_coef=5, giou_loss_coef=2, rel_loss_coef=1, eos_coef=0.1,
+            return_interm_layers=False,
+        )
+        model, _, _ = build_model(args)
+        ckpt = torch.load(checkpoint_path, map_location="cpu", weights_only=False)
+        model.load_state_dict(ckpt.get("model", ckpt), strict=False)
+        model.to(device).eval()
+        transform = T.Compose([
+            T.Resize(800),
+            T.ToTensor(),
+            T.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225]),
+        ])
+
+        text_model_path = _default_relation_text_embedding_model_path()
+        text_tokenizer = AutoTokenizer.from_pretrained(text_model_path, padding_side="left", trust_remote_code=True)
+        text_model = AutoModel.from_pretrained(
+            text_model_path,
+            torch_dtype=torch.float16 if device == "cuda" else torch.float32,
+            trust_remote_code=True,
+        )
+        text_model.to(device).eval()
+        load_time_ms = (time.perf_counter() - start) * 1000.0
+        return ({
+            "model": model,
+            "transform": transform,
+            "device": device,
+            "text_tokenizer": text_tokenizer,
+            "text_model": text_model,
+        }, load_time_ms)
+
+    def __init__(self, *args, shared_runtime: Optional[Dict[str, Any]] = None):
+        super().__init__(*args)
+        runtime = shared_runtime
+        if runtime is None:
+            runtime, self.model_load_time_ms = self.load_shared_runtime(self.spec, self.config)
+        self.model = runtime["model"]
+        self.transform = runtime["transform"]
+        self.device = runtime["device"]
+        self.text_tokenizer = runtime["text_tokenizer"]
+        self.text_model = runtime["text_model"]
+        self._relation_embedding_cache: Dict[str, Any] = {}
+
+    def score_relations(self, image: Image.Image, item: ExperimentItem, stage1_result: Dict[str, Any]) -> Dict[str, Any]:
+        node_map = {n["id"]: n for n in stage1_result.get("nodes", [])}
+        entity_map = {e["id"]: e for e in item.scene_graph.get("objects", [])}
+        triplets = self._predict_triplets(image)
+        results = []
+        for rel in item.scene_graph.get("relations", []):
+            subj, obj = node_map.get(rel.get("subject")), node_map.get(rel.get("object"))
+            if not subj or not obj or not subj.get("bbox") or not obj.get("bbox"):
+                results.append({"subject": rel.get("subject"), "relation": rel.get("relation"), "object": rel.get("object"), "skipped": True, "skip_reason": "missing_localization"})
+                continue
+            subj_name = entity_map.get(rel.get("subject"), {}).get("name", rel.get("subject"))
+            obj_name = entity_map.get(rel.get("object"), {}).get("name", rel.get("object"))
+            orig_score, orig_match = self._score_triplets(triplets, subj_name, subj["bbox"], obj_name, obj["bbox"], rel["relation"])
+            swap_score, swap_match = self._score_triplets(triplets, obj_name, obj["bbox"], subj_name, subj["bbox"], rel["relation"])
+            results.append({
+                "subject": rel["subject"],
+                "relation": rel["relation"],
+                "object": rel["object"],
+                "original_score": orig_score,
+                "swapped_score": swap_score,
+                "delta": orig_score - swap_score,
+                "swap_correct": orig_score > swap_score,
+                "skipped": False,
+                "matches": {"original": orig_match, "swapped": swap_match},
+            })
+        return {"backend": self.backend_id, "relations": results, "relation_score": safe_mean(e.get("original_score") for e in results if not e.get("skipped")), "swap_accuracy": safe_mean(1.0 if e.get("swap_correct") else 0.0 for e in results if e.get("swap_correct") is not None)}
+
+    def _predict_triplets(self, image: Image.Image) -> List[Dict[str, Any]]:
+        import torch
+
+        def box_cxcywh_to_xyxy(x):
+            x_c, y_c, w, h = x.unbind(1)
+            return torch.stack([x_c - 0.5 * w, y_c - 0.5 * h, x_c + 0.5 * w, y_c + 0.5 * h], dim=1)
+
+        def rescale_bboxes(out_bbox, size):
+            img_w, img_h = size
+            return box_cxcywh_to_xyxy(out_bbox) * torch.tensor([img_w, img_h, img_w, img_h], dtype=torch.float32, device=out_bbox.device)
+
+        rgb = image.convert("RGB")
+        inputs = self.transform(rgb).unsqueeze(0).to(self.device)
+        with torch.no_grad():
+            outputs = self.model(inputs)
+
+        rel_probs = outputs["rel_logits"].softmax(-1)[0, :, :-1]
+        sub_probs = outputs["sub_logits"].softmax(-1)[0, :, :-1]
+        obj_probs = outputs["obj_logits"].softmax(-1)[0, :, :-1]
+        keep = torch.logical_and(
+            rel_probs.max(-1).values > 0.3,
+            torch.logical_and(sub_probs.max(-1).values > 0.3, obj_probs.max(-1).values > 0.3),
+        )
+        keep_queries = torch.nonzero(keep, as_tuple=True)[0]
+        if keep_queries.numel() == 0:
+            return []
+
+        combined = rel_probs[keep_queries].max(-1).values * sub_probs[keep_queries].max(-1).values * obj_probs[keep_queries].max(-1).values
+        order = torch.argsort(-combined)[:50]
+        keep_queries = keep_queries[order]
+        sub_boxes = rescale_bboxes(outputs["sub_boxes"][0, keep_queries], rgb.size).detach().cpu().tolist()
+        obj_boxes = rescale_bboxes(outputs["obj_boxes"][0, keep_queries], rgb.size).detach().cpu().tolist()
+
+        triplets = []
+        for rank, idx in enumerate(keep_queries):
+            rel_id = int(rel_probs[idx].argmax().item())
+            sub_id = int(sub_probs[idx].argmax().item())
+            obj_id = int(obj_probs[idx].argmax().item())
+            score = float((rel_probs[idx, rel_id] * sub_probs[idx, sub_id] * obj_probs[idx, obj_id]).item())
+            triplets.append({
+                "subject": self.CLASSES[sub_id],
+                "relation": self.REL_CLASSES[rel_id],
+                "object": self.CLASSES[obj_id],
+                "subject_bbox": sub_boxes[rank],
+                "object_bbox": obj_boxes[rank],
+                "score": score,
+            })
+        return triplets
+
+    def _score_triplets(self, triplets: List[Dict[str, Any]], subj: str, subj_bbox: Sequence[int], obj: str, obj_bbox: Sequence[int], relation: str) -> Tuple[float, Optional[Dict[str, Any]]]:
+        target_relation = _normalize_relation_label(relation)
+        best_score = 0.0
+        best_match = None
+        for triplet in triplets:
+            relation_similarity = self._relation_text_similarity(f"{triplet['subject']} {triplet['relation']} {triplet['object']}", f"{subj} {relation} {obj}")
+            sub_iou = bbox_iou(subj_bbox, triplet["subject_bbox"])
+            obj_iou = bbox_iou(obj_bbox, triplet["object_bbox"])
+            loc_score = (sub_iou + obj_iou) / 2.0
+            score = float(triplet["score"] * loc_score * relation_similarity)
+            if score > best_score:
+                best_score = score
+                best_match = {
+                    **triplet,
+                    "subject_iou": sub_iou,
+                    "object_iou": obj_iou,
+                    "relation_similarity": relation_similarity,
+                }
+        return best_score, best_match
+
+    def _relation_text_similarity(self, predicted: Any, target: Any) -> float:
+        predicted_norm = _normalize_relation_label(predicted)
+        target_norm = _normalize_relation_label(target)
+        if not predicted_norm or not target_norm:
+            return 0.0
+        if predicted_norm == target_norm:
+            return 1.0
+        predicted_embedding = self._embed_relation_text(predicted_norm)
+        target_embedding = self._embed_relation_text(target_norm)
+        return max(0.0, float((predicted_embedding * target_embedding).sum().item()))
+
+    def _embed_relation_text(self, text: str):
+        import torch
+
+        cached = self._relation_embedding_cache.get(text)
+        if cached is not None:
+            return cached
+
+        inputs = self.text_tokenizer(
+            [text],
+            padding=True,
+            truncation=True,
+            max_length=self.config.max_text_length,
+            return_tensors="pt",
+        ).to(self.device)
+        with torch.no_grad():
+            outputs = self.text_model(**inputs)
+            embeddings = _last_token_pool(outputs.last_hidden_state, inputs["attention_mask"])
+            embeddings = torch.nn.functional.normalize(embeddings, p=2, dim=1)
+        embedding = embeddings[0].detach()
+        self._relation_embedding_cache[text] = embedding
+        return embedding
+
+    def _evaluate_relation(self, image, subj_bbox, obj_bbox, relation, subj_name, obj_name):
+        raise NotImplementedError("ReITRRelationScorer uses score_relations to cache per-image triplets.")
 
 class VLMRelationScorer( _VisionLanguageMixin, RelationScorerBackend):
     def score_relations(self, image: Image.Image, item: ExperimentItem, stage1_result: Dict[str, Any]) -> Dict[str, Any]:
@@ -850,6 +1221,10 @@ def _load_shared_runtime_for_backend(backend_id: str, spec: BackendSpec, config:
 
     if runtime_key[0] == "siglip":
         return SigLIPMixin.load_shared_runtime(spec, config)
+    if runtime_key[0] == "eva-clip":
+        return EVAClipMixin.load_shared_runtime(spec, config)
+    if runtime_key[0] == "reitr":
+        return ReITRRelationScorer.load_shared_runtime(spec, config)
     if runtime_key[0] == "qwen-hf":
         return _VisionLanguageMixin.load_shared_runtime(spec, config)
     if runtime_key[0] == "qwen-vllm":
@@ -857,7 +1232,7 @@ def _load_shared_runtime_for_backend(backend_id: str, spec: BackendSpec, config:
     return None, 0.0
 
 def build_backend(backend_id: str, spec: BackendSpec, config: ExperimentConfig, shared_runtimes: Optional[Dict[Tuple[Any, ...], Dict[str, Any]]] = None) -> Any:
-    k = spec.kind.lower()
+    k = (spec.kind or "").lower()
     if k == "mock": return MockPipeline(backend_id, spec, config)
 
     runtime_key = _backend_runtime_key(backend_id, spec, config)
@@ -873,9 +1248,17 @@ def build_backend(backend_id: str, spec: BackendSpec, config: ExperimentConfig, 
     match backend_id:
         case "E1": return DinoClipNodeDetector(backend_id, spec, config) if k in {"grounding", "grounding-dino", "hf-grounding"} else UnavailableBackend(backend_id, spec, config)
         case "V1": return QwenNodeDetectorVLLM(backend_id, spec, config, shared_runtime=shared_runtime) if config.use_vllm else QwenNodeDetector(backend_id, spec, config, shared_runtime=shared_runtime) if "qwen" in k else UnavailableBackend(backend_id, spec, config)
-        case "E2": return SigLIPAttributeScorer(backend_id, spec, config, shared_runtime=shared_runtime) if "siglip" in k else UnavailableBackend(backend_id, spec, config)
+        case "E2":
+            if k in {"eva", "eva-clip", "evaclip"}:
+                return EVAClipAttributeScorer(backend_id, spec, config, shared_runtime=shared_runtime)
+            return SigLIPAttributeScorer(backend_id, spec, config, shared_runtime=shared_runtime) if "siglip" in k else UnavailableBackend(backend_id, spec, config)
         case "V2": return QwenAttributeClassifierVLLM(backend_id, spec, config, shared_runtime=shared_runtime) if config.use_vllm else VLMAttributeScorer(backend_id, spec, config, shared_runtime=shared_runtime) if k in {"llava", "llava-next", "qwen", "qwen-vl"} else UnavailableBackend(backend_id, spec, config)
-        case "E3": return SigLIPRelationScorer(backend_id, spec, config, shared_runtime=shared_runtime) if "siglip" in k else UnavailableBackend(backend_id, spec, config)
+        case "E3":
+            if k in {"eva", "eva-clip", "evaclip"}:
+                return EVAClipRelationScorer(backend_id, spec, config, shared_runtime=shared_runtime)
+            if k in {"reitr", "reltr"}:
+                return ReITRRelationScorer(backend_id, spec, config, shared_runtime=shared_runtime)
+            return SigLIPRelationScorer(backend_id, spec, config, shared_runtime=shared_runtime) if "siglip" in k else UnavailableBackend(backend_id, spec, config)
         case "V3": return QwenRelationScorerVLLM(backend_id, spec, config, shared_runtime=shared_runtime) if config.use_vllm else VLMRelationScorer(backend_id, spec, config, shared_runtime=shared_runtime) if "qwen" in k else UnavailableBackend(backend_id, spec, config)
     return UnavailableBackend(backend_id, spec, config)
 
@@ -905,6 +1288,41 @@ def _node_from_eval_object_response(
         "passed": passed,
         "score": 1.0 if passed else 0.0,
     }
+
+def _normalize_relation_label(value: Any) -> str:
+    return re.sub(r"\s+", " ", str(value).replace("_", " ").replace("-", " ").strip().lower())
+
+def _last_token_pool(last_hidden_states: Any, attention_mask: Any) -> Any:
+    left_padding = attention_mask[:, -1].sum() == attention_mask.shape[0]
+    if left_padding:
+        return last_hidden_states[:, -1]
+    sequence_lengths = attention_mask.sum(dim=1) - 1
+    batch_size = last_hidden_states.shape[0]
+    return last_hidden_states[range(batch_size), sequence_lengths]
+
+def _resolve_checkpoint_path(path_or_url: Optional[str]) -> Optional[str]:
+    if not path_or_url:
+        return None
+    if path_or_url.startswith("https://huggingface.co/"):
+        from huggingface_hub import hf_hub_download
+
+        match = re.match(r"https://huggingface\.co/([^/]+/[^/]+)/blob/([^/]+)/(.+)", path_or_url)
+        if match:
+            repo_id, revision, filename = match.groups()
+            return hf_hub_download(repo_id=repo_id, filename=filename, revision=revision)
+    return path_or_url
+
+def bbox_iou(a: Sequence[float], b: Sequence[float]) -> float:
+    ax1, ay1, ax2, ay2 = [float(v) for v in a[:4]]
+    bx1, by1, bx2, by2 = [float(v) for v in b[:4]]
+    ix1, iy1 = max(ax1, bx1), max(ay1, by1)
+    ix2, iy2 = min(ax2, bx2), min(ay2, by2)
+    iw, ih = max(0.0, ix2 - ix1), max(0.0, iy2 - iy1)
+    inter = iw * ih
+    area_a = max(0.0, ax2 - ax1) * max(0.0, ay2 - ay1)
+    area_b = max(0.0, bx2 - bx1) * max(0.0, by2 - by1)
+    union = area_a + area_b - inter
+    return inter / union if union > 0 else 0.0
 
 def safe_mean(v: Iterable) -> Optional[float]: 
     cleaned = [float(x) for x in v if x is not None]
@@ -1177,7 +1595,7 @@ def build_arg_parser() -> argparse.ArgumentParser:
     p.add_argument("--weight-node", type=float, default=0.3)
     p.add_argument("--weight-attribute", type=float, default=0.3)
     p.add_argument("--weight-relation", type=float, default=0.3)
-    p.add_argument("--node-confidence-threshold", type=float, default=0.5)
+    p.add_argument("--node-confidence-threshold", type=float, default=0.2)
     p.add_argument("--node-nms-threshold", type=float, default=0.3)
     p.add_argument("--stage2-crop-size", type=int, default=384)
     p.add_argument("--stage2-calibration", default="clip", choices=["identity", "clip", "sigmoid"])
@@ -1194,14 +1612,14 @@ def build_arg_parser() -> argparse.ArgumentParser:
     p.add_argument("--vllm-temperature", type=float, default=None, help="Optional temperature to send to the vLLM server")
     p.add_argument("--vllm-max-tokens", type=int, default=None, help="Optional max_tokens for general vLLM requests")
     p.add_argument("--vllm-yes-no-max-tokens", type=int, default=None, help="Optional max_tokens for vLLM yes/no requests")
-    p.add_argument("--max-text-length", type=int, default=64, help="Max text length for SigLIP 2 models (default: 64)")
+    p.add_argument("--max-text-length", type=int, default=64, help="Max text length for text/image embedding models (default: 64)")
     p.add_argument("--torch-cuda-mem-frac", type=float, default=0.8, help="Fraction of GPU memory to use (for device_map='auto')")
 
     # Condensed repetitive backend argument parsing
     for b in ("e1", "v1", "e2", "v2", "e3", "v3"):
         p.add_argument(f"--{b}-backend-kind", default=None) # was "mock")
 
-    for m in ("eupe", "qwen", "siglip", "llava"):
+    for m in ("eupe", "qwen", "siglip", "eva-clip", "reitr", "llava"):
         p.add_argument(f"--{m}-model-path", default=None)
         p.add_argument(f"--{m}-checkpoint-path", default=None)
 
@@ -1236,9 +1654,17 @@ def config_from_args(args: argparse.Namespace) -> ExperimentConfig:
         backend_specs={
             "E1": BackendSpec(args.e1_backend_kind, args.eupe_model_path, args.eupe_checkpoint_path),
             "V1": BackendSpec(args.v1_backend_kind, args.qwen_model_path, args.qwen_checkpoint_path),
-            "E2": BackendSpec(args.e2_backend_kind, args.siglip_model_path, args.siglip_checkpoint_path),
+            "E2": BackendSpec(
+                args.e2_backend_kind,
+                args.eva_clip_model_path if args.e2_backend_kind in {"eva", "eva-clip", "evaclip"} else args.siglip_model_path,
+                args.eva_clip_checkpoint_path if args.e2_backend_kind in {"eva", "eva-clip", "evaclip"} else args.siglip_checkpoint_path,
+            ),
             "V2": BackendSpec(args.v2_backend_kind, args.qwen_model_path, args.qwen_checkpoint_path),
-            "E3": BackendSpec(args.e3_backend_kind, args.siglip_model_path, args.siglip_checkpoint_path),
+            "E3": BackendSpec(
+                args.e3_backend_kind,
+                args.reitr_model_path if args.e3_backend_kind in {"reitr", "reltr"} else args.eva_clip_model_path if args.e3_backend_kind in {"eva", "eva-clip", "evaclip"} else args.siglip_model_path,
+                args.reitr_checkpoint_path if args.e3_backend_kind in {"reitr", "reltr"} else args.eva_clip_checkpoint_path if args.e3_backend_kind in {"eva", "eva-clip", "evaclip"} else args.siglip_checkpoint_path,
+            ),
             "V3": BackendSpec(args.v3_backend_kind, args.qwen_model_path, args.qwen_checkpoint_path),
         },
         selected_backends=set(args.backends.split(",")) if args.backends else None,

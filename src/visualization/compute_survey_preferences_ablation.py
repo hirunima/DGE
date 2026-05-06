@@ -60,6 +60,16 @@ def load_ablation_scores(score_dir: Path) -> Dict[str, Dict[str, float]]:
     return summaries
 
 
+def collect_evaluated_image_ids(
+    summaries: Dict[str, Dict[str, float]],
+    permutations: List[str],
+) -> set[str]:
+    image_ids: set[str] = set()
+    for permutation in permutations:
+        image_ids.update(summaries.get(permutation, {}).keys())
+    return image_ids
+
+
 def load_dsg_scores(path: Path) -> Dict[str, float]:
     with path.open() as f:
         data = json.load(f)
@@ -208,6 +218,9 @@ def main() -> None:
     else:
         permutations = sorted(set(eval_img1_summaries) & set(eval_img2_summaries))
 
+    evaluated_img1_ids = collect_evaluated_image_ids(eval_img1_summaries, permutations)
+    evaluated_img2_ids = collect_evaluated_image_ids(eval_img2_summaries, permutations)
+
     rows = []
     survey_prefs_eval: Dict[str, List[float]] = {perm: [] for perm in permutations}
     eval_prefs: Dict[str, List[float]] = {perm: [] for perm in permutations}
@@ -255,6 +268,9 @@ def main() -> None:
 
         image1_id = Path(image1_file).stem
         image2_id = Path(image2_file).stem
+        if image1_id not in evaluated_img1_ids or image2_id not in evaluated_img2_ids:
+            continue
+
         for permutation in permutations:
             eval_score1 = eval_img1_summaries.get(permutation, {}).get(image1_id)
             eval_score2 = eval_img2_summaries.get(permutation, {}).get(image2_id)

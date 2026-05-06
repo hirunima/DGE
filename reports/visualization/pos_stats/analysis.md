@@ -4,18 +4,18 @@ All datasets are measured from their prompt text with spaCy. If `en_core_web_sm`
 
 ## Where Ours Stands
 
-- Attribute binding is strong but not the top under spaCy-only scoring: ours has 0.48 attributes/object; the strongest baseline is TIIF-Bench (long) at 0.55.
-- Attribute vocabulary is mid-to-high: ours has 629 unique spaCy adjective lemmas; the largest comparison is TIIF-Bench (long) with 2207.
-- Relation vocabulary is broad for a moderate-length prompt set: ours has 534 unique spaCy relation-term lemmas; the largest comparison is TIIF-Bench (long) with 1769.
-- Relations/prompt are competitive without relying on very long prose: ours averages 5.52, higher than 6 of 9 comparison datasets.
-- Object coverage stays multi-object: ours averages 6.39 objects/prompt, higher than 6 of 9 comparison datasets.
+- Attribute binding is strong but not the top under spaCy-only scoring: ours has 0.48 attributes/object; the strongest baseline is LongT2IBench at 0.39.
+- Attribute vocabulary is mid-to-high: ours has 629 unique spaCy adjective lemmas; the largest comparison is LongT2IBench with 1522.
+- Relation vocabulary is broad for a moderate-length prompt set: ours has 534 unique spaCy relation-term lemmas; the largest comparison is LongT2IBench with 1261.
+- Relations/prompt are competitive without relying on very long prose: ours averages 5.52, higher than 6 of 7 comparison datasets.
+- Object coverage stays multi-object: ours averages 6.39 objects/prompt, higher than 6 of 7 comparison datasets.
 
 ## Distribution Checks
 
-- Objects/Prompt: Ours averages 6.39. It is higher than 6 of 9 comparison datasets; the largest prompt-estimate baseline is TIIF-Bench (long) at 26.71.
-- Attributes/Prompt: Ours averages 2.92. It is higher than 6 of 9 comparison datasets; the largest prompt-estimate baseline is TIIF-Bench (long) at 13.78.
-- Attributes/Object: Ours averages 0.48. It is higher than 7 of 9 comparison datasets; the largest prompt-estimate baseline is TIIF-Bench (long) at 0.55.
-- Relations/Prompt: Ours averages 5.52. It is higher than 6 of 9 comparison datasets; the largest prompt-estimate baseline is TIIF-Bench (long) at 22.11.
+- Objects/Prompt: Ours averages 6.39. It is higher than 6 of 7 comparison datasets; the largest prompt-estimate baseline is LongT2IBench at 26.57.
+- Attributes/Prompt: Ours averages 2.92. It is higher than 6 of 7 comparison datasets; the largest prompt-estimate baseline is LongT2IBench at 10.16.
+- Attributes/Object: Ours averages 0.48. It is higher than 7 of 7 comparison datasets; the largest prompt-estimate baseline is LongT2IBench at 0.39.
+- Relations/Prompt: Ours averages 5.52. It is higher than 6 of 7 comparison datasets; the largest prompt-estimate baseline is LongT2IBench at 21.26.
 
 ## Ours At A Glance
 

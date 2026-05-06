@@ -3,18 +3,18 @@
     "output_dir": "./reports/ablation",
     "prompts_file": "/fs/nexus-projects/scene_graph_sd/DGE-T2I/data/raw/qwen8b_t2i_prompts_aug_v1.json",
     "sg_file": null,
-    "images_dir": "/fs/nexus-projects/scene_graph_sd/DGE-T2I/data/images/survey_samples/image1",
+    "images_dir": "/fs/nexus-projects/scene_graph_sd/DGE-T2I/data/images/survey_samples/image2",
     "image_pattern": "{index:04d}-{generation}.png",
     "generation": 1,
     "start_idx": 0,
     "end_idx": null,
-    "limit": null,
+    "limit": 10,
     "weights": {
       "node": 0.3,
       "attribute": 0.3,
       "relation": 0.3
     },
-    "node_confidence_threshold": 0.5,
+    "node_confidence_threshold": 0.2,
     "node_nms_threshold": 0.3,
     "stage2_crop_size": 384,
     "stage2_calibration": "clip",
@@ -40,18 +40,18 @@
         "checkpoint_path": null
       },
       "E2": {
-        "kind": null,
-        "model_path": "google/siglip2-so400m-patch14-384",
-        "checkpoint_path": null
+        "kind": "eva-clip",
+        "model_path": "EVA02-CLIP-L-14-336",
+        "checkpoint_path": "https://huggingface.co/QuanSun/EVA-CLIP/blob/main/EVA02_CLIP_L_psz14_224to336.pt"
       },
       "V2": {
-        "kind": "qwen",
+        "kind": null,
         "model_path": "/model",
         "checkpoint_path": null
       },
       "E3": {
-        "kind": "siglip",
-        "model_path": "google/siglip2-so400m-patch14-384",
+        "kind": "reitr",
+        "model_path": null,
         "checkpoint_path": null
       },
       "V3": {
@@ -63,8 +63,8 @@
     "selected_backends": [
       "V3",
       "E1",
-      "E3",
-      "V2"
+      "E2",
+      "E3"
     ],
     "use_cpu": false,
     "low_vram": true,
@@ -77,5 +77,5 @@
     "vllm_max_tokens": null,
     "vllm_yes_no_max_tokens": null
   },
-  "items_total": 106
+  "items_total": 10
 }
