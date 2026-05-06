@@ -101,6 +101,7 @@ class ExperimentConfig:
     max_text_length: int = 64; torch_cuda_mem_frac: float = 0.8
     vllm_api_base: str = "http://127.0.0.1:8000/v1"; vllm_api_key: Optional[str] = None
     vllm_temperature: Optional[float] = None; vllm_max_tokens: Optional[int] = None; vllm_yes_no_max_tokens: Optional[int] = None
+    molmopoint_model_path: Optional[str] = None; molmopoint_checkpoint_path: Optional[str] = None
 
     def __post_init__(self):
         object.__setattr__(self, 'selected_backends', self.selected_backends or None)
@@ -123,6 +124,9 @@ def _default_eva_clip_checkpoint_path() -> str:
 
 def _default_blip2_model_path() -> str:
     return os.environ.get("BLIP2_MODEL_PATH") or "Salesforce/blip2-itm-vit-g"
+
+def _default_molmopoint_model_path() -> str:
+    return os.environ.get("MOLMOPOINT_MODEL_PATH") or "allenai/MolmoPoint-8B"
 
 def _default_reitr_model_path() -> str:
     return os.environ.get("REITR_CODE_DIR") or os.environ.get("RELTR_CODE_DIR") or "/fs/nexus-projects/scene_graph_sd/RelTR"
@@ -637,6 +641,85 @@ class QwenAttributeClassifierVLLM(QwenNodeDetectorVLLM, AttributeScorerBackend):
     def _evaluate_attribute(self, crop, entity_name, attribute):
         raise NotImplementedError("QwenAttributeClassifierVLLM uses score_attributes with eval-pipeline prompts.")
 
+class _MolmoPointCountAttributeMixin:
+    def _init_molmopoint_count_scorer(self) -> None:
+        self.molmopoint_count_scorer = None
+
+    def _get_molmopoint_count_scorer(self) -> "MolmoPointAttributeScorer":
+        if self.molmopoint_count_scorer is None:
+            self.molmopoint_count_scorer = MolmoPointAttributeScorer(
+                f"{self.backend_id}_molmopoint",
+                BackendSpec(
+                    "molmopoint",
+                    self.config.molmopoint_model_path or _default_molmopoint_model_path(),
+                    self.config.molmopoint_checkpoint_path,
+                ),
+                self.config,
+            )
+        return self.molmopoint_count_scorer
+
+    def _score_count_attribute_with_molmopoint(
+        self,
+        image: Image.Image,
+        entity_name: str,
+        expected_count: int,
+        point_cache: Dict[str, Dict[str, Any]],
+    ) -> Tuple[float, Dict[str, Any]]:
+        point_result = point_cache.get(entity_name)
+        if point_result is None:
+            point_result = self._get_molmopoint_count_scorer().point_to_objects(image, entity_name)
+            point_cache[entity_name] = point_result
+        observed_count = len(point_result["points"])
+        return (1.0 if observed_count == expected_count else 0.0), {
+            "answer": "yes" if observed_count == expected_count else "no",
+            "expected_count": expected_count,
+            "observed_count": observed_count,
+            "points": point_result["points"],
+            "point_prompt": point_result["prompt"],
+            "raw_output": point_result["raw_output"],
+            "count_evaluator": "molmopoint",
+        }
+
+class QwenMolmoPointAttributeClassifierVLLM(_MolmoPointCountAttributeMixin, QwenAttributeClassifierVLLM):
+    def __init__(self, *args, shared_runtime: Optional[Dict[str, Any]] = None):
+        super().__init__(*args, shared_runtime=shared_runtime)
+        self._init_molmopoint_count_scorer()
+
+    def score_attributes(self, image: Image.Image, item: ExperimentItem, stage1_result: Dict[str, Any]) -> Dict[str, Any]:
+        results = []
+        requests = []
+        request_indices = []
+        point_cache: Dict[str, Dict[str, Any]] = {}
+        width, height = image.size
+
+        for entity in item.scene_graph.get("objects", []):
+            entity_name = str(entity.get("name", "")).strip()
+            for attr in entity.get("attributes", []):
+                expected_count = parse_count_attribute(attr)
+                result = {"id": entity.get("id"), "name": entity.get("name"), "attribute": attr, "skipped": False}
+                if expected_count is not None:
+                    if not entity_name:
+                        result.update({"skipped": True, "skip_reason": "missing_entity_name"})
+                    else:
+                        raw_score, extra = self._score_count_attribute_with_molmopoint(image, entity_name, expected_count, point_cache)
+                        cal_score = calibrate_score(raw_score, self.config.stage2_calibration, self.config.stage2_calibration_scale, self.config.stage2_calibration_bias)
+                        result.update({"score": raw_score, "calibrated_score": cal_score, **extra})
+                    results.append(result)
+                    continue
+
+                prompt = build_attribute_prompt(width, height, entity, attr)
+                request_indices.append(len(results))
+                requests.append((image, prompt))
+                results.append(result)
+
+        raw_outputs = self._chat_texts([self._messages_for_image(img, prompt) for img, prompt in requests], self.sampling_params)
+        for result_idx, raw in zip(request_indices, raw_outputs):
+            raw_score, answer = _score_eval_yes_no_json(raw)
+            cal_score = calibrate_score(raw_score, self.config.stage2_calibration, self.config.stage2_calibration_scale, self.config.stage2_calibration_bias)
+            results[result_idx].update({"score": raw_score, "calibrated_score": cal_score, "answer": answer, "count_evaluator": "qwen"})
+
+        return {"backend": self.backend_id, "crop_size": None, "attributes": results, "binding_score": safe_mean(e.get("calibrated_score") for e in results if not e.get("skipped"))}
+
 class QwenRelationScorerVLLM(QwenNodeDetectorVLLM, RelationScorerBackend):
     def score_relations(self, image: Image.Image, item: ExperimentItem, stage1_result: Dict[str, Any]) -> Dict[str, Any]:
         entity_map = {e["id"]: e for e in item.scene_graph.get("objects", [])}
@@ -954,6 +1037,161 @@ class BLIP2AttributeScorer(BLIP2Mixin, AttributeScorerBackend):
     def _evaluate_attribute(self, crop, entity_name, attribute):
         return score_contrastive_attribute(self.image_text_sim, crop, entity_name, attribute)
 
+class MolmoPointAttributeScorer(AttributeScorerBackend):
+    @classmethod
+    def load_shared_runtime(cls, spec: BackendSpec, config: ExperimentConfig) -> Tuple[Dict[str, Any], float]:
+        import torch
+        from transformers import AutoModelForImageTextToText, AutoProcessor
+
+        start = time.perf_counter()
+        model_path = spec.model_path or _default_molmopoint_model_path()
+        use_cuda = torch.cuda.is_available() and not config.use_cpu
+        proc = AutoProcessor.from_pretrained(
+            model_path,
+            trust_remote_code=True,
+            padding_side="left",
+        )
+        kwargs = {"trust_remote_code": True, "dtype": "auto"}
+        if use_cuda:
+            kwargs["device_map"] = "auto"
+        model = AutoModelForImageTextToText.from_pretrained(model_path, **kwargs)
+        if spec.checkpoint_path:
+            ckpt = torch.load(spec.checkpoint_path, map_location="cpu")
+            state_dict = ckpt.get("state_dict", ckpt) if isinstance(ckpt, dict) else ckpt
+            model.load_state_dict({k.replace("module.", "", 1): v for k, v in state_dict.items()}, strict=False)
+        if not use_cuda:
+            model.to("cpu")
+        model.eval()
+        load_time_ms = (time.perf_counter() - start) * 1000.0
+        return {"proc": proc, "model": model, "use_cuda": use_cuda}, load_time_ms
+
+    def __init__(self, *args, shared_runtime: Optional[Dict[str, Any]] = None):
+        super().__init__(*args)
+        runtime = shared_runtime
+        if runtime is None:
+            runtime, self.model_load_time_ms = self.load_shared_runtime(self.spec, self.config)
+        self.proc = runtime["proc"]
+        self.model = runtime["model"]
+        self.use_cuda = runtime["use_cuda"]
+
+    @property
+    def device(self):
+        if hasattr(self.model, "device"):
+            return self.model.device
+        return next(self.model.parameters()).device
+
+    def score_attributes(self, image: Image.Image, item: ExperimentItem, stage1_result: Dict[str, Any]) -> Dict[str, Any]:
+        point_cache: Dict[str, Dict[str, Any]] = {}
+        results = []
+        for entity in item.scene_graph.get("objects", []):
+            entity_name = str(entity.get("name", "")).strip()
+            for attr in entity.get("attributes", []):
+                expected_count = parse_count_attribute(attr)
+                if expected_count is None:
+                    results.append({
+                        "id": entity.get("id"),
+                        "name": entity.get("name"),
+                        "attribute": attr,
+                        "skipped": True,
+                        "skip_reason": "non_count_attribute",
+                    })
+                    continue
+                if not entity_name:
+                    results.append({
+                        "id": entity.get("id"),
+                        "name": entity.get("name"),
+                        "attribute": attr,
+                        "skipped": True,
+                        "skip_reason": "missing_entity_name",
+                    })
+                    continue
+
+                point_result = point_cache.get(entity_name)
+                if point_result is None:
+                    point_result = self.point_to_objects(image, entity_name)
+                    point_cache[entity_name] = point_result
+                observed_count = len(point_result["points"])
+                raw_score = 1.0 if observed_count == expected_count else 0.0
+                cal_score = calibrate_score(raw_score, self.config.stage2_calibration, self.config.stage2_calibration_scale, self.config.stage2_calibration_bias)
+                results.append({
+                    "id": entity.get("id"),
+                    "name": entity.get("name"),
+                    "attribute": attr,
+                    "score": raw_score,
+                    "calibrated_score": cal_score,
+                    "skipped": False,
+                    "expected_count": expected_count,
+                    "observed_count": observed_count,
+                    "points": point_result["points"],
+                    "point_prompt": point_result["prompt"],
+                    "raw_output": point_result["raw_output"],
+                })
+
+        return {
+            "backend": self.backend_id,
+            "crop_size": None,
+            "attributes": results,
+            "binding_score": safe_mean(e.get("calibrated_score") for e in results if not e.get("skipped")),
+            "count_only": True,
+        }
+
+    def point_to_objects(self, image: Image.Image, entity_name: str) -> Dict[str, Any]:
+        import torch
+
+        prompt = f"Point to every {entity_name} in the image."
+        messages = [{
+            "role": "user",
+            "content": [
+                {"type": "text", "text": prompt},
+                {"type": "image", "image": image.convert("RGB")},
+            ],
+        }]
+        inputs = self.proc.apply_chat_template(
+            messages,
+            tokenize=True,
+            add_generation_prompt=True,
+            return_tensors="pt",
+            return_dict=True,
+            padding=True,
+            return_pointing_metadata=True,
+        )
+        metadata = inputs.pop("metadata", None)
+        inputs = {k: v.to(self.device) if hasattr(v, "to") else v for k, v in inputs.items()}
+        gen_kwargs = {"max_new_tokens": 200}
+        if hasattr(self.model, "build_logit_processor_from_inputs"):
+            gen_kwargs["logits_processor"] = self.model.build_logit_processor_from_inputs(inputs)
+
+        autocast_device = "cuda" if self.use_cuda else "cpu"
+        with torch.inference_mode(), torch.autocast(autocast_device, dtype=torch.bfloat16, enabled=self.use_cuda):
+            output = self.model.generate(**inputs, **gen_kwargs)
+        generated_tokens = output[:, inputs["input_ids"].size(1):]
+        raw_output = self.proc.post_process_image_text_to_text(
+            generated_tokens,
+            skip_special_tokens=False,
+            clean_up_tokenization_spaces=False,
+        )[0]
+        points = self._extract_points(raw_output, metadata)
+        return {"prompt": prompt, "raw_output": raw_output, "points": points}
+
+    def _extract_points(self, raw_output: str, metadata: Optional[Dict[str, Any]]) -> List[Dict[str, float]]:
+        if not metadata:
+            raise RuntimeError("MolmoPoint-8B requires return_pointing_metadata=True to decode point tokens.")
+        if not hasattr(self.model, "extract_image_points"):
+            raise RuntimeError("MolmoPoint-8B model is missing extract_image_points; check trust_remote_code/model_path.")
+        extracted = self.model.extract_image_points(
+            raw_output,
+            metadata["token_pooling"],
+            metadata["subpatch_mapping"],
+            metadata["image_sizes"],
+        )
+        return [
+            {"object_id": int(p[0]), "image_num": int(p[1]), "x": float(p[2]), "y": float(p[3])}
+            for p in extracted
+        ]
+
+    def _evaluate_attribute(self, crop, entity_name, attribute):
+        raise NotImplementedError("MolmoPointAttributeScorer uses score_attributes with whole-image pointing.")
+
 class VLMAttributeScorer(_VisionLanguageMixin, AttributeScorerBackend):
     def score_attributes(self, image: Image.Image, item: ExperimentItem, stage1_result: Dict[str, Any]) -> Dict[str, Any]:
         results = []
@@ -976,6 +1214,45 @@ class VLMAttributeScorer(_VisionLanguageMixin, AttributeScorerBackend):
 
     def _evaluate_attribute(self, crop, entity_name, attribute):
         raise NotImplementedError("VLMAttributeScorer uses score_attributes with eval-pipeline prompts.")
+
+class VLMMolmoPointAttributeScorer(_MolmoPointCountAttributeMixin, VLMAttributeScorer):
+    def __init__(self, *args, shared_runtime: Optional[Dict[str, Any]] = None):
+        super().__init__(*args, shared_runtime=shared_runtime)
+        self._init_molmopoint_count_scorer()
+
+    def score_attributes(self, image: Image.Image, item: ExperimentItem, stage1_result: Dict[str, Any]) -> Dict[str, Any]:
+        results = []
+        point_cache: Dict[str, Dict[str, Any]] = {}
+        width, height = image.size
+        for entity in item.scene_graph.get("objects", []):
+            entity_name = str(entity.get("name", "")).strip()
+            for attr in entity.get("attributes", []):
+                expected_count = parse_count_attribute(attr)
+                if expected_count is not None:
+                    result = {"id": entity.get("id"), "name": entity.get("name"), "attribute": attr, "skipped": False}
+                    if not entity_name:
+                        result.update({"skipped": True, "skip_reason": "missing_entity_name"})
+                    else:
+                        raw_score, extra = self._score_count_attribute_with_molmopoint(image, entity_name, expected_count, point_cache)
+                        cal_score = calibrate_score(raw_score, self.config.stage2_calibration, self.config.stage2_calibration_scale, self.config.stage2_calibration_bias)
+                        result.update({"score": raw_score, "calibrated_score": cal_score, **extra})
+                    results.append(result)
+                    continue
+
+                raw = self.generate_text(image, build_attribute_prompt(width, height, entity, attr))
+                raw_score, answer = _score_eval_yes_no_json(raw)
+                cal_score = calibrate_score(raw_score, self.config.stage2_calibration, self.config.stage2_calibration_scale, self.config.stage2_calibration_bias)
+                results.append({
+                    "id": entity.get("id"),
+                    "name": entity.get("name"),
+                    "attribute": attr,
+                    "score": raw_score,
+                    "calibrated_score": cal_score,
+                    "answer": answer,
+                    "count_evaluator": "qwen",
+                    "skipped": False,
+                })
+        return {"backend": self.backend_id, "crop_size": None, "attributes": results, "binding_score": safe_mean(e.get("calibrated_score") for e in results if not e.get("skipped"))}
 
 class SigLIPRelationScorer(SigLIPMixin, RelationScorerBackend):
     def _evaluate_relation(self, image, subj_bbox, obj_bbox, relation, subj_name, obj_name):
@@ -1370,7 +1647,10 @@ def build_backend(backend_id: str, spec: BackendSpec, config: ExperimentConfig, 
             if k in {"blip2", "blip-2"}:
                 return BLIP2AttributeScorer(backend_id, spec, config, shared_runtime=shared_runtime)
             return SigLIPAttributeScorer(backend_id, spec, config, shared_runtime=shared_runtime) if "siglip" in k else UnavailableBackend(backend_id, spec, config)
-        case "V2": return QwenAttributeClassifierVLLM(backend_id, spec, config, shared_runtime=shared_runtime) if config.use_vllm else VLMAttributeScorer(backend_id, spec, config, shared_runtime=shared_runtime) if k in {"llava", "llava-next", "qwen", "qwen-vl"} else UnavailableBackend(backend_id, spec, config)
+        case "V2":
+            if k in {"qwen-molmopoint", "qwen-molmo-point", "molmopoint-qwen", "molmo-point-qwen"}:
+                return QwenMolmoPointAttributeClassifierVLLM(backend_id, spec, config, shared_runtime=shared_runtime) if config.use_vllm else VLMMolmoPointAttributeScorer(backend_id, spec, config, shared_runtime=shared_runtime)
+            return QwenAttributeClassifierVLLM(backend_id, spec, config, shared_runtime=shared_runtime) if config.use_vllm else VLMAttributeScorer(backend_id, spec, config, shared_runtime=shared_runtime) if k in {"llava", "llava-next", "qwen", "qwen-vl"} else UnavailableBackend(backend_id, spec, config)
         case "S2": return SkippedAttributeScorer(backend_id, spec, config) if k in {"skip", "skipped", "none"} else UnavailableBackend(backend_id, spec, config)
         case "E3":
             if k in {"eva", "eva-clip", "evaclip"}:
@@ -1383,11 +1663,60 @@ def build_backend(backend_id: str, spec: BackendSpec, config: ExperimentConfig, 
 
 # --- Geometry & Metric Utils ---
 CONTRASTIVE_ATTRIBUTE_TEMPERATURE = 25.0
+COUNT_WORDS = {
+    "zero": 0,
+    "no": 0,
+    "single": 1,
+    "one": 1,
+    "individual": 1,
+    "sole": 1,
+    "two": 2,
+    "pair": 2,
+    "couple": 2,
+    "three": 3,
+    "four": 4,
+    "five": 5,
+    "six": 6,
+    "seven": 7,
+    "eight": 8,
+    "nine": 9,
+    "ten": 10,
+    "eleven": 11,
+    "twelve": 12,
+}
+COUNT_ATTRIBUTE_EXCLUSIONS = {
+    "colored",
+    "colorful",
+    "multicolored",
+    "unicolored",
+    "single-colored",
+    "two-colored",
+    "three-colored",
+}
 
 def _score_eval_yes_no_json(raw_text: str) -> Tuple[float, str]:
     evaluation = extract_json(raw_text)
     answer = normalize_answer(evaluation.get("satisfies") if evaluation else raw_text)
     return (1.0 if answer == "yes" else 0.0), answer
+
+def parse_count_attribute(attribute: Any) -> Optional[int]:
+    text = str(attribute).strip().lower()
+    if not text:
+        return None
+    if text == "single/one/individual/sole":
+        return 1
+    if any(term in text for term in COUNT_ATTRIBUTE_EXCLUSIONS):
+        return None
+
+    numeric_match = re.search(r"\b(\d{1,2})\b", text)
+    if numeric_match:
+        return int(numeric_match.group(1))
+
+    tokens = [token for token in re.split(r"[^a-z]+", text) if token]
+    for token in tokens:
+        if token in COUNT_WORDS:
+            return COUNT_WORDS[token]
+    return None
 
 def build_contrastive_attribute_prompts(entity_name: str, attribute: str) -> Tuple[str, str]:
     entity_name = str(entity_name).strip()
@@ -1721,7 +2050,7 @@ def build_arg_parser() -> argparse.ArgumentParser:
     for b in ("e1", "v1", "e2", "v2", "e3", "v3"):
         p.add_argument(f"--{b}-backend-kind", default=None) # was "mock")
 
-    for m in ("eupe", "qwen", "siglip", "eva-clip", "blip2", "reitr", "llava"):
+    for m in ("eupe", "qwen", "siglip", "eva-clip", "blip2", "molmopoint", "reitr", "llava"):
         p.add_argument(f"--{m}-model-path", default=None)
         p.add_argument(f"--{m}-checkpoint-path", default=None)
 
@@ -1781,6 +2110,8 @@ def config_from_args(args: argparse.Namespace) -> ExperimentConfig:
         vllm_temperature=args.vllm_temperature,
         vllm_max_tokens=args.vllm_max_tokens,
         vllm_yes_no_max_tokens=args.vllm_yes_no_max_tokens,
+        molmopoint_model_path=args.molmopoint_model_path,
+        molmopoint_checkpoint_path=args.molmopoint_checkpoint_path,
     )
 
 if __name__ == "__main__":

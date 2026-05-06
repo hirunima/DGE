@@ -7,7 +7,7 @@ set -e
 # GPU to use (set to 1 since GPU 0 is occupied)
 export PYTHONPATH=/fs/nexus-projects/scene_graph_sd/EVA:$PYTHONPATH
 export REITR_CHECKPOINT_PATH=/fs/nexus-projects/scene_graph_sd/DGE-T2I/data/models/checkpoint0149.pth
-export CUDA_VISIBLE_DEVICES=1
+export CUDA_VISIBLE_DEVICES=1,2,3
 
 # Activate conda environment
 source /fs/nexus-scratch/mrislam/anaconda3/etc/profile.d/conda.sh
@@ -44,7 +44,7 @@ echo ""
 
 PERMUTATIONS=(
     # Compare all-VLM scoring with and without the second stage.
-    "V1,S2,V3"
+    # "V1,S2,V3"
     "V1,V2,V3"
 )
 
@@ -73,7 +73,6 @@ build_cmd() {
         --output-dir "$output_root"
         --images-dir "$images_dir"
         --prompts-file "$PROMPTS_FILE"
-        --limit 10
         --low-vram
     )
 
@@ -95,7 +94,7 @@ build_cmd() {
     elif [[ "$p1" == "S2" ]]; then
         :
     else
-        cmd+=(--v2-backend-kind qwen --qwen-model-path "$QWEN_MODEL_PATH")
+        cmd+=(--v2-backend-kind qwen-molmopoint --qwen-model-path "$QWEN_MODEL_PATH")
     fi
 
     # Stage 3

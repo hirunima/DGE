@@ -1,14 +1,14 @@
 {
   "config": {
-    "output_dir": "./reports/ablation/.tmp_img2_V1-V2-E3-V3",
+    "output_dir": "./reports/ablation/.tmp_img1_V1-V2-V3",
     "prompts_file": "/fs/nexus-projects/scene_graph_sd/DGE-T2I/data/raw/qwen8b_t2i_prompts_aug_v1.json",
     "sg_file": null,
-    "images_dir": "/fs/nexus-projects/scene_graph_sd/DGE-T2I/data/images/survey_samples/image2",
+    "images_dir": "/fs/nexus-projects/scene_graph_sd/DGE-T2I/data/images/survey_samples/image1",
     "image_pattern": "{index:04d}-{generation}.png",
     "generation": 1,
     "start_idx": 0,
     "end_idx": null,
-    "limit": 10,
+    "limit": null,
     "weights": {
       "node": 0.3,
       "attribute": 0.3,
@@ -45,12 +45,17 @@
         "checkpoint_path": null
       },
       "V2": {
-        "kind": "qwen",
+        "kind": "qwen-molmopoint",
         "model_path": "/model",
         "checkpoint_path": null
       },
+      "S2": {
+        "kind": "skip",
+        "model_path": null,
+        "checkpoint_path": null
+      },
       "E3": {
-        "kind": "reitr",
+        "kind": null,
         "model_path": null,
         "checkpoint_path": null
       },
@@ -61,10 +66,9 @@
       }
     },
     "selected_backends": [
-      "V1",
-      "V3",
       "V2",
-      "E3"
+      "V1",
+      "V3"
     ],
     "use_cpu": false,
     "low_vram": true,
@@ -75,7 +79,9 @@
     "vllm_api_key": null,
     "vllm_temperature": null,
     "vllm_max_tokens": null,
-    "vllm_yes_no_max_tokens": null
+    "vllm_yes_no_max_tokens": null,
+    "molmopoint_model_path": null,
+    "molmopoint_checkpoint_path": null
   },
-  "items_total": 10
+  "items_total": 106
 }

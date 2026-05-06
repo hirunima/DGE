@@ -1,14 +1,14 @@
 {
   "config": {
-    "output_dir": "./reports/ablation/.tmp_img1_V1-E2-E3-V3",
+    "output_dir": "./reports/ablation/.tmp_img2_V1-S2-V3",
     "prompts_file": "/fs/nexus-projects/scene_graph_sd/DGE-T2I/data/raw/qwen8b_t2i_prompts_aug_v1.json",
     "sg_file": null,
-    "images_dir": "/fs/nexus-projects/scene_graph_sd/DGE-T2I/data/images/survey_samples/image1",
+    "images_dir": "/fs/nexus-projects/scene_graph_sd/DGE-T2I/data/images/survey_samples/image2",
     "image_pattern": "{index:04d}-{generation}.png",
     "generation": 1,
     "start_idx": 0,
     "end_idx": null,
-    "limit": 10,
+    "limit": null,
     "weights": {
       "node": 0.3,
       "attribute": 0.3,
@@ -40,8 +40,8 @@
         "checkpoint_path": null
       },
       "E2": {
-        "kind": "blip-2",
-        "model_path": "Salesforce/blip2-itm-vit-g",
+        "kind": null,
+        "model_path": null,
         "checkpoint_path": null
       },
       "V2": {
@@ -49,8 +49,13 @@
         "model_path": "/model",
         "checkpoint_path": null
       },
+      "S2": {
+        "kind": "skip",
+        "model_path": null,
+        "checkpoint_path": null
+      },
       "E3": {
-        "kind": "reitr",
+        "kind": null,
         "model_path": null,
         "checkpoint_path": null
       },
@@ -61,10 +66,9 @@
       }
     },
     "selected_backends": [
-      "E2",
-      "V3",
       "V1",
-      "E3"
+      "S2",
+      "V3"
     ],
     "use_cpu": false,
     "low_vram": true,
@@ -77,5 +81,5 @@
     "vllm_max_tokens": null,
     "vllm_yes_no_max_tokens": null
   },
-  "items_total": 10
+  "items_total": 106
 }
