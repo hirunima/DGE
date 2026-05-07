@@ -1,0 +1,70 @@
+{
+  "Ours": {
+    "V1-V2-V3": {
+      "pearson": 0.5415396635807208,
+      "spearman": 0.643026884831284,
+      "kendall_tau_b": 0.49903167494337736,
+      "pairwise_accuracy": 0.7590361445783133,
+      "n": 83,
+      "survey_ties": 23
+    }
+  },
+  "pickscore": {
+    "category": "Embedding-Based",
+    "representative": "PickScore",
+    "path": "reports/baselines/survey_samples_pickscore.jsonl",
+    "results": {
+      "pearson": 0.5420135333749287,
+      "spearman": 0.5222768787169115,
+      "kendall_tau_b": 0.39245455801679224,
+      "pairwise_accuracy": 0.7108433734939759,
+      "n": 83,
+      "survey_ties": 23
+    }
+  },
+  "vqa": {
+    "category": "VQA-Based",
+    "representative": "VQAScore",
+    "path": "/fs/nexus-projects/scene_graph_sd/t2v_metrics/results/survey_samples_vqa_scores.jsonl",
+    "results": {
+      "pearson": 0.5202433709895466,
+      "spearman": 0.6336043455773411,
+      "kendall_tau_b": 0.47242057082733546,
+      "pairwise_accuracy": 0.8072289156626506,
+      "n": 83,
+      "survey_ties": 23
+    }
+  },
+  "dsg": {
+    "category": "Structural",
+    "representative": "DSG",
+    "path": "/fs/nexus-projects/scene_graph_sd/DSG/evaluation_results_dge.json",
+    "results": {
+      "pearson": 0.5131605115447095,
+      "spearman": 0.6059093061095666,
+      "kendall_tau_b": 0.5113243564753205,
+      "pairwise_accuracy": 0.42168674698795183,
+      "n": 83,
+      "survey_ties": 23
+    }
+  },
+  "tit_score": {
+    "category": "Reconstructive",
+    "representative": "TIT-Score",
+    "path": null,
+    "results": null
+  },
+  "imagereward": {
+    "category": "Preference-Based",
+    "representative": "ImageReward",
+    "path": "reports/baselines/survey_samples_imagereward.jsonl",
+    "results": {
+      "pearson": 0.660183315925695,
+      "spearman": 0.6688753506778632,
+      "kendall_tau_b": 0.5178381606274984,
+      "pairwise_accuracy": 0.8072289156626506,
+      "n": 83,
+      "survey_ties": 23
+    }
+  }
+}
