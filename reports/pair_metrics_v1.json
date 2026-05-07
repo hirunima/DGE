@@ -1,0 +1,26 @@
+{
+  "eval_v1": {
+    "pearson": 0.5839699382527173,
+    "spearman": 0.5931408676883475,
+    "kendall_tau_b": 0.4555063550833706,
+    "pairwise_accuracy": 0.7710843373493976,
+    "n": 83,
+    "survey_ties": 23
+  },
+  "dsg": {
+    "pearson": 0.5131605115447095,
+    "spearman": 0.6059093061095666,
+    "kendall_tau_b": 0.5113243564753205,
+    "pairwise_accuracy": 0.42168674698795183,
+    "n": 83,
+    "survey_ties": 23
+  },
+  "vqa": {
+    "pearson": 0.5202433709895466,
+    "spearman": 0.6336043455773411,
+    "kendall_tau_b": 0.47242057082733546,
+    "pairwise_accuracy": 0.8072289156626506,
+    "n": 83,
+    "survey_ties": 23
+  }
+}

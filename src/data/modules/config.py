@@ -1,0 +1,43 @@
+"""Configuration constants for the data generation pipeline."""
+
+import os
+
+# Calculate project root - go up 4 levels from this file to get to the project root
+# This file is at: project_root/src/data/modules/config.py
+# So we need to go up 4 levels: config.py -> modules -> data -> src -> project_root
+PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+DATA_RAW_DIR = os.path.join(PROJECT_ROOT, "data", "raw")
+SCENE_GRAPH_ROOT = os.path.join(PROJECT_ROOT, "..", "..")
+
+# Configuration constants
+DEFAULT_INPUT_FILE = os.path.join(SCENE_GRAPH_ROOT, "ovad", "validated_scene_graphs.jsonl")
+DEFAULT_COUNTS_FILE = os.path.join(PROJECT_ROOT, "reports", "figures", "freq_dist_aug_v1.png")
+DEFAULT_OUTPUT_FILE = os.path.join(DATA_RAW_DIR, "qwen8b_t2i_prompts_aug_test.json")
+DEFAULT_CAUSAL_FILE = os.path.join(DATA_RAW_DIR, "qwen4bg_causal.json")
+DEFAULT_SEED = 42
+
+# Model configuration
+MODEL_NAME = "Qwen/Qwen3-VL-8B-Instruct"
+MAX_CONCURRENT_REQUESTS = 256
+MAX_MODEL_LEN = 8192 #35000
+MAX_TOKENS = 8192#25000
+FILTER_MAX_TOKENS = 100
+
+# Sampling parameters
+TEMPERATURE = 0.6
+TOP_K = 50
+TOP_P = 1.0
+
+# augmenting parameters
+MAX_ITEMS_PER_SG = 10
+MAX_RELATIONS_PER_SG = 20
+SWAP_COUNT = 5
+
+# Object sampling parameters
+THRESHOLD = 40
+SCORE_THRESHOLD = 0.6
+SMOOTHING_FACTOR = 1
+BETA = 1
+MAX_ITEMS_PER_SCENE = 3
+MAX_RELATIONS_PER_SCENE = 3
+OVAD_P = 0.4

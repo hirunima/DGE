@@ -1,0 +1,2617 @@
+[
+  {
+    "image_id": "0003-1",
+    "prompt": "A softly blurred bear with hints of blue and white has fur and a more intact, larger mouth that reveals a vibrant green nose.",
+    "permutation": "E1-V2-E3",
+    "final_score": 0.4686708495809471,
+    "st1_res": {
+      "backend": "E1",
+      "nodes": [
+        {
+          "id": 0,
+          "name": "bear",
+          "bbox": [
+            0,
+            0,
+            512,
+            416
+          ],
+          "confidence": 0.273193359375,
+          "passed": true,
+          "score": 1.0
+        },
+        {
+          "id": 1,
+          "name": "mouth",
+          "bbox": [
+            281,
+            245,
+            335,
+            264
+          ],
+          "confidence": 0.261962890625,
+          "passed": true,
+          "score": 1.0
+        },
+        {
+          "id": 2,
+          "name": "nose",
+          "bbox": [
+            263,
+            195,
+            348,
+            272
+          ],
+          "confidence": 0.26904296875,
+          "passed": true,
+          "score": 1.0
+        },
+        {
+          "id": 3,
+          "name": "fur",
+          "bbox": [
+            262,
+            154,
+            348,
+            273
+          ],
+          "confidence": 0.2418212890625,
+          "passed": true,
+          "score": 1.0
+        }
+      ],
+      "fidelity_score": 1.0
+    },
+    "st2_res": {
+      "backend": "V2",
+      "crop_size": 384,
+      "attributes": [
+        {
+          "id": 0,
+          "name": "bear",
+          "attribute": "hints of blue and white",
+          "skipped": false,
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
+        },
+        {
+          "id": 0,
+          "name": "bear",
+          "attribute": "softly blurred",
+          "skipped": false,
+          "score": 0.0,
+          "calibrated_score": 0.0,
+          "answer": "no"
+        },
+        {
+          "id": 1,
+          "name": "mouth",
+          "attribute": "more intact",
+          "skipped": false,
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
+        },
+        {
+          "id": 1,
+          "name": "mouth",
+          "attribute": "larger",
+          "skipped": false,
+          "score": 0.0,
+          "calibrated_score": 0.0,
+          "answer": "no"
+        },
+        {
+          "id": 2,
+          "name": "nose",
+          "attribute": "vibrant green",
+          "skipped": false,
+          "score": 0.0,
+          "calibrated_score": 0.0,
+          "answer": "no"
+        }
+      ],
+      "binding_score": 0.4
+    },
+    "st3_res": {
+      "backend": "E3",
+      "relations": [
+        {
+          "subject": 0,
+          "relation": "has",
+          "object": 3,
+          "original_score": 0.0077194619997464275,
+          "swapped_score": 0.13036216352921923,
+          "delta": -0.1226427015294728,
+          "swap_correct": false,
+          "skipped": false,
+          "matches": {
+            "original": {
+              "subject": "nose",
+              "relation": "of",
+              "object": "bear",
+              "subject_bbox": [
+                276.7469482421875,
+                173.96360778808594,
+                340.7998046875,
+                251.20310974121094
+              ],
+              "object_bbox": [
+                57.478179931640625,
+                11.573226928710938,
+                505.5238342285156,
+                399.1790771484375
+              ],
+              "score": 0.24098721146583557,
+              "subject_iou": 0.02322815284382019,
+              "object_iou": 0.058929508644474736,
+              "relation_similarity": 0.77978515625
+            },
+            "swapped": {
+              "subject": "nose",
+              "relation": "of",
+              "object": "bear",
+              "subject_bbox": [
+                276.7469482421875,
+                173.96360778808594,
+                340.7998046875,
+                251.20310974121094
+              ],
+              "object_bbox": [
+                57.478179931640625,
+                11.573226928710938,
+                505.5238342285156,
+                399.1790771484375
+              ],
+              "score": 0.24098721146583557,
+              "subject_iou": 0.48342883823636407,
+              "object_iou": 0.8153598105609314,
+              "relation_similarity": 0.8330078125
+            }
+          }
+        },
+        {
+          "subject": 1,
+          "relation": "revealing",
+          "object": 2,
+          "original_score": 0.007632010532837886,
+          "swapped_score": 0.040503897905534055,
+          "delta": -0.03287188737269617,
+          "swap_correct": false,
+          "skipped": false,
+          "matches": {
+            "original": {
+              "subject": "nose",
+              "relation": "of",
+              "object": "bear",
+              "subject_bbox": [
+                276.7469482421875,
+                173.96360778808594,
+                340.7998046875,
+                251.20310974121094
+              ],
+              "object_bbox": [
+                57.478179931640625,
+                11.573226928710938,
+                505.5238342285156,
+                399.1790771484375
+              ],
+              "score": 0.24098721146583557,
+              "subject_iou": 0.05940787867155681,
+              "object_iou": 0.0376874764586757,
+              "relation_similarity": 0.65234375
+            },
+            "swapped": {
+              "subject": "nose",
+              "relation": "of",
+              "object": "bear",
+              "subject_bbox": [
+                276.7469482421875,
+                173.96360778808594,
+                340.7998046875,
+                251.20310974121094
+              ],
+              "object_bbox": [
+                57.478179931640625,
+                11.573226928710938,
+                505.5238342285156,
+                399.1790771484375
+              ],
+              "score": 0.24098721146583557,
+              "subject_iou": 0.45612880923089033,
+              "object_iou": 0.005907922207272921,
+              "relation_similarity": 0.7275390625
+            }
+          }
+        },
+        {
+          "subject": 0,
+          "relation": "has",
+          "object": 1,
+          "original_score": 0.0026861736959394623,
+          "swapped_score": 0.08656708093617702,
+          "delta": -0.08388090724023756,
+          "swap_correct": false,
+          "skipped": false,
+          "matches": {
+            "original": {
+              "subject": "nose",
+              "relation": "of",
+              "object": "bear",
+              "subject_bbox": [
+                276.7469482421875,
+                173.96360778808594,
+                340.7998046875,
+                251.20310974121094
+              ],
+              "object_bbox": [
+                57.478179931640625,
+                11.573226928710938,
+                505.5238342285156,
+                399.1790771484375
+              ],
+              "score": 0.24098721146583557,
+              "subject_iou": 0.02322815284382019,
+              "object_iou": 0.005907922207272921,
+              "relation_similarity": 0.76513671875
+            },
+            "swapped": {
+              "subject": "nose",
+              "relation": "of",
+              "object": "bear",
+              "subject_bbox": [
+                276.7469482421875,
+                173.96360778808594,
+                340.7998046875,
+                251.20310974121094
+              ],
+              "object_bbox": [
+                57.478179931640625,
+                11.573226928710938,
+                505.5238342285156,
+                399.1790771484375
+              ],
+              "score": 0.24098721146583557,
+              "subject_iou": 0.05940787867155681,
+              "object_iou": 0.8153598105609314,
+              "relation_similarity": 0.8212890625
+            }
+          }
+        }
+      ],
+      "relation_score": 0.006012548742841258,
+      "swap_accuracy": 0.0
+    },
+    "latency_ms": {
+      "total": 2224.441680009477
+    }
+  },
+  {
+    "image_id": "0056-2",
+    "prompt": "A flock of five sheep stands in front of structures, with one sheep positioned in the middle of the scene, surrounded by other sheep, against a blurred background.",
+    "permutation": "E1-V2-E3",
+    "final_score": 0.6830052576375404,
+    "st1_res": {
+      "backend": "E1",
+      "nodes": [
+        {
+          "id": 0,
+          "name": "sheep",
+          "bbox": [
+            1,
+            326,
+            346,
+            924
+          ],
+          "confidence": 0.32080078125,
+          "passed": true,
+          "score": 1.0
+        },
+        {
+          "id": 103,
+          "name": "blurred background",
+          "bbox": [
+            1097,
+            317,
+            1372,
+            920
+          ],
+          "confidence": 0.2734375,
+          "passed": true,
+          "score": 1.0
+        },
+        {
+          "id": 105,
+          "name": "structures",
+          "bbox": [
+            3,
+            7,
+            1662,
+            328
+          ],
+          "confidence": 0.2177734375,
+          "passed": true,
+          "score": 1.0
+        },
+        {
+          "id": 109,
+          "name": "another sheep",
+          "bbox": [
+            1,
+            327,
+            346,
+            924
+          ],
+          "confidence": 0.31396484375,
+          "passed": true,
+          "score": 1.0
+        },
+        {
+          "id": 110,
+          "name": "middle",
+          "bbox": [
+            1100,
+            317,
+            1372,
+            735
+          ],
+          "confidence": 0.23828125,
+          "passed": true,
+          "score": 1.0
+        }
+      ],
+      "fidelity_score": 1.0
+    },
+    "st2_res": {
+      "backend": "V2",
+      "crop_size": 384,
+      "attributes": [
+        {
+          "id": 0,
+          "name": "sheep",
+          "attribute": "quantity:5",
+          "skipped": false,
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
+        }
+      ],
+      "binding_score": 1.0
+    },
+    "st3_res": {
+      "backend": "E3",
+      "relations": [
+        {
+          "subject": 109,
+          "relation": "in",
+          "object": 110,
+          "original_score": 0.05920810155797053,
+          "swapped_score": 0.062006738731378956,
+          "delta": -0.002798637173408426,
+          "swap_correct": false,
+          "skipped": false,
+          "matches": {
+            "original": {
+              "subject": "sheep",
+              "relation": "has",
+              "object": "head",
+              "subject_bbox": [
+                4.47819709777832,
+                300.80859375,
+                369.860107421875,
+                923.8856201171875
+              ],
+              "object_bbox": [
+                7.064581871032715,
+                324.7496337890625,
+                324.0472106933594,
+                562.9803466796875
+              ],
+              "score": 0.21389789879322052,
+              "subject_iou": 0.8871635946453238,
+              "object_iou": 0.0,
+              "relation_similarity": 0.6240234375
+            },
+            "swapped": {
+              "subject": "head",
+              "relation": "of",
+              "object": "sheep",
+              "subject_bbox": [
+                6.515137672424316,
+                313.6843566894531,
+                333.81927490234375,
+                559.4862060546875
+              ],
+              "object_bbox": [
+                3.6757144927978516,
+                298.6427001953125,
+                453.3448486328125,
+                918.5059204101562
+              ],
+              "score": 0.2043755203485489,
+              "subject_iou": 0.0,
+              "object_iou": 0.7175002795407366,
+              "relation_similarity": 0.845703125
+            }
+          }
+        },
+        {
+          "subject": 103,
+          "relation": "of",
+          "object": 105,
+          "original_score": 0.012430063682348997,
+          "swapped_score": 0.014560804729374103,
+          "delta": -0.0021307410470251063,
+          "swap_correct": false,
+          "skipped": false,
+          "matches": {
+            "original": {
+              "subject": "sheep",
+              "relation": "has",
+              "object": "ear",
+              "subject_bbox": [
+                1242.2496337890625,
+                299.68719482421875,
+                1664.933349609375,
+                915.2825317382812
+              ],
+              "object_bbox": [
+                1364.943115234375,
+                314.2367858886719,
+                1476.81201171875,
+                389.3553161621094
+              ],
+              "score": 0.23391906917095184,
+              "subject_iou": 0.22281123419507742,
+              "object_iou": 0.002854408084488165,
+              "relation_similarity": 0.470947265625
+            },
+            "swapped": {
+              "subject": "ear",
+              "relation": "of",
+              "object": "sheep",
+              "subject_bbox": [
+                1368.2498779296875,
+                314.16387939453125,
+                1481.6497802734375,
+                388.36248779296875
+              ],
+              "object_bbox": [
+                1213.3114013671875,
+                288.8838806152344,
+                1666.109375,
+                911.0479736328125
+              ],
+              "score": 0.20377348363399506,
+              "subject_iou": 0.0029089005864907517,
+              "object_iou": 0.2668451144363085,
+              "relation_similarity": 0.52978515625
+            }
+          }
+        },
+        {
+          "subject": 0,
+          "relation": "has",
+          "object": 103,
+          "original_score": 0.07540915349754322,
+          "swapped_score": 0.05655254792546617,
+          "delta": 0.01885660557207705,
+          "swap_correct": true,
+          "skipped": false,
+          "matches": {
+            "original": {
+              "subject": "sheep",
+              "relation": "has",
+              "object": "head",
+              "subject_bbox": [
+                4.47819709777832,
+                300.80859375,
+                369.860107421875,
+                923.8856201171875
+              ],
+              "object_bbox": [
+                7.064581871032715,
+                324.7496337890625,
+                324.0472106933594,
+                562.9803466796875
+              ],
+              "score": 0.21389789879322052,
+              "subject_iou": 0.8886364640284862,
+              "object_iou": 0.0,
+              "relation_similarity": 0.79345703125
+            },
+            "swapped": {
+              "subject": "head",
+              "relation": "of",
+              "object": "sheep",
+              "subject_bbox": [
+                6.515137672424316,
+                313.6843566894531,
+                333.81927490234375,
+                559.4862060546875
+              ],
+              "object_bbox": [
+                3.6757144927978516,
+                298.6427001953125,
+                453.3448486328125,
+                918.5059204101562
+              ],
+              "score": 0.2043755203485489,
+              "subject_iou": 0.0,
+              "object_iou": 0.7187064713966923,
+              "relation_similarity": 0.77001953125
+            }
+          }
+        }
+      ],
+      "relation_score": 0.049015772912620915,
+      "swap_accuracy": 0.3333333333333333
+    },
+    "latency_ms": {
+      "total": 2256.811077008024
+    }
+  },
+  {
+    "image_id": "0059-4",
+    "prompt": "A pomegranate is positioned in the center of a dark-hued hair arrangement, against a light-colored, large background.",
+    "permutation": "E1-V2-E3",
+    "final_score": 0.4444444444444445,
+    "st1_res": {
+      "backend": "E1",
+      "nodes": [
+        {
+          "id": 1,
+          "name": "pomegranate",
+          "bbox": [
+            302,
+            151,
+            400,
+            236
+          ],
+          "confidence": 0.313720703125,
+          "passed": true,
+          "score": 1.0
+        },
+        {
+          "id": 2,
+          "name": "background",
+          "bbox": [
+            303,
+            151,
+            399,
+            235
+          ],
+          "confidence": 0.2481689453125,
+          "passed": true,
+          "score": 1.0
+        },
+        {
+          "id": 3,
+          "name": "arrangement",
+          "bbox": [
+            14,
+            7,
+            504,
+            511
+          ],
+          "confidence": 0.264404296875,
+          "passed": true,
+          "score": 1.0
+        },
+        {
+          "id": 4,
+          "name": "fruit",
+          "bbox": [
+            121,
+            136,
+            434,
+            437
+          ],
+          "confidence": 0.3046875,
+          "passed": true,
+          "score": 1.0
+        }
+      ],
+      "fidelity_score": 1.0
+    },
+    "st2_res": {
+      "backend": "V2",
+      "crop_size": 384,
+      "attributes": [
+        {
+          "id": 2,
+          "name": "background",
+          "attribute": "light-colored",
+          "skipped": false,
+          "score": 0.0,
+          "calibrated_score": 0.0,
+          "answer": "no"
+        },
+        {
+          "id": 2,
+          "name": "background",
+          "attribute": "large",
+          "skipped": false,
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
+        },
+        {
+          "id": 3,
+          "name": "arrangement",
+          "attribute": "hair tone:dark",
+          "skipped": false,
+          "score": 0.0,
+          "calibrated_score": 0.0,
+          "answer": "no"
+        }
+      ],
+      "binding_score": 0.3333333333333333
+    },
+    "st3_res": {
+      "backend": "E3",
+      "relations": [
+        {
+          "subject": 4,
+          "relation": "against",
+          "object": 2,
+          "original_score": 0.0,
+          "swapped_score": 0.0,
+          "delta": 0.0,
+          "swap_correct": false,
+          "skipped": false,
+          "matches": {
+            "original": null,
+            "swapped": null
+          }
+        },
+        {
+          "subject": 1,
+          "relation": "is positioned in",
+          "object": 3,
+          "original_score": 0.0,
+          "swapped_score": 0.0,
+          "delta": 0.0,
+          "swap_correct": false,
+          "skipped": false,
+          "matches": {
+            "original": null,
+            "swapped": null
+          }
+        },
+        {
+          "subject": 1,
+          "relation": "is in the center of",
+          "object": 3,
+          "original_score": 0.0,
+          "swapped_score": 0.0,
+          "delta": 0.0,
+          "swap_correct": false,
+          "skipped": false,
+          "matches": {
+            "original": null,
+            "swapped": null
+          }
+        }
+      ],
+      "relation_score": 0.0,
+      "swap_accuracy": 0.0
+    },
+    "latency_ms": {
+      "total": 1497.0382739556953
+    }
+  },
+  {
+    "image_id": "0094-1",
+    "prompt": "A bottle sits on a table in front of a screen, while a light brown audience member is present.",
+    "permutation": "E1-V2-E3",
+    "final_score": 0.7121858243887681,
+    "st1_res": {
+      "backend": "E1",
+      "nodes": [
+        {
+          "id": 0,
+          "name": "bottle",
+          "bbox": [
+            3,
+            712,
+            319,
+            1020
+          ],
+          "confidence": 0.262451171875,
+          "passed": true,
+          "score": 1.0
+        },
+        {
+          "id": 5,
+          "name": "screen",
+          "bbox": [
+            7,
+            857,
+            682,
+            1017
+          ],
+          "confidence": 0.250244140625,
+          "passed": true,
+          "score": 1.0
+        },
+        {
+          "id": 6,
+          "name": "table",
+          "bbox": [
+            259,
+            859,
+            679,
+            1013
+          ],
+          "confidence": 0.287353515625,
+          "passed": true,
+          "score": 1.0
+        },
+        {
+          "id": 7,
+          "name": "audience member",
+          "bbox": [
+            13,
+            3,
+            859,
+            537
+          ],
+          "confidence": 0.2587890625,
+          "passed": true,
+          "score": 1.0
+        },
+        {
+          "id": 8,
+          "name": "head",
+          "bbox": [
+            828,
+            169,
+            1021,
+            656
+          ],
+          "confidence": 0.265625,
+          "passed": true,
+          "score": 1.0
+        }
+      ],
+      "fidelity_score": 1.0
+    },
+    "st2_res": {
+      "backend": "V2",
+      "crop_size": 384,
+      "attributes": [
+        {
+          "id": 7,
+          "name": "audience member",
+          "attribute": "light brown",
+          "skipped": false,
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
+        }
+      ],
+      "binding_score": 1.0
+    },
+    "st3_res": {
+      "backend": "E3",
+      "relations": [
+        {
+          "subject": 0,
+          "relation": "on",
+          "object": 6,
+          "original_score": 0.274919684649248,
+          "swapped_score": 0.04694628268544283,
+          "delta": 0.22797340196380517,
+          "swap_correct": true,
+          "skipped": false,
+          "matches": {
+            "original": {
+              "subject": "bottle",
+              "relation": "on",
+              "object": "table",
+              "subject_bbox": [
+                445.5393371582031,
+                409.2442932128906,
+                583.9786987304688,
+                947.3480224609375
+              ],
+              "object_bbox": [
+                270.1768493652344,
+                875.7511596679688,
+                677.9810791015625,
+                986.3959350585938
+              ],
+              "score": 0.7881760001182556,
+              "subject_iou": 0.0,
+              "object_iou": 0.6976098856296051,
+              "relation_similarity": 1.0
+            },
+            "swapped": {
+              "subject": "bottle",
+              "relation": "on",
+              "object": "table",
+              "subject_bbox": [
+                445.5393371582031,
+                409.2442932128906,
+                583.9786987304688,
+                947.3480224609375
+              ],
+              "object_bbox": [
+                270.1768493652344,
+                875.7511596679688,
+                677.9810791015625,
+                986.3959350585938
+              ],
+              "score": 0.7881760001182556,
+              "subject_iou": 0.09634842248166015,
+              "object_iou": 0.03941721834948113,
+              "relation_similarity": 0.87744140625
+            }
+          }
+        },
+        {
+          "subject": 6,
+          "relation": "in front of",
+          "object": 5,
+          "original_score": 0.127525466288926,
+          "swapped_score": 0.20256177478397164,
+          "delta": -0.07503630849504564,
+          "swap_correct": false,
+          "skipped": false,
+          "matches": {
+            "original": {
+              "subject": "bottle",
+              "relation": "on",
+              "object": "table",
+              "subject_bbox": [
+                445.5393371582031,
+                409.2442932128906,
+                583.9786987304688,
+                947.3480224609375
+              ],
+              "object_bbox": [
+                270.1768493652344,
+                875.7511596679688,
+                677.9810791015625,
+                986.3959350585938
+              ],
+              "score": 0.7881760001182556,
+              "subject_iou": 0.09634842248166015,
+              "object_iou": 0.4177908092826191,
+              "relation_similarity": 0.62939453125
+            },
+            "swapped": {
+              "subject": "bottle",
+              "relation": "on",
+              "object": "table",
+              "subject_bbox": [
+                445.5393371582031,
+                409.2442932128906,
+                583.9786987304688,
+                947.3480224609375
+              ],
+              "object_bbox": [
+                270.1768493652344,
+                875.7511596679688,
+                677.9810791015625,
+                986.3959350585938
+              ],
+              "score": 0.7881760001182556,
+              "subject_iou": 0.07358045912248186,
+              "object_iou": 0.6976098856296051,
+              "relation_similarity": 0.66650390625
+            }
+          }
+        },
+        {
+          "subject": 7,
+          "relation": "has",
+          "object": 8,
+          "original_score": 0.007227268560738472,
+          "swapped_score": 0.0011285875581506697,
+          "delta": 0.006098681002587803,
+          "swap_correct": true,
+          "skipped": false,
+          "matches": {
+            "original": {
+              "subject": "bottle",
+              "relation": "on",
+              "object": "table",
+              "subject_bbox": [
+                445.5393371582031,
+                409.2442932128906,
+                583.9786987304688,
+                947.3480224609375
+              ],
+              "object_bbox": [
+                270.1768493652344,
+                875.7511596679688,
+                677.9810791015625,
+                986.3959350585938
+              ],
+              "score": 0.7881760001182556,
+              "subject_iou": 0.03477660472283035,
+              "object_iou": 0.0,
+              "relation_similarity": 0.52734375
+            },
+            "swapped": {
+              "subject": "table",
+              "relation": "under",
+              "object": "bottle",
+              "subject_bbox": [
+                263.65753173828125,
+                873.1322631835938,
+                665.6611938476562,
+                981.8204956054688
+              ],
+              "object_bbox": [
+                433.1256103515625,
+                404.7298583984375,
+                584.63671875,
+                937.0487060546875
+              ],
+              "score": 0.11331652104854584,
+              "subject_iou": 0.0,
+              "object_iou": 0.03911268812393861,
+              "relation_similarity": 0.50927734375
+            }
+          }
+        }
+      ],
+      "relation_score": 0.13655747316630415,
+      "swap_accuracy": 0.6666666666666666
+    },
+    "latency_ms": {
+      "total": 1722.187340958044
+    }
+  },
+  {
+    "image_id": "0124-3",
+    "prompt": "A sheep stands in a pen, facing a head, with berries visible beyond a metal fence.",
+    "permutation": "E1-V2-E3",
+    "final_score": 0.7182029683919743,
+    "st1_res": {
+      "backend": "E1",
+      "nodes": [
+        {
+          "id": 1,
+          "name": "pen",
+          "bbox": [
+            907,
+            285,
+            1024,
+            482
+          ],
+          "confidence": 0.244140625,
+          "passed": true,
+          "score": 1.0
+        },
+        {
+          "id": 5,
+          "name": "head",
+          "bbox": [
+            148,
+            441,
+            625,
+            1019
+          ],
+          "confidence": 0.261474609375,
+          "passed": true,
+          "score": 1.0
+        },
+        {
+          "id": 7,
+          "name": "fence",
+          "bbox": [
+            437,
+            250,
+            602,
+            465
+          ],
+          "confidence": 0.25244140625,
+          "passed": true,
+          "score": 1.0
+        },
+        {
+          "id": 8,
+          "name": "sheep",
+          "bbox": [
+            146,
+            442,
+            1009,
+            1021
+          ],
+          "confidence": 0.2978515625,
+          "passed": true,
+          "score": 1.0
+        },
+        {
+          "id": 12,
+          "name": "berries",
+          "bbox": [
+            148,
+            262,
+            313,
+            455
+          ],
+          "confidence": 0.281005859375,
+          "passed": true,
+          "score": 1.0
+        }
+      ],
+      "fidelity_score": 1.0
+    },
+    "st2_res": {
+      "backend": "V2",
+      "crop_size": 384,
+      "attributes": [
+        {
+          "id": 7,
+          "name": "fence",
+          "attribute": "material:metal",
+          "skipped": false,
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
+        }
+      ],
+      "binding_score": 1.0
+    },
+    "st3_res": {
+      "backend": "E3",
+      "relations": [
+        {
+          "subject": 12,
+          "relation": "seen beyond",
+          "object": 7,
+          "original_score": 0.003379424398543501,
+          "swapped_score": 0.00440804338050982,
+          "delta": -0.0010286189819663193,
+          "swap_correct": false,
+          "skipped": false,
+          "matches": {
+            "original": {
+              "subject": "fence",
+              "relation": "above",
+              "object": "sheep",
+              "subject_bbox": [
+                1.9659423828125,
+                145.28651428222656,
+                1023.10302734375,
+                622.4295043945312
+              ],
+              "object_bbox": [
+                149.21359252929688,
+                441.83416748046875,
+                634.7347412109375,
+                1014.2284545898438
+              ],
+              "score": 0.13982099294662476,
+              "subject_iou": 0.06535949026603466,
+              "object_iou": 0.012347640452974134,
+              "relation_similarity": 0.6220703125
+            },
+            "swapped": {
+              "subject": "head",
+              "relation": "of",
+              "object": "sheep",
+              "subject_bbox": [
+                201.66046142578125,
+                436.2179870605469,
+                617.1932983398438,
+                765.0133056640625
+              ],
+              "object_bbox": [
+                182.75091552734375,
+                520.92626953125,
+                1011.8970336914062,
+                1019.384033203125
+              ],
+              "score": 0.5650556087493896,
+              "subject_iou": 0.028377636882084712,
+              "object_iou": 0.0,
+              "relation_similarity": 0.5498046875
+            }
+          }
+        },
+        {
+          "subject": 8,
+          "relation": "stands in",
+          "object": 1,
+          "original_score": 0.18488644677012436,
+          "swapped_score": 0.1815076282829558,
+          "delta": 0.003378818487168561,
+          "swap_correct": true,
+          "skipped": false,
+          "matches": {
+            "original": {
+              "subject": "sheep",
+              "relation": "has",
+              "object": "ear",
+              "subject_bbox": [
+                163.34921264648438,
+                490.1288757324219,
+                1016.8311767578125,
+                1014.9033203125
+              ],
+              "object_bbox": [
+                505.00421142578125,
+                469.9931945800781,
+                617.8169555664062,
+                551.9544067382812
+              ],
+              "score": 0.5514444708824158,
+              "subject_iou": 0.8808807558188598,
+              "object_iou": 0.0,
+              "relation_similarity": 0.76123046875
+            },
+            "swapped": {
+              "subject": "nose",
+              "relation": "of",
+              "object": "sheep",
+              "subject_bbox": [
+                480.2027282714844,
+                644.0548706054688,
+                569.0264892578125,
+                727.1991577148438
+              ],
+              "object_bbox": [
+                163.63375854492188,
+                497.2538757324219,
+                1014.1708984375,
+                1017.963623046875
+              ],
+              "score": 0.5563750863075256,
+              "subject_iou": 0.0,
+              "object_iou": 0.8762283724710442,
+              "relation_similarity": 0.74462890625
+            }
+          }
+        },
+        {
+          "subject": 8,
+          "relation": "facing",
+          "object": 5,
+          "original_score": 0.2755608443591001,
+          "swapped_score": 0.3055468866600546,
+          "delta": -0.029986042300954474,
+          "swap_correct": false,
+          "skipped": false,
+          "matches": {
+            "original": {
+              "subject": "sheep",
+              "relation": "has",
+              "object": "head",
+              "subject_bbox": [
+                153.2430419921875,
+                483.7890625,
+                1012.1749267578125,
+                1015.14794921875
+              ],
+              "object_bbox": [
+                209.45025634765625,
+                436.144287109375,
+                613.9296875,
+                767.4000244140625
+              ],
+              "score": 0.42480021715164185,
+              "subject_iou": 0.9069539124039626,
+              "object_iou": 0.4754639647502087,
+              "relation_similarity": 0.9384765625
+            },
+            "swapped": {
+              "subject": "head",
+              "relation": "of",
+              "object": "sheep",
+              "subject_bbox": [
+                201.66046142578125,
+                436.2179870605469,
+                617.1932983398438,
+                765.0133056640625
+              ],
+              "object_bbox": [
+                182.75091552734375,
+                520.92626953125,
+                1011.8970336914062,
+                1019.384033203125
+              ],
+              "score": 0.5650556087493896,
+              "subject_iou": 0.4848452343523138,
+              "object_iou": 0.8218578560157679,
+              "relation_similarity": 0.82763671875
+            }
+          }
+        }
+      ],
+      "relation_score": 0.15460890517592266,
+      "swap_accuracy": 0.3333333333333333
+    },
+    "latency_ms": {
+      "total": 1790.882414963562
+    }
+  },
+  {
+    "image_id": "0126-3",
+    "prompt": "A group, wearing a white t-shirt with a black lettered design, is seated on grass in the trees.",
+    "permutation": "E1-V2-E3",
+    "final_score": 0.5013456250696068,
+    "st1_res": {
+      "backend": "E1",
+      "nodes": [
+        {
+          "id": 101,
+          "name": "group",
+          "bbox": [
+            376,
+            650,
+            483,
+            691
+          ],
+          "confidence": 0.260009765625,
+          "passed": true,
+          "score": 1.0
+        },
+        {
+          "id": 103,
+          "name": "trees",
+          "bbox": [
+            825,
+            1,
+            958,
+            570
+          ],
+          "confidence": 0.264892578125,
+          "passed": true,
+          "score": 1.0
+        },
+        {
+          "id": 115,
+          "name": "white t-shirt",
+          "bbox": [
+            560,
+            664,
+            679,
+            742
+          ],
+          "confidence": 0.278564453125,
+          "passed": true,
+          "score": 1.0
+        },
+        {
+          "id": 116,
+          "name": "black lettered design",
+          "bbox": [
+            357,
+            611,
+            424,
+            651
+          ],
+          "confidence": 0.30419921875,
+          "passed": true,
+          "score": 1.0
+        },
+        {
+          "id": 118,
+          "name": "grass",
+          "bbox": [
+            2,
+            836,
+            1022,
+            1021
+          ],
+          "confidence": 0.30419921875,
+          "passed": true,
+          "score": 1.0
+        }
+      ],
+      "fidelity_score": 1.0
+    },
+    "st2_res": {
+      "backend": "V2",
+      "crop_size": 384,
+      "attributes": [],
+      "binding_score": null
+    },
+    "st3_res": {
+      "backend": "E3",
+      "relations": [
+        {
+          "subject": 101,
+          "relation": "is in",
+          "object": 103,
+          "original_score": 0.0030968076371663596,
+          "swapped_score": 0.00974998720975661,
+          "delta": -0.00665317957259025,
+          "swap_correct": false,
+          "skipped": false,
+          "matches": {
+            "original": {
+              "subject": "man",
+              "relation": "wearing",
+              "object": "shirt",
+              "subject_bbox": [
+                693.0860595703125,
+                362.881103515625,
+                981.87646484375,
+                867.9261474609375
+              ],
+              "object_bbox": [
+                711.6298828125,
+                506.3331604003906,
+                982.081787109375,
+                846.96630859375
+              ],
+              "score": 0.36054563522338867,
+              "subject_iou": 0.0,
+              "object_iou": 0.053144208772491604,
+              "relation_similarity": 0.3232421875
+            },
+            "swapped": {
+              "subject": "man",
+              "relation": "wearing",
+              "object": "shirt",
+              "subject_bbox": [
+                693.0860595703125,
+                362.881103515625,
+                981.87646484375,
+                867.9261474609375
+              ],
+              "object_bbox": [
+                711.6298828125,
+                506.3331604003906,
+                982.081787109375,
+                846.96630859375
+              ],
+              "score": 0.36054563522338867,
+              "subject_iou": 0.142006802559409,
+              "object_iou": 0.0,
+              "relation_similarity": 0.380859375
+            }
+          }
+        },
+        {
+          "subject": 115,
+          "relation": "with",
+          "object": 116,
+          "original_score": 0.0021949824128219995,
+          "swapped_score": 0.0013867596445884852,
+          "delta": 0.0008082227682335143,
+          "swap_correct": true,
+          "skipped": false,
+          "matches": {
+            "original": {
+              "subject": "woman",
+              "relation": "wearing",
+              "object": "shirt",
+              "subject_bbox": [
+                289.1474609375,
+                389.6383056640625,
+                549.6981201171875,
+                863.7655029296875
+              ],
+              "object_bbox": [
+                294.6084289550781,
+                552.3780517578125,
+                551.642578125,
+                863.5391845703125
+              ],
+              "score": 0.2160283625125885,
+              "subject_iou": 0.0,
+              "object_iou": 0.03350878054568507,
+              "relation_similarity": 0.6064453125
+            },
+            "swapped": {
+              "subject": "woman",
+              "relation": "wearing",
+              "object": "shirt",
+              "subject_bbox": [
+                289.1474609375,
+                389.6383056640625,
+                549.6981201171875,
+                863.7655029296875
+              ],
+              "object_bbox": [
+                294.6084289550781,
+                552.3780517578125,
+                551.642578125,
+                863.5391845703125
+              ],
+              "score": 0.2160283625125885,
+              "subject_iou": 0.021694405295533715,
+              "object_iou": 0.0,
+              "relation_similarity": 0.591796875
+            }
+          }
+        },
+        {
+          "subject": 101,
+          "relation": "are seated on",
+          "object": 118,
+          "original_score": 0.002781960367652468,
+          "swapped_score": 0.0034042425805150462,
+          "delta": -0.0006222822128625783,
+          "swap_correct": false,
+          "skipped": false,
+          "matches": {
+            "original": {
+              "subject": "woman",
+              "relation": "wearing",
+              "object": "shirt",
+              "subject_bbox": [
+                289.1474609375,
+                389.6383056640625,
+                549.6981201171875,
+                863.7655029296875
+              ],
+              "object_bbox": [
+                294.6084289550781,
+                552.3780517578125,
+                551.642578125,
+                863.5391845703125
+              ],
+              "score": 0.2160283625125885,
+              "subject_iou": 0.035512446280412835,
+              "object_iou": 0.027058473386790727,
+              "relation_similarity": 0.41162109375
+            },
+            "swapped": {
+              "subject": "woman",
+              "relation": "wearing",
+              "object": "shirt",
+              "subject_bbox": [
+                289.1474609375,
+                389.6383056640625,
+                549.6981201171875,
+                863.7655029296875
+              ],
+              "object_bbox": [
+                294.6084289550781,
+                552.3780517578125,
+                551.642578125,
+                863.5391845703125
+              ],
+              "score": 0.2160283625125885,
+              "subject_iou": 0.023719095198248757,
+              "object_iou": 0.054851873229074775,
+              "relation_similarity": 0.401123046875
+            }
+          }
+        }
+      ],
+      "relation_score": 0.002691250139213609,
+      "swap_accuracy": 0.3333333333333333
+    },
+    "latency_ms": {
+      "total": 831.5495729912072
+    }
+  },
+  {
+    "image_id": "0130-4",
+    "prompt": "A fast-food meal sits on a dark tray, accompanied by a messy sandwich with a dollop of red sauce on a small white dish, and a red McDonald\u2019s fries container placed in front of the sandwich.",
+    "permutation": "E1-V2-E3",
+    "final_score": 0.365512776500208,
+    "st1_res": {
+      "backend": "E1",
+      "nodes": [
+        {
+          "id": 7,
+          "name": "fast-food meal",
+          "bbox": [
+            0,
+            150,
+            255,
+            499
+          ],
+          "confidence": 0.26025390625,
+          "passed": true,
+          "score": 1.0
+        },
+        {
+          "id": 8,
+          "name": "small white dish",
+          "bbox": [
+            197,
+            17,
+            434,
+            234
+          ],
+          "confidence": 0.289794921875,
+          "passed": true,
+          "score": 1.0
+        },
+        {
+          "id": 9,
+          "name": "dark tray",
+          "bbox": [
+            0,
+            223,
+            263,
+            502
+          ],
+          "confidence": 0.283935546875,
+          "passed": true,
+          "score": 1.0
+        },
+        {
+          "id": 11,
+          "name": "sandwich",
+          "bbox": [
+            315,
+            272,
+            512,
+            445
+          ],
+          "confidence": 0.289794921875,
+          "passed": true,
+          "score": 1.0
+        },
+        {
+          "id": 13,
+          "name": "dollop of red sauce",
+          "bbox": [
+            316,
+            273,
+            512,
+            445
+          ],
+          "confidence": 0.25341796875,
+          "passed": true,
+          "score": 1.0
+        },
+        {
+          "id": 14,
+          "name": "McDonald's fries container",
+          "bbox": [
+            317,
+            274,
+            512,
+            404
+          ],
+          "confidence": 0.260009765625,
+          "passed": true,
+          "score": 1.0
+        }
+      ],
+      "fidelity_score": 1.0
+    },
+    "st2_res": {
+      "backend": "V2",
+      "crop_size": 384,
+      "attributes": [
+        {
+          "id": 11,
+          "name": "sandwich",
+          "attribute": "order:messy/disordered/unordered/disorganized/unorganized/cluttered/untidy",
+          "skipped": false,
+          "score": 0.0,
+          "calibrated_score": 0.0,
+          "answer": "no"
+        },
+        {
+          "id": 14,
+          "name": "McDonald's fries container",
+          "attribute": "red",
+          "skipped": false,
+          "score": 0.0,
+          "calibrated_score": 0.0,
+          "answer": "no"
+        }
+      ],
+      "binding_score": 0.0
+    },
+    "st3_res": {
+      "backend": "E3",
+      "relations": [
+        {
+          "subject": 9,
+          "relation": "is underneath",
+          "object": 7,
+          "original_score": 0.1049756127731137,
+          "swapped_score": 0.11673966374587395,
+          "delta": -0.01176405097276026,
+          "swap_correct": false,
+          "skipped": false,
+          "matches": {
+            "original": {
+              "subject": "plate",
+              "relation": "on",
+              "object": "table",
+              "subject_bbox": [
+                -0.37255859375,
+                153.3748321533203,
+                248.45570373535156,
+                468.10760498046875
+              ],
+              "object_bbox": [
+                0.541656494140625,
+                0.1556243896484375,
+                511.9309387207031,
+                510.92376708984375
+              ],
+              "score": 0.3285863697528839,
+              "subject_iou": 0.6707385451409467,
+              "object_iou": 0.3397445529859763,
+              "relation_similarity": 0.63232421875
+            },
+            "swapped": {
+              "subject": "plate",
+              "relation": "on",
+              "object": "table",
+              "subject_bbox": [
+                -0.37255859375,
+                153.3748321533203,
+                248.45570373535156,
+                468.10760498046875
+              ],
+              "object_bbox": [
+                0.541656494140625,
+                0.1556243896484375,
+                511.9309387207031,
+                510.92376708984375
+              ],
+              "score": 0.3285863697528839,
+              "subject_iou": 0.8775128778133431,
+              "object_iou": 0.28018053988707475,
+              "relation_similarity": 0.61376953125
+            }
+          }
+        },
+        {
+          "subject": 14,
+          "relation": "is in front of",
+          "object": 11,
+          "original_score": 0.057442192490765584,
+          "swapped_score": 0.06927962356854281,
+          "delta": -0.011837431077777225,
+          "swap_correct": false,
+          "skipped": false,
+          "matches": {
+            "original": {
+              "subject": "food",
+              "relation": "on",
+              "object": "plate",
+              "subject_bbox": [
+                299.353515625,
+                256.8253173828125,
+                510.35125732421875,
+                452.07958984375
+              ],
+              "object_bbox": [
+                245.29080200195312,
+                248.6998291015625,
+                513.96142578125,
+                491.26318359375
+              ],
+              "score": 0.1690184623003006,
+              "subject_iou": 0.6069576786704954,
+              "object_iou": 0.5229581741313372,
+              "relation_similarity": 0.6015625
+            },
+            "swapped": {
+              "subject": "plate",
+              "relation": "on",
+              "object": "table",
+              "subject_bbox": [
+                244.3253936767578,
+                237.91659545898438,
+                512.8900146484375,
+                488.8779602050781
+              ],
+              "object_bbox": [
+                0.529266357421875,
+                0.0566558837890625,
+                512.064453125,
+                510.86004638671875
+              ],
+              "score": 0.4007231891155243,
+              "subject_iou": 0.5056577420150796,
+              "object_iou": 0.0970171873392798,
+              "relation_similarity": 0.57373046875
+            }
+          }
+        },
+        {
+          "subject": 8,
+          "relation": "holds",
+          "object": 13,
+          "original_score": 0.12719718323799248,
+          "swapped_score": 0.07807775325979517,
+          "delta": 0.04911942997819731,
+          "swap_correct": true,
+          "skipped": false,
+          "matches": {
+            "original": {
+              "subject": "bowl",
+              "relation": "on",
+              "object": "plate",
+              "subject_bbox": [
+                199.37896728515625,
+                13.499778747558594,
+                433.66790771484375,
+                221.01239013671875
+              ],
+              "object_bbox": [
+                245.95553588867188,
+                248.20809936523438,
+                514.78515625,
+                490.0741271972656
+              ],
+              "score": 0.28872084617614746,
+              "subject_iou": 0.9148077277884091,
+              "object_iou": 0.5184806194131325,
+              "relation_similarity": 0.61474609375
+            },
+            "swapped": {
+              "subject": "plate",
+              "relation": "on",
+              "object": "table",
+              "subject_bbox": [
+                244.3253936767578,
+                237.91659545898438,
+                512.8900146484375,
+                488.8779602050781
+              ],
+              "object_bbox": [
+                0.529266357421875,
+                0.0566558837890625,
+                512.064453125,
+                510.86004638671875
+              ],
+              "score": 0.4007231891155243,
+              "subject_iou": 0.5001829112647036,
+              "object_iou": 0.19682433639731048,
+              "relation_similarity": 0.55908203125
+            }
+          }
+        }
+      ],
+      "relation_score": 0.09653832950062391,
+      "swap_accuracy": 0.3333333333333333
+    },
+    "latency_ms": {
+      "total": 1815.1034450274892
+    }
+  },
+  {
+    "image_id": "0132-4",
+    "prompt": "A horse, with a fresh face and a nose, is looking down towards the ground.",
+    "permutation": "E1-V2-E3",
+    "final_score": 0.3583230900868346,
+    "st1_res": {
+      "backend": "E1",
+      "nodes": [
+        {
+          "id": 0,
+          "name": "horse",
+          "bbox": [
+            0,
+            0,
+            512,
+            512
+          ],
+          "confidence": 0.308349609375,
+          "passed": true,
+          "score": 1.0
+        },
+        {
+          "id": 4,
+          "name": "face",
+          "bbox": [
+            251,
+            302,
+            369,
+            369
+          ],
+          "confidence": 0.267822265625,
+          "passed": true,
+          "score": 1.0
+        },
+        {
+          "id": 8,
+          "name": "nose",
+          "bbox": [
+            142,
+            0,
+            352,
+            269
+          ],
+          "confidence": 0.294921875,
+          "passed": true,
+          "score": 1.0
+        },
+        {
+          "id": 11,
+          "name": "ground",
+          "bbox": [
+            0,
+            146,
+            512,
+            306
+          ],
+          "confidence": 0.2305908203125,
+          "passed": true,
+          "score": 1.0
+        }
+      ],
+      "fidelity_score": 1.0
+    },
+    "st2_res": {
+      "backend": "V2",
+      "crop_size": 384,
+      "attributes": [
+        {
+          "id": 4,
+          "name": "face",
+          "attribute": "fresh",
+          "skipped": false,
+          "score": 0.0,
+          "calibrated_score": 0.0,
+          "answer": "unclear"
+        }
+      ],
+      "binding_score": 0.0
+    },
+    "st3_res": {
+      "backend": "E3",
+      "relations": [
+        {
+          "subject": 0,
+          "relation": "has",
+          "object": 4,
+          "original_score": 0.09354813367640438,
+          "swapped_score": 0.11408935720243053,
+          "delta": -0.02054122352602615,
+          "swap_correct": false,
+          "skipped": false,
+          "matches": {
+            "original": {
+              "subject": "man",
+              "relation": "has",
+              "object": "nose",
+              "subject_bbox": [
+                0.9927825927734375,
+                -0.310516357421875,
+                511.687255859375,
+                511.1540832519531
+              ],
+              "object_bbox": [
+                246.53587341308594,
+                301.11962890625,
+                312.19696044921875,
+                375.53729248046875
+              ],
+              "score": 0.22537583112716675,
+              "subject_iou": 0.9952001475241882,
+              "object_iou": 0.47171265286014336,
+              "relation_similarity": 0.56591796875
+            },
+            "swapped": {
+              "subject": "nose",
+              "relation": "of",
+              "object": "man",
+              "subject_bbox": [
+                246.79591369628906,
+                297.0354919433594,
+                310.67724609375,
+                372.1007995605469
+              ],
+              "object_bbox": [
+                1.3935546875,
+                0.1250762939453125,
+                511.3990478515625,
+                511.6397705078125
+              ],
+              "score": 0.249623641371727,
+              "subject_iou": 0.45943043718980514,
+              "object_iou": 0.9951603083923644,
+              "relation_similarity": 0.62841796875
+            }
+          }
+        },
+        {
+          "subject": 0,
+          "relation": "has",
+          "object": 8,
+          "original_score": 0.08181038237717222,
+          "swapped_score": 0.09279193752249867,
+          "delta": -0.01098155514532645,
+          "swap_correct": false,
+          "skipped": false,
+          "matches": {
+            "original": {
+              "subject": "man",
+              "relation": "has",
+              "object": "nose",
+              "subject_bbox": [
+                0.9927825927734375,
+                -0.310516357421875,
+                511.687255859375,
+                511.1540832519531
+              ],
+              "object_bbox": [
+                246.53587341308594,
+                301.11962890625,
+                312.19696044921875,
+                375.53729248046875
+              ],
+              "score": 0.22537583112716675,
+              "subject_iou": 0.9952001475241882,
+              "object_iou": 0.0,
+              "relation_similarity": 0.7294921875
+            },
+            "swapped": {
+              "subject": "nose",
+              "relation": "of",
+              "object": "man",
+              "subject_bbox": [
+                246.79591369628906,
+                297.0354919433594,
+                310.67724609375,
+                372.1007995605469
+              ],
+              "object_bbox": [
+                1.3935546875,
+                0.1250762939453125,
+                511.3990478515625,
+                511.6397705078125
+              ],
+              "score": 0.249623641371727,
+              "subject_iou": 0.0,
+              "object_iou": 0.9951603083923644,
+              "relation_similarity": 0.7470703125
+            }
+          }
+        },
+        {
+          "subject": 0,
+          "relation": "looking down towards",
+          "object": 11,
+          "original_score": 0.04954929472793432,
+          "swapped_score": 0.06612090587772357,
+          "delta": -0.01657161114978925,
+          "swap_correct": false,
+          "skipped": false,
+          "matches": {
+            "original": {
+              "subject": "man",
+              "relation": "has",
+              "object": "nose",
+              "subject_bbox": [
+                0.9927825927734375,
+                -0.310516357421875,
+                511.687255859375,
+                511.1540832519531
+              ],
+              "object_bbox": [
+                246.53587341308594,
+                301.11962890625,
+                312.19696044921875,
+                375.53729248046875
+              ],
+              "score": 0.22537583112716675,
+              "subject_iou": 0.9952001475241882,
+              "object_iou": 0.0037052339467416864,
+              "relation_similarity": 0.440185546875
+            },
+            "swapped": {
+              "subject": "nose",
+              "relation": "of",
+              "object": "man",
+              "subject_bbox": [
+                246.79591369628906,
+                297.0354919433594,
+                310.67724609375,
+                372.1007995605469
+              ],
+              "object_bbox": [
+                1.3935546875,
+                0.1250762939453125,
+                511.3990478515625,
+                511.6397705078125
+              ],
+              "score": 0.249623641371727,
+              "subject_iou": 0.006647868434710816,
+              "object_iou": 0.9951603083923644,
+              "relation_similarity": 0.52880859375
+            }
+          }
+        }
+      ],
+      "relation_score": 0.07496927026050364,
+      "swap_accuracy": 0.0
+    },
+    "latency_ms": {
+      "total": 1424.3313040351495
+    }
+  },
+  {
+    "image_id": "0133-3",
+    "prompt": "A person with outstretched arms, one of which is raised, stands against a background of green grass and trees.",
+    "permutation": "E1-V2-E3",
+    "final_score": 0.6775762109227907,
+    "st1_res": {
+      "backend": "E1",
+      "nodes": [
+        {
+          "id": 106,
+          "name": "arms",
+          "bbox": [
+            609,
+            878,
+            1023,
+            1022
+          ],
+          "confidence": 0.2376708984375,
+          "passed": true,
+          "score": 1.0
+        },
+        {
+          "id": 107,
+          "name": "right arm",
+          "bbox": [
+            1,
+            873,
+            1023,
+            1023
+          ],
+          "confidence": 0.2509765625,
+          "passed": true,
+          "score": 1.0
+        },
+        {
+          "id": 109,
+          "name": "background",
+          "bbox": [
+            931,
+            389,
+            1023,
+            912
+          ],
+          "confidence": 0.27880859375,
+          "passed": true,
+          "score": 1.0
+        },
+        {
+          "id": 110,
+          "name": "grass",
+          "bbox": [
+            1,
+            871,
+            381,
+            1023
+          ],
+          "confidence": 0.286376953125,
+          "passed": true,
+          "score": 1.0
+        },
+        {
+          "id": 111,
+          "name": "trees",
+          "bbox": [
+            875,
+            388,
+            1024,
+            912
+          ],
+          "confidence": 0.266357421875,
+          "passed": true,
+          "score": 1.0
+        }
+      ],
+      "fidelity_score": 1.0
+    },
+    "st2_res": {
+      "backend": "V2",
+      "crop_size": 384,
+      "attributes": [
+        {
+          "id": 106,
+          "name": "arms",
+          "attribute": "outstretched",
+          "skipped": false,
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
+        },
+        {
+          "id": 107,
+          "name": "right arm",
+          "attribute": "raised",
+          "skipped": false,
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
+        },
+        {
+          "id": 110,
+          "name": "grass",
+          "attribute": "green",
+          "skipped": false,
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
+        }
+      ],
+      "binding_score": 1.0
+    },
+    "st3_res": {
+      "backend": "E3",
+      "relations": [
+        {
+          "subject": 109,
+          "relation": "features",
+          "object": 110,
+          "original_score": 0.029823630201980953,
+          "swapped_score": 0.007117693182864938,
+          "delta": 0.022705937019116017,
+          "swap_correct": true,
+          "skipped": false,
+          "matches": {
+            "original": {
+              "subject": "tree",
+              "relation": "behind",
+              "object": "woman",
+              "subject_bbox": [
+                689.871337890625,
+                390.0543212890625,
+                1022.83935546875,
+                902.1944580078125
+              ],
+              "object_bbox": [
+                131.64483642578125,
+                197.261962890625,
+                881.27587890625,
+                1018.6939697265625
+              ],
+              "score": 0.3124179244041443,
+              "subject_iou": 0.27408227830302717,
+              "object_iou": 0.05784215344768428,
+              "relation_similarity": 0.5751953125
+            },
+            "swapped": {
+              "subject": "woman",
+              "relation": "wearing",
+              "object": "shirt",
+              "subject_bbox": [
+                137.54867553710938,
+                206.47842407226562,
+                875.129150390625,
+                1018.9512939453125
+              ],
+              "object_bbox": [
+                252.8980255126953,
+                409.3427734375,
+                730.4766235351562,
+                914.3521728515625
+              ],
+              "score": 0.6052348017692566,
+              "subject_iou": 0.058001026784353885,
+              "object_iou": 0.0,
+              "relation_similarity": 0.405517578125
+            }
+          }
+        },
+        {
+          "subject": 109,
+          "relation": "features",
+          "object": 111,
+          "original_score": 0.03584136146075696,
+          "swapped_score": 0.04949770516323743,
+          "delta": -0.013656343702480471,
+          "swap_correct": false,
+          "skipped": false,
+          "matches": {
+            "original": {
+              "subject": "tree",
+              "relation": "has",
+              "object": "trunk",
+              "subject_bbox": [
+                693.2984008789062,
+                391.085205078125,
+                1020.8486938476562,
+                906.6885986328125
+              ],
+              "object_bbox": [
+                905.3636474609375,
+                755.7711181640625,
+                958.6400146484375,
+                903.03662109375
+              ],
+              "score": 0.2514190077781677,
+              "subject_iou": 0.2714286659902943,
+              "object_iou": 0.10048889553939608,
+              "relation_similarity": 0.7666015625
+            },
+            "swapped": {
+              "subject": "tree",
+              "relation": "has",
+              "object": "trunk",
+              "subject_bbox": [
+                693.2984008789062,
+                391.085205078125,
+                1020.8486938476562,
+                906.6885986328125
+              ],
+              "object_bbox": [
+                905.3636474609375,
+                755.7711181640625,
+                958.6400146484375,
+                903.03662109375
+              ],
+              "score": 0.2514190077781677,
+              "subject_iou": 0.4378156898216197,
+              "object_iou": 0.07844121671021752,
+              "relation_similarity": 0.7626953125
+            }
+          }
+        },
+        {
+          "subject": 106,
+          "relation": "includes",
+          "object": 107,
+          "original_score": 0.0325209066423785,
+          "swapped_score": 0.025711260083590218,
+          "delta": 0.006809646558788282,
+          "swap_correct": true,
+          "skipped": false,
+          "matches": {
+            "original": {
+              "subject": "woman",
+              "relation": "wearing",
+              "object": "short",
+              "subject_bbox": [
+                136.54122924804688,
+                207.88839721679688,
+                871.6087646484375,
+                1017.6611328125
+              ],
+              "object_bbox": [
+                349.0556945800781,
+                862.478515625,
+                639.038330078125,
+                1018.496826171875
+              ],
+              "score": 0.4372313916683197,
+              "subject_iou": 0.05932963074849853,
+              "object_iou": 0.26985142544369334,
+              "relation_similarity": 0.451904296875
+            },
+            "swapped": {
+              "subject": "woman",
+              "relation": "wearing",
+              "object": "shirt",
+              "subject_bbox": [
+                137.54867553710938,
+                206.47842407226562,
+                875.129150390625,
+                1018.9512939453125
+              ],
+              "object_bbox": [
+                252.8980255126953,
+                409.3427734375,
+                730.4766235351562,
+                914.3521728515625
+              ],
+              "score": 0.6052348017692566,
+              "subject_iou": 0.16692294082744474,
+              "object_iou": 0.014899498161347911,
+              "relation_similarity": 0.46728515625
+            }
+          }
+        }
+      ],
+      "relation_score": 0.03272863276837214,
+      "swap_accuracy": 0.6666666666666666
+    },
+    "latency_ms": {
+      "total": 3014.414064004086
+    }
+  },
+  {
+    "image_id": "0142-3",
+    "prompt": "A glass cup sits on a table inside a room with a white wall, while two chairs are arranged around a round table nearby.",
+    "permutation": "E1-V2-E3",
+    "final_score": 0.727599342402972,
+    "st1_res": {
+      "backend": "E1",
+      "nodes": [
+        {
+          "id": 4,
+          "name": "chair",
+          "bbox": [
+            571,
+            580,
+            849,
+            945
+          ],
+          "confidence": 0.28662109375,
+          "passed": true,
+          "score": 1.0
+        },
+        {
+          "id": 9,
+          "name": "cup",
+          "bbox": [
+            531,
+            482,
+            594,
+            579
+          ],
+          "confidence": 0.25390625,
+          "passed": true,
+          "score": 1.0
+        },
+        {
+          "id": 100,
+          "name": "room",
+          "bbox": [
+            3,
+            2,
+            883,
+            474
+          ],
+          "confidence": 0.267333984375,
+          "passed": true,
+          "score": 1.0
+        },
+        {
+          "id": 102,
+          "name": "wall",
+          "bbox": [
+            847,
+            577,
+            1024,
+            970
+          ],
+          "confidence": 0.269287109375,
+          "passed": true,
+          "score": 1.0
+        },
+        {
+          "id": 103,
+          "name": "table",
+          "bbox": [
+            218,
+            544,
+            666,
+            930
+          ],
+          "confidence": 0.2880859375,
+          "passed": true,
+          "score": 1.0
+        },
+        {
+          "id": 104,
+          "name": "table",
+          "bbox": [
+            217,
+            545,
+            666,
+            930
+          ],
+          "confidence": 0.287353515625,
+          "passed": true,
+          "score": 1.0
+        }
+      ],
+      "fidelity_score": 1.0
+    },
+    "st2_res": {
+      "backend": "V2",
+      "crop_size": 384,
+      "attributes": [
+        {
+          "id": 4,
+          "name": "chair",
+          "attribute": "quantity:2",
+          "skipped": false,
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
+        },
+        {
+          "id": 9,
+          "name": "cup",
+          "attribute": "material:glass",
+          "skipped": false,
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
+        },
+        {
+          "id": 102,
+          "name": "wall",
+          "attribute": "color:white",
+          "skipped": false,
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
+        },
+        {
+          "id": 104,
+          "name": "table",
+          "attribute": "shape:round",
+          "skipped": false,
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes"
+        }
+      ],
+      "binding_score": 1.0
+    },
+    "st3_res": {
+      "backend": "E3",
+      "relations": [
+        {
+          "subject": 9,
+          "relation": "is on",
+          "object": 103,
+          "original_score": 0.1819383866374703,
+          "swapped_score": 0.056080485643604586,
+          "delta": 0.12585790099386573,
+          "swap_correct": true,
+          "skipped": false,
+          "matches": {
+            "original": {
+              "subject": "chair",
+              "relation": "near",
+              "object": "table",
+              "subject_bbox": [
+                114.65337371826172,
+                540.326416015625,
+                355.6037292480469,
+                884.7041015625
+              ],
+              "object_bbox": [
+                166.6056365966797,
+                539.90185546875,
+                673.5007934570312,
+                870.809326171875
+              ],
+              "score": 0.6253847479820251,
+              "subject_iou": 0.0,
+              "object_iou": 0.753711482962368,
+              "relation_similarity": 0.77197265625
+            },
+            "swapped": {
+              "subject": "chair",
+              "relation": "near",
+              "object": "table",
+              "subject_bbox": [
+                114.65337371826172,
+                540.326416015625,
+                355.6037292480469,
+                884.7041015625
+              ],
+              "object_bbox": [
+                166.6056365966797,
+                539.90185546875,
+                673.5007934570312,
+                870.809326171875
+              ],
+              "score": 0.6253847479820251,
+              "subject_iou": 0.22429102087434002,
+              "object_iou": 0.014372371066896115,
+              "relation_similarity": 0.75146484375
+            }
+          }
+        },
+        {
+          "subject": 102,
+          "relation": "has",
+          "object": 100,
+          "original_score": 0.017683191682320663,
+          "swapped_score": 0.0030239369996173716,
+          "delta": 0.014659254682703292,
+          "swap_correct": true,
+          "skipped": false,
+          "matches": {
+            "original": {
+              "subject": "table",
+              "relation": "in",
+              "object": "room",
+              "subject_bbox": [
+                164.77816772460938,
+                542.463134765625,
+                674.554931640625,
+                819.55126953125
+              ],
+              "object_bbox": [
+                0.964874267578125,
+                -1.09197998046875,
+                1024.4241943359375,
+                1020.4817504882812
+              ],
+              "score": 0.13269345462322235,
+              "subject_iou": 0.0,
+              "object_iou": 0.3972687180400248,
+              "relation_similarity": 0.6708984375
+            },
+            "swapped": {
+              "subject": "table",
+              "relation": "in",
+              "object": "room",
+              "subject_bbox": [
+                164.77816772460938,
+                542.463134765625,
+                674.554931640625,
+                819.55126953125
+              ],
+              "object_bbox": [
+                0.964874267578125,
+                -1.09197998046875,
+                1024.4241943359375,
+                1020.4817504882812
+              ],
+              "score": 0.13269345462322235,
+              "subject_iou": 0.0,
+              "object_iou": 0.06653122422857802,
+              "relation_similarity": 0.68505859375
+            }
+          }
+        },
+        {
+          "subject": 4,
+          "relation": "are around",
+          "object": 104,
+          "original_score": 0.34877250330695575,
+          "swapped_score": 0.09374675962369929,
+          "delta": 0.2550257436832565,
+          "swap_correct": true,
+          "skipped": false,
+          "matches": {
+            "original": {
+              "subject": "chair",
+              "relation": "near",
+              "object": "table",
+              "subject_bbox": [
+                590.4044189453125,
+                591.4484252929688,
+                858.209228515625,
+                914.4695434570312
+              ],
+              "object_bbox": [
+                170.95579528808594,
+                539.8952026367188,
+                674.016357421875,
+                868.8422241210938
+              ],
+              "score": 0.5273181796073914,
+              "subject_iou": 0.7997703428496193,
+              "object_iou": 0.7536284442369735,
+              "relation_similarity": 0.8515625
+            },
+            "swapped": {
+              "subject": "chair",
+              "relation": "near",
+              "object": "table",
+              "subject_bbox": [
+                114.65337371826172,
+                540.326416015625,
+                355.6037292480469,
+                884.7041015625
+              ],
+              "object_bbox": [
+                166.6056365966797,
+                539.90185546875,
+                673.5007934570312,
+                870.809326171875
+              ],
+              "score": 0.6253847479820251,
+              "subject_iou": 0.2255439508958293,
+              "object_iou": 0.12451351031732877,
+              "relation_similarity": 0.8564453125
+            }
+          }
+        }
+      ],
+      "relation_score": 0.18279802720891558,
+      "swap_accuracy": 1.0
+    },
+    "latency_ms": {
+      "total": 3727.990659943316
+    }
+  }
+]
