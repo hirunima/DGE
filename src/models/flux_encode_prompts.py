@@ -5,9 +5,9 @@ import argparse
 from transformers import T5EncoderModel, T5TokenizerFast, CLIPTextModel, CLIPTokenizer
 from tqdm import tqdm
 
-MODEL_PATH = "/fs/nexus-projects/scene_graph_sd/DGE-T2I/data/models/FLUX1-dev"
-DATA_PATH = "/fs/nexus-projects/scene_graph_sd/DGE-T2I/data/raw/qwen8b_t2i_prompts_aug_v1.json"
-EMBEDDINGS_DIR = "/fs/nexus-projects/scene_graph_sd/DGE-T2I/data/embeddings/flux"
+MODEL_PATH = "data/models/FLUX1-dev"
+DATA_PATH = "data/raw/qwen8b_t2i_prompts_aug_v1.json"
+EMBEDDINGS_DIR = "data/embeddings/flux"
 
 def encode_prompts(prompts, text_encoder, tokenizer, text_encoder_2, tokenizer_2, device, max_length=512):
     """

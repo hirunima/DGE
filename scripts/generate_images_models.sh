@@ -3,11 +3,13 @@
 
 set -e
 
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+
 # Configuration
-DATA_PATH="/fs/nexus-projects/scene_graph_sd/DGE-T2I/data/raw/qwen8b_t2i_prompts_aug_v1.json"
-BASE_EMBEDDINGS_DIR="/fs/nexus-projects/scene_graph_sd/DGE-T2I/data/embeddings"
-BASE_IMAGES_DIR="/fs/nexus-projects/scene_graph_sd/DGE-T2I/data/images"
-LOCAL_MODELS_DIR="/fs/nexus-projects/scene_graph_sd/DGE-T2I/data/models"
+DATA_PATH="$ROOT_DIR/data/raw/qwen8b_t2i_prompts_aug_v1.json"
+BASE_EMBEDDINGS_DIR="$ROOT_DIR/data/embeddings"
+BASE_IMAGES_DIR="$ROOT_DIR/data/images"
+LOCAL_MODELS_DIR="$ROOT_DIR/data/models"
 NUM_GENERATIONS=5
 SEED=44
 DEVICE_MAP="balanced"
@@ -324,22 +326,22 @@ run_generate() {
     echo ""
 }
 
-SDXL_ENCODE_SCRIPT="/fs/nexus-projects/scene_graph_sd/DGE-T2I/src/models/sdxl_encode_prompts.py"
-SDXL_GENERATE_SCRIPT="/fs/nexus-projects/scene_graph_sd/DGE-T2I/src/models/sdxl_generate_from_embeddings.py"
-SD15_ENCODE_SCRIPT="/fs/nexus-projects/scene_graph_sd/DGE-T2I/src/models/sd15_encode_prompts.py"
-SD15_GENERATE_SCRIPT="/fs/nexus-projects/scene_graph_sd/DGE-T2I/src/models/sd15_generate_from_embeddings.py"
-FLUX2_ENCODE_SCRIPT="/fs/nexus-projects/scene_graph_sd/DGE-T2I/src/models/flux2_encode_prompts.py"
-FLUX2_GENERATE_SCRIPT="/fs/nexus-projects/scene_graph_sd/DGE-T2I/src/models/flux2_generate_from_embeddings.py"
-Z_ENCODE_SCRIPT="/fs/nexus-projects/scene_graph_sd/DGE-T2I/src/models/z_image_encode_prompts.py"
-Z_GENERATE_SCRIPT="/fs/nexus-projects/scene_graph_sd/DGE-T2I/src/models/z_image_generate_from_embeddings.py"
-QWEN_IMAGE_ENCODE_SCRIPT="/fs/nexus-projects/scene_graph_sd/DGE-T2I/src/models/qwen_image_encode_prompts.py"
-QWEN_IMAGE_GENERATE_SCRIPT="/fs/nexus-projects/scene_graph_sd/DGE-T2I/src/models/qwen_image_generate_from_embeddings.py"
-EMU_3_5_ENCODE_SCRIPT="/fs/nexus-projects/scene_graph_sd/DGE-T2I/src/models/emu_3_5_encode_prompts.py"
-EMU_3_5_GENERATE_SCRIPT="/fs/nexus-projects/scene_graph_sd/DGE-T2I/src/models/emu_3_5_generate_from_embeddings.py"
-MOGAO_7B_ENCODE_SCRIPT="/fs/nexus-projects/scene_graph_sd/DGE-T2I/src/models/mogao_7b_encode_prompts.py"
-MOGAO_7B_GENERATE_SCRIPT="/fs/nexus-projects/scene_graph_sd/DGE-T2I/src/models/mogao_7b_generate_from_embeddings.py"
-BAGEL_ENCODE_SCRIPT="/fs/nexus-projects/scene_graph_sd/DGE-T2I/src/models/bagel_encode_prompts.py"
-BAGEL_GENERATE_SCRIPT="/fs/nexus-projects/scene_graph_sd/DGE-T2I/src/models/BAGEL/eval/gen/generate.py"
+SDXL_ENCODE_SCRIPT="$ROOT_DIR/src/models/sdxl_encode_prompts.py"
+SDXL_GENERATE_SCRIPT="$ROOT_DIR/src/models/sdxl_generate_from_embeddings.py"
+SD15_ENCODE_SCRIPT="$ROOT_DIR/src/models/sd15_encode_prompts.py"
+SD15_GENERATE_SCRIPT="$ROOT_DIR/src/models/sd15_generate_from_embeddings.py"
+FLUX2_ENCODE_SCRIPT="$ROOT_DIR/src/models/flux2_encode_prompts.py"
+FLUX2_GENERATE_SCRIPT="$ROOT_DIR/src/models/flux2_generate_from_embeddings.py"
+Z_ENCODE_SCRIPT="$ROOT_DIR/src/models/z_image_encode_prompts.py"
+Z_GENERATE_SCRIPT="$ROOT_DIR/src/models/z_image_generate_from_embeddings.py"
+QWEN_IMAGE_ENCODE_SCRIPT="$ROOT_DIR/src/models/qwen_image_encode_prompts.py"
+QWEN_IMAGE_GENERATE_SCRIPT="$ROOT_DIR/src/models/qwen_image_generate_from_embeddings.py"
+EMU_3_5_ENCODE_SCRIPT="$ROOT_DIR/src/models/emu_3_5_encode_prompts.py"
+EMU_3_5_GENERATE_SCRIPT="$ROOT_DIR/src/models/emu_3_5_generate_from_embeddings.py"
+MOGAO_7B_ENCODE_SCRIPT="$ROOT_DIR/src/models/mogao_7b_encode_prompts.py"
+MOGAO_7B_GENERATE_SCRIPT="$ROOT_DIR/src/models/mogao_7b_generate_from_embeddings.py"
+BAGEL_ENCODE_SCRIPT="$ROOT_DIR/src/models/bagel_encode_prompts.py"
+BAGEL_GENERATE_SCRIPT="$ROOT_DIR/src/models/BAGEL/eval/gen/generate.py"
 
 if has_model "sdxl"; then
     SKIP_MODEL="false"

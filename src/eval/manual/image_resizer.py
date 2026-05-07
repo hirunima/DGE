@@ -8,7 +8,7 @@ from PIL import Image
 
 
 DEFAULT_INPUT_DIR = Path(
-    "/fs/nexus-projects/scene_graph_sd/DGE-T2I/data/images/survey_samples"
+    "data/images/survey_samples"
 )
 DEFAULT_OUTPUT_DIR_NAME = "survey_samples_resized"
 IMAGE_EXTS = {".jpg", ".jpeg", ".png", ".bmp", ".tif", ".tiff", ".webp"}

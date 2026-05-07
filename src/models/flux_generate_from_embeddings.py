@@ -5,11 +5,11 @@ import argparse
 from diffusers import FluxPipeline,  FluxTransformer2DModel, GGUFQuantizationConfig
 from tqdm import tqdm
 
-MODEL_PATH = "/fs/nexus-projects/scene_graph_sd/DGE-T2I/data/models/FLUX1-dev"
-GGUF_PATH = "/fs/nexus-projects/scene_graph_sd/DGE-T2I/data/models/FLUX.1-dev-gguf/flux1-dev-Q2_K.gguf"
-IMAGES_DIR = "/fs/nexus-projects/scene_graph_sd/DGE-T2I/data/images/flux"
-DATA_PATH = "/fs/nexus-projects/scene_graph_sd/DGE-T2I/data/raw/qwen8b_t2i_prompts_aug_v1.json"
-EMBEDDINGS_DIR = "/fs/nexus-projects/scene_graph_sd/DGE-T2I/data/embeddings/flux"
+MODEL_PATH = "data/models/FLUX1-dev"
+GGUF_PATH = "data/models/FLUX.1-dev-gguf/flux1-dev-Q2_K.gguf"
+IMAGES_DIR = "data/images/flux"
+DATA_PATH = "data/raw/qwen8b_t2i_prompts_aug_v1.json"
+EMBEDDINGS_DIR = "data/embeddings/flux"
 SEED = 44
 
 

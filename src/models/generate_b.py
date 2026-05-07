@@ -6,9 +6,9 @@ from diffusers import DiffusionPipeline
 from tqdm import tqdm
 from concurrent.futures import ThreadPoolExecutor
 
-DEFAULT_DATA_PATH = "/fs/nexus-projects/scene_graph_sd/DGE-T2I/data/raw/qwen8b_t2i_prompts_aug_v1.json"
-DEFAULT_EMBEDDINGS_DIR = "/fs/nexus-projects/scene_graph_sd/DGE-T2I/data/embeddings"
-DEFAULT_IMAGES_DIR = "/fs/nexus-projects/scene_graph_sd/DGE-T2I/data/images"
+DEFAULT_DATA_PATH = "data/raw/qwen8b_t2i_prompts_aug_v1.json"
+DEFAULT_EMBEDDINGS_DIR = "data/embeddings"
+DEFAULT_IMAGES_DIR = "data/images"
 DEFAULT_SEED = 44
 
 def check_images_exist(example_id, output_dir, num_generations):

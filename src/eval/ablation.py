@@ -111,7 +111,7 @@ class StageBackend(ABC):
         self.backend_id, self.spec, self.config, self.model_load_time_ms = backend_id, spec, config, 0.0
 
 def _default_qwen_model_path() -> str:
-    return "/fs/nexus-projects/scene_graph_sd/Qwen3-VL-8B-Instruct"
+    return "../../Qwen3-VL-8B-Instruct"
 
 def _default_siglip_model_path() -> str:
     return "google/siglip2-so400m-patch14-384"
@@ -129,7 +129,7 @@ def _default_molmopoint_model_path() -> str:
     return os.environ.get("MOLMOPOINT_MODEL_PATH") or "allenai/MolmoPoint-8B"
 
 def _default_reitr_model_path() -> str:
-    return os.environ.get("REITR_CODE_DIR") or os.environ.get("RELTR_CODE_DIR") or "/fs/nexus-projects/scene_graph_sd/RelTR"
+    return os.environ.get("REITR_CODE_DIR") or os.environ.get("RELTR_CODE_DIR") or "../../RelTR"
 
 def _default_reitr_checkpoint_path() -> Optional[str]:
     return os.environ.get("REITR_CHECKPOINT_PATH") or os.environ.get("RELTR_CHECKPOINT_PATH")

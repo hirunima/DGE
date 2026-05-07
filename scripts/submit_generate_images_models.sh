@@ -18,8 +18,8 @@ source ~/.bashrc
 conda activate dge-t2i-env
 module load cuda/12.8.1
 
-export HF_HOME="/scratch1/chuonghm/huggingface"
-ROOT_DIR="/fs/nexus-projects/scene_graph_sd/DGE-T2I"
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+export HF_HOME="${HF_HOME:-$ROOT_DIR/.cache/huggingface}"
 MODEL="sdxl"  # sdxl|sd15|flux2|z-image|qwen-image-2512|emu-3-5|mogao-7b|bagel|all
 STEP="generate"  # encode|generate|both
 NUM_SPLITS=100

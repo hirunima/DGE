@@ -218,6 +218,10 @@ data/embeddings
 data/images
 logs/
 
+# Local/non-writable job scripts with machine-specific absolute paths
+scripts/generate_sdxl.sh
+scripts/submit_flux_gen.sh
+
 offload/
 
 # Streamlit

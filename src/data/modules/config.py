@@ -7,11 +7,13 @@ import os
 # So we need to go up 4 levels: config.py -> modules -> data -> src -> project_root
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 DATA_RAW_DIR = os.path.join(PROJECT_ROOT, "data", "raw")
+SCENE_GRAPH_ROOT = os.path.join(PROJECT_ROOT, "..", "..")
 
 # Configuration constants
-DEFAULT_INPUT_FILE = "/fs/nexus-projects/scene_graph_sd/ovad/validated_scene_graphs.jsonl"
-DEFAULT_COUNTS_FILE = "/fs/nexus-projects/scene_graph_sd/DGE-T2I/reports/figures/freq_dist_aug_v1.png"
+DEFAULT_INPUT_FILE = os.path.join(SCENE_GRAPH_ROOT, "ovad", "validated_scene_graphs.jsonl")
+DEFAULT_COUNTS_FILE = os.path.join(PROJECT_ROOT, "reports", "figures", "freq_dist_aug_v1.png")
 DEFAULT_OUTPUT_FILE = os.path.join(DATA_RAW_DIR, "qwen8b_t2i_prompts_aug_test.json")
+DEFAULT_CAUSAL_FILE = os.path.join(DATA_RAW_DIR, "qwen4bg_causal.json")
 DEFAULT_SEED = 42
 
 # Model configuration

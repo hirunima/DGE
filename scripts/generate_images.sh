@@ -3,11 +3,13 @@
 
 set -e  # Exit on error
 
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+
 # Configuration
-MODEL_PATH="/fs/nexus-projects/scene_graph_sd/DGE-T2I/data/models/FLUX1-dev"
-DATA_PATH="/fs/nexus-projects/scene_graph_sd/DGE-T2I/data/raw/qwen8b_t2i_prompts_aug_v1.json"
-EMBEDDINGS_DIR="/fs/nexus-projects/scene_graph_sd/DGE-T2I/data/embeddings/flux"
-IMAGES_DIR="/fs/nexus-projects/scene_graph_sd/DGE-T2I/data/images/flux"
+MODEL_PATH="$ROOT_DIR/data/models/FLUX1-dev"
+DATA_PATH="$ROOT_DIR/data/raw/qwen8b_t2i_prompts_aug_v1.json"
+EMBEDDINGS_DIR="$ROOT_DIR/data/embeddings/flux"
+IMAGES_DIR="$ROOT_DIR/data/images/flux"
 NUM_GENERATIONS=5
 SEED=44
 
@@ -59,7 +61,7 @@ if [ "$STEP" = "both" ] || [ "$STEP" = "encode" ]; then
     echo "========================================="
     echo "Step 1: Pre-encoding prompts with T5"
     echo "========================================="
-    python /fs/nexus-projects/scene_graph_sd/DGE-T2I/src/models/flux_encode_prompts.py\
+    python "$ROOT_DIR/src/models/flux_encode_prompts.py"\
         --model_path "$MODEL_PATH" \
         --data_path "$DATA_PATH" \
         --output_dir "$EMBEDDINGS_DIR" \
@@ -75,7 +77,7 @@ if [ "$STEP" = "both" ] || [ "$STEP" = "generate" ]; then
     echo "Step 2: Generating images from embeddings"
     echo "========================================="
     
-    CMD="python /fs/nexus-projects/scene_graph_sd/DGE-T2I/src/models/flux_generate_from_embeddings.py \
+    CMD="python $ROOT_DIR/src/models/flux_generate_from_embeddings.py \
         --model_path $MODEL_PATH \
         --data_path $DATA_PATH \
         --embeddings_dir $EMBEDDINGS_DIR \
@@ -99,4 +101,3 @@ echo "Pipeline complete!"
 echo "Embeddings: $EMBEDDINGS_DIR"
 echo "Images: $IMAGES_DIR"
 echo "========================================="
-

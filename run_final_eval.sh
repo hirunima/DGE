@@ -4,23 +4,27 @@
 
 set -e
 
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+SCENE_GRAPH_ROOT="$(cd "$ROOT_DIR/../.." && pwd)"
+FS_ROOT="$(cd "$SCENE_GRAPH_ROOT/../.." && pwd)"
+
 # GPU to use (set to 1 since GPU 0 is occupied)
-export PYTHONPATH=/fs/nexus-projects/scene_graph_sd/EVA:$PYTHONPATH
-export REITR_CHECKPOINT_PATH=/fs/nexus-projects/scene_graph_sd/DGE-T2I/data/models/checkpoint0149.pth
+export PYTHONPATH="$SCENE_GRAPH_ROOT/EVA:$PYTHONPATH"
+export REITR_CHECKPOINT_PATH="$ROOT_DIR/data/models/checkpoint0149.pth"
 export CUDA_VISIBLE_DEVICES=1,2,3
 
 # Activate conda environment
-source /fs/nexus-scratch/mrislam/anaconda3/etc/profile.d/conda.sh
+source "$FS_ROOT/nexus-scratch/mrislam/anaconda3/etc/profile.d/conda.sh"
 conda activate dge-t2i-env
 
 echo "Running on GPU: $CUDA_VISIBLE_DEVICES"
 echo "Python: $(which python)"
 export VLLM_API_BASE="${VLLM_API_BASE:-http://127.0.0.1:8000/v1}"
-export QWEN_MODEL_PATH="${QWEN_MODEL_PATH:-/model}"
+export QWEN_MODEL_PATH="${QWEN_MODEL_PATH:-$SCENE_GRAPH_ROOT/Qwen3-VL-8B-Instruct}"
 export BLIP2_MODEL_PATH="${BLIP2_MODEL_PATH:-Salesforce/blip2-itm-vit-g}"
-export EVA_CLIP_CODE_DIR="/fs/nexus-projects/scene_graph_sd/EVA/EVA-CLIP/rei"
-export REITR_CODE_DIR="${REITR_CODE_DIR:-/fs/nexus-projects/scene_graph_sd/RelTR}"
-PROMPTS_FILE="/fs/nexus-projects/scene_graph_sd/DGE-T2I/data/raw/qwen8b_t2i_prompts_aug_v1.json"
+export EVA_CLIP_CODE_DIR="$SCENE_GRAPH_ROOT/EVA/EVA-CLIP/rei"
+export REITR_CODE_DIR="${REITR_CODE_DIR:-$SCENE_GRAPH_ROOT/RelTR}"
+PROMPTS_FILE="$ROOT_DIR/data/raw/qwen8b_t2i_prompts_aug_v1.json"
 echo "vLLM API: $VLLM_API_BASE"
 echo "Qwen model id: $QWEN_MODEL_PATH"
 echo "ReITR/RelTR code dir: $REITR_CODE_DIR"
@@ -50,12 +54,12 @@ PERMUTATIONS=(
 
 RUN_NAMES=("img1_test" "img2_test")
 RUN_IMAGES_DIRS=(
-    "/fs/nexus-projects/scene_graph_sd/DGE-T2I/data/images/split/test/survey_images/image1"
-    "/fs/nexus-projects/scene_graph_sd/DGE-T2I/data/images/split/test/survey_images/image2"
+    "$ROOT_DIR/data/images/split/test/survey_images/image1"
+    "$ROOT_DIR/data/images/split/test/survey_images/image2"
 )
 RUN_OUTPUT_DIRS=(
-    "/fs/nexus-projects/scene_graph_sd/DGE-T2I/reports/ablation/test/permutations_img1"
-    "/fs/nexus-projects/scene_graph_sd/DGE-T2I/reports/ablation/test/permutations_img2"
+    "$ROOT_DIR/reports/ablation/test/permutations_img1"
+    "$ROOT_DIR/reports/ablation/test/permutations_img2"
 )
 
 # Build command for each permutation

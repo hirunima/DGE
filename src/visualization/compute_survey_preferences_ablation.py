@@ -200,8 +200,8 @@ def main() -> None:
         action="append",
         help="A specific ablation permutation to evaluate. May be provided multiple times. Defaults to all shared permutations.",
     )
-    parser.add_argument("--dsg_results", type=Path, default=Path("/fs/nexus-projects/scene_graph_sd/DSG/evaluation_results_dge.json"))
-    parser.add_argument("--vqa_results", type=Path, default=Path("/fs/nexus-projects/scene_graph_sd/t2v_metrics/results/survey_samples_vqa_scores.jsonl"))
+    parser.add_argument("--dsg_results", type=Path, default=Path("../../DSG/evaluation_results_dge.json"))
+    parser.add_argument("--vqa_results", type=Path, default=Path("../../t2v_metrics/results/survey_samples_vqa_scores.jsonl"))
     parser.add_argument("--output_csv", type=Path, default=Path("data/images/survey_samples/pair_preferences_ablation.csv"))
     parser.add_argument("--metrics_json", type=Path, default=Path("reports/pair_metrics_ablation.json"))
     args = parser.parse_args()

@@ -18,7 +18,7 @@ source ~/.bashrc
 conda activate dge-t2i-env
 module load cuda/12.8.1
 
-ROOT_DIR="/fs/nexus-projects/scene_graph_sd/DGE-T2I"
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 MODEL="qwen-image"  # sdxl|sd15|flux2|z-image|qwen-image|emu-3-5|mogao-7b|bagel|all
 STEP="both"  # encode|generate|both
 NUM_SPLITS=100

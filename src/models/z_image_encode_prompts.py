@@ -7,8 +7,8 @@ from diffusers import ZImagePipeline
 from tqdm import tqdm
 
 
-DEFAULT_DATA_PATH = "/fs/nexus-projects/scene_graph_sd/DGE-T2I/data/raw/qwen8b_t2i_prompts_aug_v1.json"
-DEFAULT_EMBEDDINGS_DIR = "/fs/nexus-projects/scene_graph_sd/DGE-T2I/data/embeddings"
+DEFAULT_DATA_PATH = "data/raw/qwen8b_t2i_prompts_aug_v1.json"
+DEFAULT_EMBEDDINGS_DIR = "data/embeddings"
 
 
 def resolve_indices(data_len, start_idx, end_idx, num_splits, split_id):

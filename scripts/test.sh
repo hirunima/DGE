@@ -3,11 +3,13 @@
 
 set -e
 
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+
 # Configuration
-DATA_PATH="/fs/nexus-projects/scene_graph_sd/DGE-T2I/data/raw/qwen8b_t2i_prompts_aug_v1.json"
-BASE_EMBEDDINGS_DIR="/fs/nexus-projects/scene_graph_sd/DGE-T2I/data/embeddings"
-BASE_IMAGES_DIR="/fs/nexus-projects/scene_graph_sd/DGE-T2I/data/images"
-LOCAL_MODELS_DIR="/fs/nexus-projects/scene_graph_sd/DGE-T2I/data/models"
+DATA_PATH="$ROOT_DIR/data/raw/qwen8b_t2i_prompts_aug_v1.json"
+BASE_EMBEDDINGS_DIR="$ROOT_DIR/data/embeddings"
+BASE_IMAGES_DIR="$ROOT_DIR/data/images"
+LOCAL_MODELS_DIR="$ROOT_DIR/data/models"
 NUM_GENERATIONS=5
 SEED=44
 GUIDANCE_SCALE=7.5
@@ -239,7 +241,7 @@ encode_model() {
     echo "Output: $embeddings_dir"
     echo "========================================="
 
-    CMD="python /fs/nexus-projects/scene_graph_sd/DGE-T2I/src/models/encode_prompts.py \
+    CMD="python $ROOT_DIR/src/models/encode_prompts.py \
         --model_id $model_id \
         --data_path $DATA_PATH \
         --embeddings_dir $embeddings_dir \
@@ -273,7 +275,7 @@ generate_model() {
     echo "Output: $images_dir"
     echo "========================================="
 
-    CMD="python /fs/nexus-projects/scene_graph_sd/DGE-T2I/src/models/generate_images_from_embeddings.py \
+    CMD="python $ROOT_DIR/src/models/generate_images_from_embeddings.py \
         --model_id $model_id \
         --data_path $DATA_PATH \
         --embeddings_dir $embeddings_dir \
@@ -333,4 +335,3 @@ echo "========================================="
 echo "Generation complete!"
 echo "Base output dir: $BASE_IMAGES_DIR"
 echo "========================================="
-

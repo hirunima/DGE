@@ -18,7 +18,7 @@ import spacy
 
 
 
-ROOT = Path("/fs/nexus-projects/scene_graph_sd")
+ROOT = Path(__file__).resolve().parents[4]
 DEFAULT_OURS = ROOT / "DGE-T2I/data/raw/qwen8b_t2i_prompts_aug_v1.json"
 DEFAULT_OUTPUT_DIR = ROOT / "DGE-T2I/reports/visualization/pos_stats"
 BENCHMARK_CACHE = ROOT / "DGE-T2I/data/raw/benchmarks"
