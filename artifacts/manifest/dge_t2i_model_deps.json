@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "artifacts": [
+    {
+      "name": "qwen3-vl-evaluator",
+      "category": "model",
+      "required_for": ["full"],
+      "expected_path": "$QWEN_MODEL_PATH",
+      "status": "external",
+      "notes": "Qwen3-VL or compatible VLM checkpoint/service used for V-stage evaluation."
+    },
+    {
+      "name": "reitr-reltr-checkpoint",
+      "category": "model",
+      "required_for": ["full"],
+      "expected_path": "$REITR_CHECKPOINT_PATH",
+      "status": "external",
+      "notes": "Specialist relation model checkpoint used by E3."
+    },
+    {
+      "name": "eva-clip-or-blip2",
+      "category": "model",
+      "required_for": ["full"],
+      "expected_path": "$EVA_CLIP_CODE_DIR or $BLIP2_MODEL_PATH",
+      "status": "external",
+      "notes": "Specialist attribute scoring dependency used by E2."
+    },
+    {
+      "name": "text-to-image-generation-models",
+      "category": "model",
+      "required_for": ["full"],
+      "expected_path": "DGE-T2I/data/models/",
+      "status": "external",
+      "notes": "Local model snapshots for FLUX, Qwen-Image, SD1.5, SDXL, Z-Image, and optional additional generators."
+    }
+  ]
+}

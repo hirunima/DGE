@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "artifacts": [
+    {
+      "name": "dge-fineeval-t2i-cached-summaries",
+      "category": "results",
+      "required_for": ["cached"],
+      "expected_path": "DGE-T2I/data/raw/eval_v1/",
+      "status": "tracked",
+      "notes": "Cached model-level DGE-FineEval summaries and detailed JSON outputs."
+    },
+    {
+      "name": "human-preference-pair-metrics",
+      "category": "results",
+      "required_for": ["cached"],
+      "expected_path": "DGE-T2I/reports/pair_metrics*.json",
+      "status": "tracked",
+      "notes": "Cached pairwise metric summaries used for human-alignment analysis."
+    },
+    {
+      "name": "ablation-cached-summaries",
+      "category": "results",
+      "required_for": ["cached"],
+      "expected_path": "DGE-T2I/reports/ablation/",
+      "status": "tracked",
+      "notes": "Cached ablation matrices, latency reports, relation swap reports, and run metadata."
+    }
+  ]
+}

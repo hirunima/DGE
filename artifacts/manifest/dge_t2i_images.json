@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "artifacts": [
+    {
+      "name": "generated-t2i-images",
+      "category": "generated-images",
+      "required_for": ["full"],
+      "expected_path": "DGE-T2I/data/images/<model>/",
+      "status": "external",
+      "notes": "Five generated images per prompt for each evaluated T2I model. Regenerate with src/models utilities or download from a release artifact."
+    },
+    {
+      "name": "human-survey-image-pairs",
+      "category": "generated-images",
+      "required_for": ["cached"],
+      "expected_path": "DGE-T2I/data/images/survey_samples/",
+      "status": "external",
+      "notes": "Images used for pairwise human preference inspection. The pair preference CSV is tracked; image binaries are externalized."
+    }
+  ]
+}

@@ -213,19 +213,30 @@ marimo/_lsp/
 __marimo__/
 
 # Models
-data/models
-data/embeddings
-data/images
+data/models/
+data/embeddings/
+data/images/
 logs/
+runs/
+reports/local/
+reports/**/.tmp*/
+reports/**/tmp/
+reports/**/scratch/
 
 # Local/non-writable job scripts with machine-specific absolute paths
 scripts/generate_sdxl.sh
 scripts/submit_flux_gen.sh
 
 offload/
+*.sif
+*.pt
+*.pth
+*.ckpt
+*.safetensors
+.nfs*
+=*
 
 # Streamlit
 .streamlit/secrets.toml
 
-vllm-openai.sif
 reports/visualization/object_attribute_stats/object_attribute_counts.csv

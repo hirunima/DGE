@@ -1,150 +1,55 @@
 # DGE
-DGE - A Dynamic Metric and Grounded Evaluation Benchmarks for Text-to-Image and Image Editing Models
 
-## Overview
-<p align="center">
-  <img align="middle" src="dataset_pipeline.pdf" alt="The main figure"/>
-</p>
----
+DGE is the official repository for **DGE: A Dynamic Metric and Grounded Evaluation Benchmarks for Text-to-Image and Image Editing Models**.
 
-## Abstract
+The current release focuses on making the text-to-image evaluation path reproducible. The `DGE-T2I` directory contains the implementation for DGE-FineEval, the model-generation utilities, cached evaluation outputs, and ablation experiments used for the paper's text-to-image results.
 
-Recent advancements in text-to-image (T2I) generation and image editing models have produced stunning visual results. However, evaluating these models remains a significant challenge. Existing metrics often rely on global image statistics, high-level semantic similarity (e.g., CLIPScore), or VLM-based scoring that applies a fixed set of criteria to all samples. These approaches broadly fail to capture the fine-grained compositional details, object relationships, and attribute grounding specified in text prompts.
+## Repository Layout
 
-We propose a generative evaluation framework featuring two large-scale grounded benchmarks and two novel dynamic metrics. For text-to-image synthesis, we introduce a diverse `(text, scene graph)` pair benchmark to enable granular compositional assessment. For image editing, we create a benchmark of `(source graph, target graph, prompt)` designed to facilitate precise, instruction-based edits.
-
-Using these benchmarks as a foundation, we introduce two novel evaluation metrics for systematic assessment. Our VLM and scene-graph-based fine-grained metric can assess object-level, attribute-level, and relationship-level alignment. Consequently, we propose a global scene-graph-conditioned consistency metric that measures semantic alignment in a shared embedding space, capturing global compositional structure and semantic consistency across datasets.
-
-Our experiments demonstrate that the combined framework provides a more holistic, accurate, and human-aligned assessment of state-of-the-art models, revealing limitations not captured by previous metrics.
-
----
-
-# Repository Structure
-
-```bash
+```text
 .
-├── candidate_generation/
-│   └── scene_graphs/
-│
-├── evaluation/
-│   ├── fine_grain/
-│   │   └── vlm_scoring/
-│   │
-│   └── global/
-│       ├── graph_embeddings/
-│
-└── benchmarks/
-    ├── t2i/
-    └── image_editing/
+├── DGE-T2I/                  # DGE-FineEval and T2I ablation implementation
+├── docs/                     # Reproducibility and artifact documentation
+├── artifacts/manifest/       # External artifact manifests and checksums
+├── dataset_pipeline.pdf      # Benchmark construction figure
+└── 526_DGE_A_Dynamic_Metric_and_G.pdf
 ```
 
----
+`DGE-T2I-og/`, when present locally, is a historical working copy and is not part of the release workflow.
 
-# Prompt Generation
+## Reproduction Modes
 
-The `candidate_generation/` directory contains code for generating prompts, grounded scene graphs, and benchmark annotations for:
+The repository supports two reproduction modes:
 
-- Text-to-image generation
-- Image editing
+- **Cached reproduction:** use checked-in summaries plus external artifacts to regenerate paper tables and inspect result files without rerunning large models.
+- **Full rerun:** regenerate images and rerun DGE-FineEval/ablation pipelines with the required GPUs, checkpoints, and VLM services.
 
----
+Large assets are intentionally kept outside git. This includes generated images, prompt embeddings, model checkpoints, local Hugging Face snapshots, and scratch run outputs. See [docs/artifacts.md](docs/artifacts.md) for the artifact policy and manifests.
 
-# Evaluation
-
-The `evaluation/` directory contains two evaluation pipelines:
-
-## Fine-Grain Evaluation
-
-Located in:
+## Quickstart
 
 ```bash
-evaluation/fine_grain/
+cd DGE-T2I
+python -m pip install -e .
+python test_modular_structure.py
 ```
 
-Includes evaluation for:
+The lightweight checks do not require GPU inference. Full evaluation requires CUDA-capable hardware and access to the VLM/generation models described in [docs/reproducibility.md](docs/reproducibility.md).
 
-- Object-level alignment
-- Attribute-level alignment
-- Relationship-level alignment
-- VLM-based scene-graph verification
+## Paper Result Map
 
----
+The primary paper result mapping is documented in [docs/paper_results_map.md](docs/paper_results_map.md). In short:
 
-## Global Evaluation
+- DGE-FineEval T2I summaries live under `DGE-T2I/data/raw/eval_v1/`.
+- Human preference and pairwise metric summaries live under `DGE-T2I/data/images/survey_samples/` and `DGE-T2I/reports/`.
+- Ablation summaries live under `DGE-T2I/reports/ablation/` and `DGE-T2I/reports/baselines/`.
 
-Located in:
-
-```bash
-evaluation/global/
-```
-
-Includes evaluation for:
-
-- Scene-graph-conditioned embedding alignment
-- Global semantic consistency
-
----
-
-# Benchmarks
-
-## Text-to-Image Benchmark
-
-Benchmark format:
-
-```text
-(text prompt, scene graph)
-```
-
----
-
-## Image Editing Benchmark
-
-Benchmark format:
-
-```text
-(source graph, target graph, edit prompt)
-```
-
----
-
-# Usage
-
-## Prompt Generation
-
-```bash
-python scripts/generate_prompts.py
-```
-
----
-
-## Fine-Grain Evaluation
-
-```bash
-python scripts/run_fine_grain_eval.py
-```
-
----
-
-## Global Evaluation
-
-```bash
-python scripts/run_global_eval.py
-```
-
----
-
-# Citation
+## Citation
 
 ```bibtex
 @article{dge2026,
-  title={DGE - A Dynamic Metric and Grounded Evaluation Benchmarks for Text-to-Image and Image Editing Models},
+  title={DGE: A Dynamic Metric and Grounded Evaluation Benchmarks for Text-to-Image and Image Editing Models},
   author={Anonymous},
   year={2026}
 }
 ```
-
----
-
-# License
-
-MIT License

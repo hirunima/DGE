@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "artifacts": [
+    {
+      "name": "dge-t2i-prompts-and-scene-graphs",
+      "category": "benchmark",
+      "required_for": ["cached", "full"],
+      "expected_path": "DGE-T2I/data/raw/qwen8b_t2i_prompts_aug_v1.json",
+      "status": "tracked",
+      "notes": "Primary DGE-T2I prompt and scene-graph benchmark file."
+    },
+    {
+      "name": "validated-scene-graphs",
+      "category": "benchmark",
+      "required_for": ["cached", "full"],
+      "expected_path": "DGE-T2I/data/raw/validated_scene_graphs.jsonl",
+      "status": "tracked",
+      "notes": "Validated scene graph annotations used by analysis and evaluation utilities."
+    },
+    {
+      "name": "external-benchmark-references",
+      "category": "benchmark",
+      "required_for": ["optional"],
+      "expected_path": "DGE-T2I/data/raw/benchmarks/",
+      "status": "tracked",
+      "notes": "Reference benchmark files such as GenEval and LongT2IBench."
+    }
+  ]
+}
