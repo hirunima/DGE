@@ -161,6 +161,7 @@ def build_test_config(output_dir: str, label_path: str | None = None) -> Experim
         start_idx=0,
         end_idx=None,
         limit=None,
+        skip_indices=(),
         weights=StageWeights(0.3, 0.3, 0.3),
         node_confidence_threshold=0.5,
         node_nms_threshold=0.3,
@@ -281,6 +282,7 @@ def test_cli_config_parsing():
         "start_idx": 0,
         "end_idx": 4,
         "limit": 2,
+        "skip_indices": "9,20",
         "human_score_file": "labels.json",
         "label_key_field": "sample_id",
         "label_score_field": "human",
@@ -314,6 +316,7 @@ def test_cli_config_parsing():
     config = config_from_args(parser)
     assert_equal(config.sg_file, "graphs.json", "Scene graph file should be kept")
     assert_equal(config.prompts_file, None, "String None should normalize")
+    assert_equal(config.skip_indices, (9, 20), "Skip indices should parse")
     assert_equal(config.weights.relation, 0.5, "Weights should parse")
 
 

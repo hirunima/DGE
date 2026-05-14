@@ -1,0 +1,110 @@
+[
+  {
+    "prompt": "A sheep is walking on a hill surrounded by large, dark grey boulders and encircling patches of green grass.",
+    "image_path": "/fs/nexus-projects/scene_graph_sd/DGE/DGE-T2I/data/images/survey_samples/image1/0183-5.png",
+    "final_dsg_score": 0.3076923076923077,
+    "naive_score": 0.8461538461538461
+  },
+  {
+    "prompt": "A sheep is walking on a hill surrounded by large, dark grey boulders and encircling patches of green grass.",
+    "image_path": "/fs/nexus-projects/scene_graph_sd/DGE/DGE-T2I/data/images/survey_samples/image2/0183-3.png",
+    "final_dsg_score": 0.3076923076923077,
+    "naive_score": 0.7692307692307693
+  },
+  {
+    "prompt": "A wooden fence rests on a pallet, which is outdoors on a cow sitting on a black body.",
+    "image_path": "/fs/nexus-projects/scene_graph_sd/DGE/DGE-T2I/data/images/survey_samples/image1/0817-4.png",
+    "final_dsg_score": 0.4444444444444444,
+    "naive_score": 0.6666666666666666
+  },
+  {
+    "prompt": "A wooden fence rests on a pallet, which is outdoors on a cow sitting on a black body.",
+    "image_path": "/fs/nexus-projects/scene_graph_sd/DGE/DGE-T2I/data/images/survey_samples/image2/0817-1.png",
+    "final_dsg_score": 0.4444444444444444,
+    "naive_score": 0.6666666666666666
+  },
+  {
+    "prompt": "A lettered stop sign stands in the foreground, while a crosswalk with white stripes is painted on the street, and awnings extend from a building in the background.",
+    "image_path": "/fs/nexus-projects/scene_graph_sd/DGE/DGE-T2I/data/images/survey_samples/image1/0911-1.png",
+    "final_dsg_score": 0.36363636363636365,
+    "naive_score": 0.9090909090909091
+  },
+  {
+    "prompt": "A lettered stop sign stands in the foreground, while a crosswalk with white stripes is painted on the street, and awnings extend from a building in the background.",
+    "image_path": "/fs/nexus-projects/scene_graph_sd/DGE/DGE-T2I/data/images/survey_samples/image2/0911-2.png",
+    "final_dsg_score": 0.36363636363636365,
+    "naive_score": 0.9090909090909091
+  },
+  {
+    "prompt": "A woven basket filled with a green leafy vegetable sits near an apple, while a motorcycle is parked in the outdoor market.",
+    "image_path": "/fs/nexus-projects/scene_graph_sd/DGE/DGE-T2I/data/images/survey_samples/image1/1312-5.png",
+    "final_dsg_score": 0.45454545454545453,
+    "naive_score": 1.0
+  },
+  {
+    "prompt": "A woven basket filled with a green leafy vegetable sits near an apple, while a motorcycle is parked in the outdoor market.",
+    "image_path": "/fs/nexus-projects/scene_graph_sd/DGE/DGE-T2I/data/images/survey_samples/image2/1312-1.png",
+    "final_dsg_score": 0.45454545454545453,
+    "naive_score": 1.0
+  },
+  {
+    "prompt": "A closed leather handbag rests on a bench, which is separated by a chain-link fence, while a dark striped cardigan is worn over a light-colored polka-dotted dress or skirt.",
+    "image_path": "/fs/nexus-projects/scene_graph_sd/DGE/DGE-T2I/data/images/survey_samples/image1/2098-2.png",
+    "final_dsg_score": 0.38461538461538464,
+    "naive_score": 0.6923076923076923
+  },
+  {
+    "prompt": "A closed leather handbag rests on a bench, which is separated by a chain-link fence, while a dark striped cardigan is worn over a light-colored polka-dotted dress or skirt.",
+    "image_path": "/fs/nexus-projects/scene_graph_sd/DGE/DGE-T2I/data/images/survey_samples/image2/2098-3.png",
+    "final_dsg_score": 0.38461538461538464,
+    "naive_score": 0.9230769230769231
+  },
+  {
+    "prompt": "A soft/fluffy/furry/hairy couch faces a center, with a couch positioned around a light-colored wooden coffee table, both part of a seating arrangement in a carpeted area.",
+    "image_path": "/fs/nexus-projects/scene_graph_sd/DGE/DGE-T2I/data/images/survey_samples/image1/2377-2.png",
+    "final_dsg_score": 0.3333333333333333,
+    "naive_score": 0.9166666666666666
+  },
+  {
+    "prompt": "A soft/fluffy/furry/hairy couch faces a center, with a couch positioned around a light-colored wooden coffee table, both part of a seating arrangement in a carpeted area.",
+    "image_path": "/fs/nexus-projects/scene_graph_sd/DGE/DGE-T2I/data/images/survey_samples/image2/2377-2.png",
+    "final_dsg_score": 0.3333333333333333,
+    "naive_score": 0.75
+  },
+  {
+    "prompt": "A gaze is directed at a viewer, with a chin resting on the floor in front of the white bathtub.",
+    "image_path": "/fs/nexus-projects/scene_graph_sd/DGE/DGE-T2I/data/images/survey_samples/image1/2524-4.png",
+    "final_dsg_score": 0.5,
+    "naive_score": 0.875
+  },
+  {
+    "prompt": "A gaze is directed at a viewer, with a chin resting on the floor in front of the white bathtub.",
+    "image_path": "/fs/nexus-projects/scene_graph_sd/DGE/DGE-T2I/data/images/survey_samples/image2/2524-1.png",
+    "final_dsg_score": 0.5,
+    "naive_score": 0.875
+  },
+  {
+    "prompt": "The suitcase features two latches and a thick patch, with sparse vegetation crossing the upper right corner of the frame.",
+    "image_path": "/fs/nexus-projects/scene_graph_sd/DGE/DGE-T2I/data/images/survey_samples/image1/2579-3.png",
+    "final_dsg_score": 0.375,
+    "naive_score": 0.375
+  },
+  {
+    "prompt": "The suitcase features two latches and a thick patch, with sparse vegetation crossing the upper right corner of the frame.",
+    "image_path": "/fs/nexus-projects/scene_graph_sd/DGE/DGE-T2I/data/images/survey_samples/image2/2579-4.png",
+    "final_dsg_score": 0.375,
+    "naive_score": 0.875
+  },
+  {
+    "prompt": "A shower area includes a shallow white shower base, with a roll of toilet paper resting on a holder mounted near a brown door.",
+    "image_path": "/fs/nexus-projects/scene_graph_sd/DGE/DGE-T2I/data/images/survey_samples/image1/2694-1.png",
+    "final_dsg_score": 0.36363636363636365,
+    "naive_score": 1.0
+  },
+  {
+    "prompt": "A shower area includes a shallow white shower base, with a roll of toilet paper resting on a holder mounted near a brown door.",
+    "image_path": "/fs/nexus-projects/scene_graph_sd/DGE/DGE-T2I/data/images/survey_samples/image2/2694-2.png",
+    "final_dsg_score": 0.36363636363636365,
+    "naive_score": 0.9090909090909091
+  }
+]

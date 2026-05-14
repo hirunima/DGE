@@ -1,0 +1,14 @@
+[
+  {
+    "prompt": "A shower area includes a shallow white shower base, with a roll of toilet paper resting on a holder mounted near a brown door.",
+    "image_path": "/fs/nexus-projects/scene_graph_sd/DGE/DGE-T2I/data/images/survey_samples/image1/2694-1.png",
+    "final_dsg_score": 0.36363636363636365,
+    "naive_score": 1.0
+  },
+  {
+    "prompt": "A shower area includes a shallow white shower base, with a roll of toilet paper resting on a holder mounted near a brown door.",
+    "image_path": "/fs/nexus-projects/scene_graph_sd/DGE/DGE-T2I/data/images/survey_samples/image2/2694-2.png",
+    "final_dsg_score": 0.36363636363636365,
+    "naive_score": 0.9090909090909091
+  }
+]

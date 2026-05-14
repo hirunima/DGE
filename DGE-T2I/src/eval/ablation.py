@@ -93,7 +93,7 @@ class BackendSpec: kind: str; model_path: Optional[str] = None; checkpoint_path:
 @dataclass(frozen=True)
 class ExperimentConfig:
     output_dir: str; prompts_file: Optional[str]; sg_file: Optional[str]; images_dir: str; image_pattern: str; generation: int
-    start_idx: int; end_idx: Optional[int]; limit: Optional[int]; weights: StageWeights
+    start_idx: int; end_idx: Optional[int]; limit: Optional[int]; skip_indices: Tuple[int, ...]; weights: StageWeights
     node_confidence_threshold: float; node_nms_threshold: float; stage2_crop_size: int
     stage2_calibration: str; stage2_calibration_scale: float; stage2_calibration_bias: float; stage3_margin_ratio: float
     include_model_load_time: bool; label_config: LabelConfig; backend_specs: Dict[str, BackendSpec]
@@ -1889,6 +1889,9 @@ def load_experiment_items(config: ExperimentConfig) -> List[ExperimentItem]:
         items = items[:config.end_idx]
     if config.limit is not None:
         items = items[:config.limit]
+    if config.skip_indices:
+        skip_indices = set(config.skip_indices)
+        items = [item for item in items if item.prompt_index not in skip_indices]
 
     return items
 
@@ -2019,6 +2022,7 @@ def build_arg_parser() -> argparse.ArgumentParser:
     p.add_argument("--start-idx", type=int, default=0)
     p.add_argument("--end-idx", type=int, default=None)
     p.add_argument("--limit", type=int, default=None)
+    p.add_argument("--skip-indices", default="", help="Comma-separated prompt/image indices to exclude.")
     p.add_argument("--human-score-file", default=None)
     p.add_argument("--label-key-field", default="image_id")
     p.add_argument("--label-score-field", default="score")
@@ -2067,6 +2071,7 @@ def config_from_args(args: argparse.Namespace) -> ExperimentConfig:
         start_idx=args.start_idx,
         end_idx=args.end_idx,
         limit=args.limit,
+        skip_indices=tuple(int(x.strip()) for x in args.skip_indices.split(",") if x.strip()),
         weights=StageWeights(args.weight_node, args.weight_attribute, args.weight_relation),
         node_confidence_threshold=args.node_confidence_threshold,
         node_nms_threshold=args.node_nms_threshold,

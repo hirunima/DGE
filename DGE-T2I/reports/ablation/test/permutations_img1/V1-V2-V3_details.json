@@ -3,7 +3,7 @@
     "image_id": "0046-4",
     "prompt": "Cooked vegetables are arranged inside two cooked, messy, soft carrots, served on a plate with a fork resting on top.",
     "permutation": "V1-V2-V3",
-    "final_score": 0.48888888888888893,
+    "final_score": 0.6000000000000001,
     "st1_res": {
       "backend": "V1",
       "nodes": [
@@ -59,7 +59,7 @@
           "name": "plate",
           "bbox": [
             312,
-            135,
+            137,
             512,
             512
           ],
@@ -159,12 +159,12 @@
           "relation": "arranged in",
           "object": 4,
           "skipped": false,
-          "original_score": 0.0,
+          "original_score": 1.0,
           "swapped_score": 1.0,
-          "delta": -1.0,
+          "delta": 0.0,
           "swap_correct": false,
           "answers": {
-            "original": "no",
+            "original": "yes",
             "swapped": "yes"
           }
         },
@@ -183,11 +183,11 @@
           }
         }
       ],
-      "relation_score": 0.3333333333333333,
+      "relation_score": 0.6666666666666666,
       "swap_accuracy": 0.0
     },
     "latency_ms": {
-      "total": 5848.0026320321485
+      "total": 5749.067967990413
     }
   },
   {
@@ -204,8 +204,8 @@
           "bbox": [
             157,
             497,
-            279,
-            605
+            277,
+            606
           ],
           "confidence": 1.0,
           "passed": true,
@@ -216,7 +216,7 @@
           "name": "couch",
           "bbox": [
             0,
-            164,
+            166,
             1000,
             1000
           ],
@@ -236,10 +236,10 @@
           "id": 8,
           "name": "cup",
           "bbox": [
-            156,
+            158,
             496,
-            278,
-            607
+            277,
+            605
           ],
           "confidence": 1.0,
           "passed": true,
@@ -250,7 +250,7 @@
           "name": "couch",
           "bbox": [
             0,
-            164,
+            165,
             1000,
             1000
           ],
@@ -264,7 +264,7 @@
           "bbox": [
             68,
             205,
-            518,
+            519,
             567
           ],
           "confidence": 1.0,
@@ -391,33 +391,38 @@
       "swap_accuracy": 0.0
     },
     "latency_ms": {
-      "total": 14597.035241080448
+      "total": 14710.046432213858
     }
   },
   {
     "image_id": "0204-1",
     "prompt": "Several people are enjoying an outdoor event in a large grassy field under a cloudy sky, flying six striped, lined, or pinstriped kites with a clownfish design.",
     "permutation": "V1-V2-V3",
-    "final_score": 0.8888888888888891,
+    "final_score": 0.9444444444444445,
     "st1_res": {
       "backend": "V1",
       "nodes": [
         {
           "id": 5,
           "name": "kite",
-          "bbox": null,
-          "confidence": 0.0,
-          "passed": false,
-          "score": 0.0
+          "bbox": [
+            194,
+            156,
+            827,
+            600
+          ],
+          "confidence": 1.0,
+          "passed": true,
+          "score": 1.0
         },
         {
           "id": 13,
           "name": "people",
           "bbox": [
-            115,
-            745,
-            862,
-            922
+            114,
+            748,
+            863,
+            925
           ],
           "confidence": 1.0,
           "passed": true,
@@ -428,9 +433,9 @@
           "name": "event",
           "bbox": [
             0,
-            748,
-            1024,
-            929
+            747,
+            1000,
+            924
           ],
           "confidence": 1.0,
           "passed": true,
@@ -442,8 +447,8 @@
           "bbox": [
             194,
             509,
-            282,
-            558
+            283,
+            559
           ],
           "confidence": 1.0,
           "passed": true,
@@ -454,7 +459,7 @@
           "name": "field",
           "bbox": [
             0,
-            775,
+            776,
             1024,
             1000
           ],
@@ -469,14 +474,14 @@
             0,
             0,
             1024,
-            762
+            768
           ],
           "confidence": 1.0,
           "passed": true,
           "score": 1.0
         }
       ],
-      "fidelity_score": 0.8333333333333334
+      "fidelity_score": 1.0
     },
     "st2_res": {
       "backend": "V2",
@@ -631,7 +636,7 @@
       "swap_accuracy": 0.0
     },
     "latency_ms": {
-      "total": 52681.9170989329
+      "total": 53124.09091903828
     }
   },
   {
@@ -648,7 +653,7 @@
           "bbox": [
             0,
             0,
-            991,
+            988,
             1000
           ],
           "confidence": 1.0,
@@ -659,10 +664,10 @@
           "id": 7,
           "name": "shirt",
           "bbox": [
-            342,
+            343,
             0,
-            558,
-            524
+            557,
+            523
           ],
           "confidence": 1.0,
           "passed": true,
@@ -672,10 +677,10 @@
           "id": 8,
           "name": "pattern",
           "bbox": [
-            750,
             0,
-            1000,
-            1000
+            0,
+            1024,
+            1024
           ],
           "confidence": 1.0,
           "passed": true,
@@ -685,10 +690,10 @@
           "id": 9,
           "name": "lights",
           "bbox": [
-            891,
+            888,
             0,
             1000,
-            999
+            1000
           ],
           "confidence": 1.0,
           "passed": true,
@@ -698,8 +703,8 @@
           "id": 11,
           "name": "ring",
           "bbox": [
-            355,
-            594,
+            357,
+            593,
             387,
             643
           ],
@@ -711,9 +716,9 @@
           "id": 12,
           "name": "hand",
           "bbox": [
-            197,
+            198,
             547,
-            437,
+            438,
             748
           ],
           "confidence": 1.0,
@@ -850,7 +855,7 @@
       "swap_accuracy": 0.0
     },
     "latency_ms": {
-      "total": 15494.486680836417
+      "total": 15387.562719988637
     }
   },
   {
@@ -901,7 +906,7 @@
           "bbox": [
             224,
             312,
-            375,
+            376,
             512
           ],
           "confidence": 1.0,
@@ -922,7 +927,7 @@
           "bbox": [
             0,
             304,
-            273,
+            272,
             512
           ],
           "confidence": 1.0,
@@ -1059,7 +1064,7 @@
       "swap_accuracy": 0.3333333333333333
     },
     "latency_ms": {
-      "total": 5716.736447880976
+      "total": 5609.864467172883
     }
   },
   {
@@ -1074,7 +1079,7 @@
           "id": 0,
           "name": "laptop",
           "bbox": [
-            54,
+            53,
             19,
             512,
             512
@@ -1100,9 +1105,9 @@
           "id": 103,
           "name": "glasses",
           "bbox": [
-            69,
+            71,
             511,
-            437,
+            434,
             512
           ],
           "confidence": 1.0,
@@ -1165,7 +1170,7 @@
       "swap_accuracy": 0.5
     },
     "latency_ms": {
-      "total": 3885.469676926732
+      "total": 3896.9204098684713
     }
   },
   {
@@ -1180,8 +1185,8 @@
           "id": 0,
           "name": "laptop",
           "bbox": [
-            175,
-            356,
+            176,
+            357,
             925,
             853
           ],
@@ -1194,7 +1199,7 @@
           "name": "desk",
           "bbox": [
             0,
-            607,
+            588,
             1000,
             1000
           ],
@@ -1206,10 +1211,10 @@
           "id": 103,
           "name": "glasses",
           "bbox": [
-            812,
-            551,
+            813,
+            552,
             999,
-            666
+            665
           ],
           "confidence": 1.0,
           "passed": true,
@@ -1271,29 +1276,24 @@
       "swap_accuracy": 0.0
     },
     "latency_ms": {
-      "total": 8559.815339976922
+      "total": 8514.505169005133
     }
   },
   {
     "image_id": "0294-2",
     "prompt": "A messy pizza with 3 slices includes sausage and peppers, while a black jacket is worn over a white top.",
     "permutation": "V1-V2-V3",
-    "final_score": 0.5222222222222223,
+    "final_score": 0.37222222222222223,
     "st1_res": {
       "backend": "V1",
       "nodes": [
         {
           "id": 8,
           "name": "pizza",
-          "bbox": [
-            79,
-            313,
-            897,
-            815
-          ],
-          "confidence": 1.0,
-          "passed": true,
-          "score": 1.0
+          "bbox": null,
+          "confidence": 0.0,
+          "passed": false,
+          "score": 0.0
         },
         {
           "id": 9,
@@ -1307,8 +1307,8 @@
           "id": 13,
           "name": "sausage",
           "bbox": [
-            212,
-            642,
+            213,
+            643,
             299,
             704
           ],
@@ -1333,7 +1333,7 @@
           "score": 0.0
         }
       ],
-      "fidelity_score": 0.4
+      "fidelity_score": 0.2
     },
     "st2_res": {
       "backend": "V2",
@@ -1376,9 +1376,9 @@
           "name": "jacket",
           "attribute": "color:black",
           "skipped": false,
-          "score": 1.0,
-          "calibrated_score": 1.0,
-          "answer": "yes",
+          "score": 0.0,
+          "calibrated_score": 0.0,
+          "answer": "no",
           "count_evaluator": "qwen"
         },
         {
@@ -1392,7 +1392,7 @@
           "count_evaluator": "qwen"
         }
       ],
-      "binding_score": 0.5
+      "binding_score": 0.25
     },
     "st3_res": {
       "backend": "V3",
@@ -1444,7 +1444,7 @@
       "swap_accuracy": 0.3333333333333333
     },
     "latency_ms": {
-      "total": 14408.68362004403
+      "total": 14294.321257970296
     }
   },
   {
@@ -1473,7 +1473,7 @@
           "name": "plants",
           "bbox": [
             0,
-            351,
+            353,
             1024,
             1024
           ],
@@ -1555,7 +1555,7 @@
       "swap_accuracy": 0.0
     },
     "latency_ms": {
-      "total": 9997.867869911715
+      "total": 9950.571427121758
     }
   },
   {
@@ -1584,7 +1584,7 @@
           "name": "plants",
           "bbox": [
             0,
-            0,
+            216,
             1024,
             1024
           ],
@@ -1598,8 +1598,8 @@
           "bbox": [
             0,
             0,
-            999,
-            392
+            998,
+            388
           ],
           "confidence": 1.0,
           "passed": true,
@@ -1671,7 +1671,7 @@
       "swap_accuracy": 0.0
     },
     "latency_ms": {
-      "total": 10163.863328984007
+      "total": 10118.12705709599
     }
   },
   {
@@ -1687,7 +1687,7 @@
           "name": "dining table",
           "bbox": [
             0,
-            41,
+            42,
             1000,
             1000
           ],
@@ -1699,10 +1699,10 @@
           "id": 4,
           "name": "cake",
           "bbox": [
-            113,
+            112,
             285,
             904,
-            809
+            807
           ],
           "confidence": 1.0,
           "passed": true,
@@ -1712,10 +1712,10 @@
           "id": 2,
           "name": "knife",
           "bbox": [
-            886,
-            335,
+            887,
+            336,
             1000,
-            596
+            600
           ],
           "confidence": 1.0,
           "passed": true,
@@ -1763,7 +1763,7 @@
       "swap_accuracy": 0.0
     },
     "latency_ms": {
-      "total": 7508.36311490275
+      "total": 7444.869491038844
     }
   },
   {
@@ -1781,7 +1781,7 @@
             137,
             81,
             889,
-            885
+            895
           ],
           "confidence": 1.0,
           "passed": true,
@@ -1829,7 +1829,7 @@
           "name": "sand",
           "bbox": [
             0,
-            588,
+            587,
             1024,
             1024
           ],
@@ -1925,7 +1925,7 @@
       "swap_accuracy": 0.3333333333333333
     },
     "latency_ms": {
-      "total": 11902.473336085677
+      "total": 11725.477051106282
     }
   },
   {
@@ -1953,10 +1953,10 @@
           "id": 1,
           "name": "frisbee",
           "bbox": [
-            406,
-            652,
-            707,
-            868
+            405,
+            650,
+            706,
+            867
           ],
           "confidence": 1.0,
           "passed": true,
@@ -1966,10 +1966,10 @@
           "id": 110,
           "name": "landmass",
           "bbox": [
-            535,
-            366,
-            916,
-            527
+            534,
+            365,
+            913,
+            531
           ],
           "confidence": 1.0,
           "passed": true,
@@ -1989,8 +1989,8 @@
           "bbox": [
             0,
             276,
-            999,
-            320
+            998,
+            340
           ],
           "confidence": 1.0,
           "passed": true,
@@ -2055,7 +2055,7 @@
       "swap_accuracy": 0.0
     },
     "latency_ms": {
-      "total": 10631.960519007407
+      "total": 10651.010126923211
     }
   },
   {
@@ -2083,9 +2083,9 @@
           "id": 1,
           "name": "frisbee",
           "bbox": [
-            258,
+            257,
             859,
-            476,
+            475,
             907
           ],
           "confidence": 1.0,
@@ -2118,9 +2118,9 @@
           "name": "horizon",
           "bbox": [
             0,
-            468,
-            576,
-            584
+            467,
+            574,
+            587
           ],
           "confidence": 1.0,
           "passed": true,
@@ -2185,7 +2185,7 @@
       "swap_accuracy": 0.0
     },
     "latency_ms": {
-      "total": 10124.086131108925
+      "total": 10024.832997005433
     }
   },
   {
@@ -2201,7 +2201,7 @@
           "name": "teddy bear",
           "bbox": [
             373,
-            97,
+            99,
             512,
             512
           ],
@@ -2277,7 +2277,7 @@
       "swap_accuracy": 1.0
     },
     "latency_ms": {
-      "total": 3635.5486151296645
+      "total": 3642.5967959221452
     }
   },
   {
@@ -2292,10 +2292,10 @@
           "id": 0,
           "name": "chair",
           "bbox": [
-            194,
+            193,
             0,
-            457,
-            623
+            455,
+            626
           ],
           "confidence": 1.0,
           "passed": true,
@@ -2306,7 +2306,7 @@
           "name": "bottle",
           "bbox": [
             407,
-            755,
+            754,
             456,
             928
           ],
@@ -2319,7 +2319,7 @@
           "name": "book",
           "bbox": [
             162,
-            697,
+            696,
             357,
             928
           ],
@@ -2332,8 +2332,8 @@
           "name": "rug",
           "bbox": [
             74,
-            173,
-            999,
+            169,
+            1000,
             928
           ],
           "confidence": 1.0,
@@ -2346,8 +2346,8 @@
           "bbox": [
             282,
             0,
-            1000,
-            746
+            998,
+            744
           ],
           "confidence": 1.0,
           "passed": true,
@@ -2475,7 +2475,7 @@
       "swap_accuracy": 0.3333333333333333
     },
     "latency_ms": {
-      "total": 20296.163663151674
+      "total": 20230.825448059477
     }
   },
   {
@@ -2492,7 +2492,7 @@
           "bbox": [
             0,
             48,
-            342,
+            341,
             595
           ],
           "confidence": 1.0,
@@ -2504,8 +2504,8 @@
           "name": "bottle",
           "bbox": [
             644,
-            704,
-            743,
+            703,
+            744,
             868
           ],
           "confidence": 1.0,
@@ -2516,9 +2516,9 @@
           "id": 5,
           "name": "book",
           "bbox": [
-            188,
+            187,
             695,
-            558,
+            557,
             935
           ],
           "confidence": 1.0,
@@ -2692,7 +2692,7 @@
       "swap_accuracy": 0.3333333333333333
     },
     "latency_ms": {
-      "total": 15997.849624953233
+      "total": 15910.286062047817
     }
   },
   {
@@ -2709,7 +2709,7 @@
           "bbox": [
             0,
             0,
-            426,
+            424,
             593
           ],
           "confidence": 1.0,
@@ -2720,10 +2720,10 @@
           "id": 3,
           "name": "bottle",
           "bbox": [
-            523,
-            567,
-            831,
-            761
+            521,
+            566,
+            830,
+            764
           ],
           "confidence": 1.0,
           "passed": true,
@@ -2733,10 +2733,10 @@
           "id": 5,
           "name": "book",
           "bbox": [
-            96,
-            635,
-            574,
-            959
+            97,
+            634,
+            576,
+            957
           ],
           "confidence": 1.0,
           "passed": true,
@@ -2747,7 +2747,7 @@
           "name": "rug",
           "bbox": [
             0,
-            183,
+            179,
             1000,
             1000
           ],
@@ -2759,10 +2759,10 @@
           "id": 105,
           "name": "table",
           "bbox": [
-            218,
+            227,
             0,
             976,
-            581
+            580
           ],
           "confidence": 1.0,
           "passed": true,
@@ -2902,14 +2902,14 @@
       "swap_accuracy": 0.3333333333333333
     },
     "latency_ms": {
-      "total": 15586.62355109118
+      "total": 15432.21337418072
     }
   },
   {
     "image_id": "0604-1",
     "prompt": "A person wearing black stockings and garters is lying on a bed covered with a brown and white striped comforter.",
     "permutation": "V1-V2-V3",
-    "final_score": 0.888888888888889,
+    "final_score": 0.8055555555555556,
     "st1_res": {
       "backend": "V1",
       "nodes": [
@@ -2931,9 +2931,9 @@
           "name": "stockings",
           "bbox": [
             150,
-            263,
-            989,
-            972
+            264,
+            987,
+            970
           ],
           "confidence": 1.0,
           "passed": true,
@@ -2945,8 +2945,8 @@
           "bbox": [
             0,
             0,
-            342,
-            297
+            343,
+            287
           ],
           "confidence": 1.0,
           "passed": true,
@@ -2955,18 +2955,13 @@
         {
           "id": 9,
           "name": "comforter",
-          "bbox": [
-            0,
-            0,
-            1000,
-            1000
-          ],
-          "confidence": 1.0,
-          "passed": true,
-          "score": 1.0
+          "bbox": null,
+          "confidence": 0.0,
+          "passed": false,
+          "score": 0.0
         }
       ],
-      "fidelity_score": 1.0
+      "fidelity_score": 0.75
     },
     "st2_res": {
       "backend": "V2",
@@ -3041,7 +3036,7 @@
       "swap_accuracy": 0.0
     },
     "latency_ms": {
-      "total": 10850.651724962518
+      "total": 10787.968448945321
     }
   },
   {
@@ -3070,9 +3065,9 @@
           "name": "stockings",
           "bbox": [
             253,
-            443,
+            441,
             1000,
-            873
+            872
           ],
           "confidence": 1.0,
           "passed": true,
@@ -3170,14 +3165,14 @@
       "swap_accuracy": 0.0
     },
     "latency_ms": {
-      "total": 11199.380580103025
+      "total": 11136.96289609652
     }
   },
   {
     "image_id": "0606-1",
     "prompt": "A plain black shirt has a label showing the brand name, possibly stained with sauce.",
     "permutation": "V1-V2-V3",
-    "final_score": 0.25,
+    "final_score": 0.08333333333333334,
     "st1_res": {
       "backend": "V1",
       "nodes": [
@@ -3240,13 +3235,13 @@
           "name": "shirt",
           "attribute": "black",
           "skipped": false,
-          "score": 1.0,
-          "calibrated_score": 1.0,
-          "answer": "yes",
+          "score": 0.0,
+          "calibrated_score": 0.0,
+          "answer": "no",
           "count_evaluator": "qwen"
         }
       ],
-      "binding_score": 0.5
+      "binding_score": 0.0
     },
     "st3_res": {
       "backend": "V3",
@@ -3284,7 +3279,7 @@
       "swap_accuracy": 0.0
     },
     "latency_ms": {
-      "total": 3993.979702005163
+      "total": 3953.672999981791
     }
   },
   {
@@ -3398,7 +3393,7 @@
       "swap_accuracy": 0.0
     },
     "latency_ms": {
-      "total": 9377.179439878091
+      "total": 9358.944250154309
     }
   },
   {
@@ -3414,7 +3409,7 @@
           "name": "white t-shirt",
           "bbox": [
             156,
-            515,
+            516,
             888,
             1000
           ],
@@ -3450,10 +3445,10 @@
           "id": 7,
           "name": "right hand",
           "bbox": [
-            556,
+            557,
             121,
-            723,
-            239
+            722,
+            235
           ],
           "confidence": 1.0,
           "passed": true,
@@ -3465,8 +3460,8 @@
           "bbox": [
             155,
             199,
-            887,
-            999
+            889,
+            1000
           ],
           "confidence": 1.0,
           "passed": true,
@@ -3531,14 +3526,14 @@
       "swap_accuracy": 0.0
     },
     "latency_ms": {
-      "total": 10800.246760132723
+      "total": 10786.71571391169
     }
   },
   {
     "image_id": "0641-4",
     "prompt": "A person wearing a white t-shirt with a pink bunny design holds a pink hairbrush in their left hand while their right hand rests on their head.",
     "permutation": "V1-V2-V3",
-    "final_score": 0.75,
+    "final_score": 0.6666666666666666,
     "st1_res": {
       "backend": "V1",
       "nodes": [
@@ -3547,9 +3542,9 @@
           "name": "white t-shirt",
           "bbox": [
             0,
-            48,
-            1000,
-            1000
+            0,
+            1024,
+            1024
           ],
           "confidence": 1.0,
           "passed": true,
@@ -3558,24 +3553,19 @@
         {
           "id": 3,
           "name": "pink bunny",
-          "bbox": [
-            335,
-            345,
-            713,
-            817
-          ],
-          "confidence": 1.0,
-          "passed": true,
-          "score": 1.0
+          "bbox": null,
+          "confidence": 0.0,
+          "passed": false,
+          "score": 0.0
         },
         {
           "id": 5,
           "name": "pink hairbrush",
           "bbox": [
-            478,
+            479,
             343,
-            757,
-            802
+            758,
+            804
           ],
           "confidence": 1.0,
           "passed": true,
@@ -3585,10 +3575,10 @@
           "id": 6,
           "name": "left hand",
           "bbox": [
-            339,
+            335,
             689,
-            626,
-            946
+            625,
+            948
           ],
           "confidence": 1.0,
           "passed": true,
@@ -3598,10 +3588,10 @@
           "id": 7,
           "name": "right hand",
           "bbox": [
-            334,
-            688,
-            625,
-            947
+            347,
+            689,
+            626,
+            946
           ],
           "confidence": 1.0,
           "passed": true,
@@ -3616,7 +3606,7 @@
           "score": 0.0
         }
       ],
-      "fidelity_score": 0.8333333333333334
+      "fidelity_score": 0.6666666666666666
     },
     "st2_res": {
       "backend": "V2",
@@ -3674,7 +3664,7 @@
       "swap_accuracy": 0.3333333333333333
     },
     "latency_ms": {
-      "total": 10982.860591029748
+      "total": 10921.60625604447
     }
   },
   {
@@ -3719,7 +3709,7 @@
           "name": "clock",
           "bbox": [
             488,
-            272,
+            270,
             512,
             512
           ],
@@ -3797,7 +3787,7 @@
       "swap_accuracy": 0.6666666666666666
     },
     "latency_ms": {
-      "total": 4226.534748915583
+      "total": 4210.928744054399
     }
   },
   {
@@ -3826,9 +3816,9 @@
           "name": "decorative black metal bracket",
           "bbox": [
             47,
-            66,
-            663,
-            676
+            65,
+            664,
+            679
           ],
           "confidence": 1.0,
           "passed": true,
@@ -3838,10 +3828,10 @@
           "id": 7,
           "name": "dark frame",
           "bbox": [
-            215,
-            349,
+            214,
+            346,
             823,
-            968
+            967
           ],
           "confidence": 1.0,
           "passed": true,
@@ -3851,10 +3841,10 @@
           "id": 8,
           "name": "clock",
           "bbox": [
-            214,
+            213,
             67,
             823,
-            968
+            970
           ],
           "confidence": 1.0,
           "passed": true,
@@ -3930,7 +3920,7 @@
       "swap_accuracy": 0.6666666666666666
     },
     "latency_ms": {
-      "total": 10187.34433897771
+      "total": 10167.980063008144
     }
   },
   {
@@ -4053,7 +4043,7 @@
       "swap_accuracy": 0.0
     },
     "latency_ms": {
-      "total": 9517.098253942095
+      "total": 9499.0120989969
     }
   },
   {
@@ -4069,9 +4059,9 @@
           "name": "sports ball",
           "bbox": [
             300,
-            205,
+            206,
             486,
-            393
+            392
           ],
           "confidence": 1.0,
           "passed": true,
@@ -4081,10 +4071,10 @@
           "id": 5,
           "name": "tennis racket",
           "bbox": [
-            203,
-            372,
-            601,
-            865
+            290,
+            371,
+            602,
+            684
           ],
           "confidence": 1.0,
           "passed": true,
@@ -4105,7 +4095,7 @@
             0,
             0,
             1024,
-            68
+            69
           ],
           "confidence": 1.0,
           "passed": true,
@@ -4196,12 +4186,12 @@
           "object": 5,
           "skipped": false,
           "original_score": 1.0,
-          "swapped_score": 1.0,
-          "delta": 0.0,
-          "swap_correct": false,
+          "swapped_score": 0.0,
+          "delta": 1.0,
+          "swap_correct": true,
           "answers": {
             "original": "yes",
-            "swapped": "yes"
+            "swapped": "no"
           }
         },
         {
@@ -4234,17 +4224,17 @@
         }
       ],
       "relation_score": 0.6666666666666666,
-      "swap_accuracy": 0.0
+      "swap_accuracy": 0.3333333333333333
     },
     "latency_ms": {
-      "total": 14897.583066020161
+      "total": 14883.09808599297
     }
   },
   {
     "image_id": "0749-3",
     "prompt": "A baseball game unfolds in front of a large building, with a large crowd seated in the stands attached to the building.",
     "permutation": "V1-V2-V3",
-    "final_score": 0.9166666666666667,
+    "final_score": 0.8055555555555556,
     "st1_res": {
       "backend": "V1",
       "nodes": [
@@ -4274,7 +4264,7 @@
           "name": "crowd",
           "bbox": [
             0,
-            307,
+            296,
             512,
             512
           ],
@@ -4333,12 +4323,12 @@
           "relation": "of",
           "object": 102,
           "skipped": false,
-          "original_score": 1.0,
+          "original_score": 0.0,
           "swapped_score": 0.0,
-          "delta": 1.0,
-          "swap_correct": true,
+          "delta": 0.0,
+          "swap_correct": false,
           "answers": {
-            "original": "yes",
+            "original": "no",
             "swapped": "no"
           }
         },
@@ -4371,11 +4361,11 @@
           }
         }
       ],
-      "relation_score": 1.0,
-      "swap_accuracy": 0.6666666666666666
+      "relation_score": 0.6666666666666666,
+      "swap_accuracy": 0.3333333333333333
     },
     "latency_ms": {
-      "total": 4790.031426004134
+      "total": 4773.25458091218
     }
   },
   {
@@ -4390,7 +4380,7 @@
           "id": 0,
           "name": "toilet",
           "bbox": [
-            352,
+            353,
             367,
             637,
             955
@@ -4438,7 +4428,7 @@
           "name": "foliage",
           "bbox": [
             0,
-            0,
+            727,
             1024,
             1024
           ],
@@ -4539,7 +4529,7 @@
       "swap_accuracy": 0.0
     },
     "latency_ms": {
-      "total": 11083.258661907166
+      "total": 11010.875171865337
     }
   },
   {
@@ -4556,7 +4546,7 @@
           "bbox": [
             0,
             653,
-            1000,
+            998,
             928
           ],
           "confidence": 1.0,
@@ -4567,9 +4557,9 @@
           "id": 13,
           "name": "spectators' heads",
           "bbox": [
-            394,
+            251,
             686,
-            749,
+            807,
             928
           ],
           "confidence": 1.0,
@@ -4580,10 +4570,10 @@
           "id": 26,
           "name": "advertisements",
           "bbox": [
-            71,
             73,
-            955,
-            180
+            76,
+            956,
+            176
           ],
           "confidence": 1.0,
           "passed": true,
@@ -4642,7 +4632,7 @@
       "swap_accuracy": 0.0
     },
     "latency_ms": {
-      "total": 9710.713005042635
+      "total": 9646.488468977623
     }
   },
   {
@@ -4678,10 +4668,10 @@
           "id": 26,
           "name": "advertisements",
           "bbox": [
-            503,
-            445,
-            906,
-            589
+            497,
+            442,
+            905,
+            588
           ],
           "confidence": 1.0,
           "passed": true,
@@ -4694,7 +4684,7 @@
             0,
             742,
             999,
-            955
+            956
           ],
           "confidence": 1.0,
           "passed": true,
@@ -4745,7 +4735,7 @@
       "swap_accuracy": 0.5
     },
     "latency_ms": {
-      "total": 6571.021391893737
+      "total": 6436.0342470463365
     }
   },
   {
@@ -4762,8 +4752,8 @@
           "bbox": [
             0,
             58,
-            984,
-            942
+            985,
+            941
           ],
           "confidence": 1.0,
           "passed": true,
@@ -4775,8 +4765,8 @@
           "bbox": [
             699,
             58,
-            948,
-            340
+            947,
+            341
           ],
           "confidence": 1.0,
           "passed": true,
@@ -4908,7 +4898,7 @@
       "swap_accuracy": 0.0
     },
     "latency_ms": {
-      "total": 13583.552789874375
+      "total": 13481.86352616176
     }
   },
   {
@@ -4985,7 +4975,7 @@
       "swap_accuracy": 0.0
     },
     "latency_ms": {
-      "total": 3047.4191159009933
+      "total": 3061.5761529188603
     }
   },
   {
@@ -5002,7 +4992,7 @@
           "bbox": [
             34,
             287,
-            444,
+            446,
             734
           ],
           "confidence": 1.0,
@@ -5027,7 +5017,7 @@
           "name": "blanket",
           "bbox": [
             0,
-            476,
+            477,
             1000,
             1000
           ],
@@ -5131,7 +5121,7 @@
       "swap_accuracy": 0.5
     },
     "latency_ms": {
-      "total": 11836.915267864242
+      "total": 11693.200147943571
     }
   },
   {
@@ -5146,10 +5136,10 @@
           "id": 4,
           "name": "clock",
           "bbox": [
-            148,
+            146,
             512,
             507,
-            955
+            954
           ],
           "confidence": 1.0,
           "passed": true,
@@ -5161,8 +5151,8 @@
           "bbox": [
             0,
             0,
-            856,
-            896
+            855,
+            898
           ],
           "confidence": 1.0,
           "passed": true,
@@ -5173,7 +5163,7 @@
           "name": "table",
           "bbox": [
             0,
-            870,
+            869,
             1000,
             1000
           ],
@@ -5186,9 +5176,9 @@
           "name": "lamp",
           "bbox": [
             532,
-            108,
-            912,
-            906
+            109,
+            913,
+            907
           ],
           "confidence": 1.0,
           "passed": true,
@@ -5198,10 +5188,10 @@
           "id": 110,
           "name": "shade",
           "bbox": [
-            533,
+            532,
             112,
             913,
-            907
+            397
           ],
           "confidence": 1.0,
           "passed": true,
@@ -5297,7 +5287,7 @@
       "swap_accuracy": 0.6666666666666666
     },
     "latency_ms": {
-      "total": 12361.30940890871
+      "total": 12307.733680005185
     }
   },
   {
@@ -5313,9 +5303,9 @@
           "name": "clock",
           "bbox": [
             563,
-            536,
-            905,
-            957
+            535,
+            904,
+            958
           ],
           "confidence": 1.0,
           "passed": true,
@@ -5327,8 +5317,8 @@
           "bbox": [
             0,
             0,
-            743,
-            876
+            742,
+            875
           ],
           "confidence": 1.0,
           "passed": true,
@@ -5339,7 +5329,7 @@
           "name": "table",
           "bbox": [
             0,
-            866,
+            865,
             1000,
             1000
           ],
@@ -5354,7 +5344,7 @@
             504,
             27,
             989,
-            927
+            925
           ],
           "confidence": 1.0,
           "passed": true,
@@ -5364,10 +5354,10 @@
           "id": 110,
           "name": "shade",
           "bbox": [
-            504,
+            505,
             27,
-            873,
-            341
+            874,
+            343
           ],
           "confidence": 1.0,
           "passed": true,
@@ -5463,7 +5453,7 @@
       "swap_accuracy": 0.6666666666666666
     },
     "latency_ms": {
-      "total": 12859.438893035986
+      "total": 12820.106289116666
     }
   },
   {
@@ -5478,9 +5468,9 @@
           "id": 4,
           "name": "bear",
           "bbox": [
-            24,
+            23,
             342,
-            406,
+            408,
             836
           ],
           "confidence": 1.0,
@@ -5492,8 +5482,8 @@
           "name": "bear",
           "bbox": [
             603,
-            77,
-            937,
+            78,
+            940,
             904
           ],
           "confidence": 1.0,
@@ -5506,7 +5496,7 @@
           "bbox": [
             133,
             0,
-            485,
+            476,
             167
           ],
           "confidence": 1.0,
@@ -5519,7 +5509,7 @@
           "bbox": [
             24,
             342,
-            405,
+            406,
             835
           ],
           "confidence": 1.0,
@@ -5656,7 +5646,7 @@
       "swap_accuracy": 0.0
     },
     "latency_ms": {
-      "total": 17502.0190901123
+      "total": 17393.473299918696
     }
   },
   {
@@ -5801,7 +5791,7 @@
       "swap_accuracy": 0.0
     },
     "latency_ms": {
-      "total": 9532.470801845193
+      "total": 9459.956365986727
     }
   },
   {
@@ -5826,8 +5816,8 @@
           "bbox": [
             205,
             232,
-            840,
-            872
+            841,
+            873
           ],
           "confidence": 1.0,
           "passed": true,
@@ -5903,14 +5893,14 @@
       "swap_accuracy": 0.0
     },
     "latency_ms": {
-      "total": 8090.172011987306
+      "total": 8142.533834092319
     }
   },
   {
     "image_id": "1308-3",
     "prompt": "A picnic is placed on a black and white helmet under a sunny day.",
     "permutation": "V1-V2-V3",
-    "final_score": 0.4444444444444445,
+    "final_score": 0.5555555555555556,
     "st1_res": {
       "backend": "V1",
       "nodes": [
@@ -5926,9 +5916,9 @@
           "id": 8,
           "name": "helmet",
           "bbox": [
-            254,
+            255,
             134,
-            811,
+            812,
             928
           ],
           "confidence": 1.0,
@@ -5938,13 +5928,18 @@
         {
           "id": 3,
           "name": "day",
-          "bbox": null,
-          "confidence": 0.0,
-          "passed": false,
-          "score": 0.0
+          "bbox": [
+            255,
+            134,
+            811,
+            928
+          ],
+          "confidence": 1.0,
+          "passed": true,
+          "score": 1.0
         }
       ],
-      "fidelity_score": 0.3333333333333333
+      "fidelity_score": 0.6666666666666666
     },
     "st2_res": {
       "backend": "V2",
@@ -6005,14 +6000,14 @@
       "swap_accuracy": 0.0
     },
     "latency_ms": {
-      "total": 9963.352554943413
+      "total": 9949.46340797469
     }
   },
   {
     "image_id": "1310-1",
     "prompt": "An empty bottle with a lettered label reading \u201cGUINNESS\u201d lies to the left of a dog lying on a light-colored carpet.",
     "permutation": "V1-V2-V3",
-    "final_score": 0.5777777777777778,
+    "final_score": 0.5111111111111112,
     "st1_res": {
       "backend": "V1",
       "nodes": [
@@ -6020,10 +6015,10 @@
           "id": 0,
           "name": "bottle",
           "bbox": [
-            189,
+            190,
             456,
             886,
-            706
+            705
           ],
           "confidence": 1.0,
           "passed": true,
@@ -6042,9 +6037,9 @@
           "name": "carpet",
           "bbox": [
             18,
-            23,
-            987,
-            979
+            22,
+            989,
+            978
           ],
           "confidence": 1.0,
           "passed": true,
@@ -6054,10 +6049,10 @@
           "id": 107,
           "name": "label",
           "bbox": [
-            190,
-            455,
+            191,
+            454,
             885,
-            705
+            703
           ],
           "confidence": 1.0,
           "passed": true,
@@ -6083,9 +6078,9 @@
           "name": "bottle",
           "attribute": "state:empty",
           "skipped": false,
-          "score": 1.0,
-          "calibrated_score": 1.0,
-          "answer": "yes",
+          "score": 0.0,
+          "calibrated_score": 0.0,
+          "answer": "unclear",
           "count_evaluator": "qwen"
         },
         {
@@ -6129,7 +6124,7 @@
           "count_evaluator": "qwen"
         }
       ],
-      "binding_score": 0.8
+      "binding_score": 0.6
     },
     "st3_res": {
       "backend": "V3",
@@ -6181,7 +6176,7 @@
       "swap_accuracy": 0.0
     },
     "latency_ms": {
-      "total": 14958.265888970345
+      "total": 14924.219241016544
     }
   },
   {
@@ -6196,8 +6191,8 @@
           "id": 2,
           "name": "vegetable",
           "bbox": [
-            26,
-            31,
+            22,
+            22,
             512,
             512
           ],
@@ -6327,7 +6322,7 @@
       "swap_accuracy": 0.0
     },
     "latency_ms": {
-      "total": 4408.408681978472
+      "total": 4422.509087948129
     }
   },
   {
@@ -6344,8 +6339,8 @@
           "bbox": [
             81,
             103,
-            995,
-            863
+            994,
+            860
           ],
           "confidence": 1.0,
           "passed": true,
@@ -6356,9 +6351,9 @@
           "name": "broccoli",
           "bbox": [
             81,
-            103,
+            104,
             995,
-            862
+            861
           ],
           "confidence": 1.0,
           "passed": true,
@@ -6371,7 +6366,7 @@
             93,
             0,
             377,
-            240
+            239
           ],
           "confidence": 1.0,
           "passed": true,
@@ -6383,8 +6378,8 @@
           "bbox": [
             81,
             103,
-            994,
-            862
+            995,
+            863
           ],
           "confidence": 1.0,
           "passed": true,
@@ -6493,7 +6488,7 @@
       "swap_accuracy": 0.3333333333333333
     },
     "latency_ms": {
-      "total": 12073.860879987478
+      "total": 12026.512094889767
     }
   },
   {
@@ -6654,7 +6649,7 @@
       "swap_accuracy": 0.0
     },
     "latency_ms": {
-      "total": 4764.539647032507
+      "total": 4791.544802952558
     }
   },
   {
@@ -6687,7 +6682,7 @@
           "bbox": [
             0,
             799,
-            888,
+            885,
             1000
           ],
           "confidence": 1.0,
@@ -6719,10 +6714,10 @@
           "id": 114,
           "name": "windows",
           "bbox": [
-            696,
-            70,
-            928,
-            523
+            694,
+            67,
+            930,
+            522
           ],
           "confidence": 1.0,
           "passed": true,
@@ -6868,7 +6863,7 @@
       "swap_accuracy": 0.3333333333333333
     },
     "latency_ms": {
-      "total": 15272.464056033641
+      "total": 15231.992178945802
     }
   },
   {
@@ -6884,9 +6879,9 @@
           "name": "vase",
           "bbox": [
             690,
-            223,
+            225,
             786,
-            334
+            333
           ],
           "confidence": 1.0,
           "passed": true,
@@ -6918,7 +6913,7 @@
           "name": "mantelpiece",
           "bbox": [
             607,
-            317,
+            316,
             1000,
             862
           ],
@@ -6930,10 +6925,10 @@
           "id": 113,
           "name": "natural light",
           "bbox": [
-            174,
+            177,
             0,
-            618,
-            425
+            617,
+            426
           ],
           "confidence": 1.0,
           "passed": true,
@@ -6943,10 +6938,10 @@
           "id": 114,
           "name": "windows",
           "bbox": [
-            146,
+            148,
             0,
-            673,
-            472
+            674,
+            473
           ],
           "confidence": 1.0,
           "passed": true,
@@ -7092,7 +7087,7 @@
       "swap_accuracy": 0.0
     },
     "latency_ms": {
-      "total": 16670.88616604451
+      "total": 16759.02469898574
     }
   },
   {
@@ -7109,8 +7104,8 @@
           "bbox": [
             0,
             91,
-            827,
-            669
+            828,
+            670
           ],
           "confidence": 1.0,
           "passed": true,
@@ -7121,8 +7116,8 @@
           "name": "motorcycle",
           "bbox": [
             85,
-            313,
-            673,
+            312,
+            672,
             924
           ],
           "confidence": 1.0,
@@ -7216,7 +7211,7 @@
       "swap_accuracy": 0.0
     },
     "latency_ms": {
-      "total": 8636.06552616693
+      "total": 8637.476037023589
     }
   },
   {
@@ -7231,8 +7226,8 @@
           "id": 2,
           "name": "truck",
           "bbox": [
-            159,
-            48,
+            158,
+            49,
             994,
             704
           ],
@@ -7246,7 +7241,7 @@
           "bbox": [
             623,
             435,
-            865,
+            864,
             928
           ],
           "confidence": 1.0,
@@ -7257,10 +7252,10 @@
           "id": 100,
           "name": "fairground",
           "bbox": [
-            0,
-            296,
-            177,
-            603
+            136,
+            43,
+            996,
+            928
           ],
           "confidence": 1.0,
           "passed": true,
@@ -7345,7 +7340,7 @@
       "swap_accuracy": 0.5
     },
     "latency_ms": {
-      "total": 12006.649878923781
+      "total": 12023.856672109105
     }
   },
   {
@@ -7360,10 +7355,10 @@
           "id": 2,
           "name": "truck",
           "bbox": [
-            91,
+            92,
             258,
             985,
-            717
+            710
           ],
           "confidence": 1.0,
           "passed": true,
@@ -7373,8 +7368,8 @@
           "id": 6,
           "name": "motorcycle",
           "bbox": [
-            94,
-            529,
+            93,
+            528,
             959,
             810
           ],
@@ -7389,7 +7384,7 @@
             93,
             256,
             985,
-            725
+            715
           ],
           "confidence": 1.0,
           "passed": true,
@@ -7474,14 +7469,14 @@
       "swap_accuracy": 0.5
     },
     "latency_ms": {
-      "total": 11931.86303798575
+      "total": 11817.638228996657
     }
   },
   {
     "image_id": "1567-3",
     "prompt": "A circular emblem is on a fuselage, and a watermark reading \"Desrosiers Photo\" features in the bottom right corner.",
     "permutation": "V1-V2-V3",
-    "final_score": 0.19444444444444448,
+    "final_score": 0.2777777777777778,
     "st1_res": {
       "backend": "V1",
       "nodes": [
@@ -7490,9 +7485,9 @@
           "name": "emblem",
           "bbox": [
             382,
-            369,
-            609,
-            585
+            367,
+            606,
+            584
           ],
           "confidence": 1.0,
           "passed": true,
@@ -7509,10 +7504,15 @@
         {
           "id": 110,
           "name": "corner",
-          "bbox": null,
-          "confidence": 0.0,
-          "passed": false,
-          "score": 0.0
+          "bbox": [
+            951,
+            951,
+            976,
+            976
+          ],
+          "confidence": 1.0,
+          "passed": true,
+          "score": 1.0
         },
         {
           "id": 111,
@@ -7523,7 +7523,7 @@
           "score": 0.0
         }
       ],
-      "fidelity_score": 0.25
+      "fidelity_score": 0.5
     },
     "st2_res": {
       "backend": "V2",
@@ -7598,7 +7598,7 @@
       "swap_accuracy": 0.0
     },
     "latency_ms": {
-      "total": 10689.194975071587
+      "total": 10655.408574966714
     }
   },
   {
@@ -7635,7 +7635,7 @@
           "name": "breakfast tray",
           "bbox": [
             0,
-            246,
+            245,
             1000,
             933
           ],
@@ -7647,10 +7647,10 @@
           "id": 102,
           "name": "napkin",
           "bbox": [
-            39,
-            381,
-            650,
-            796
+            38,
+            383,
+            651,
+            795
           ],
           "confidence": 1.0,
           "passed": true,
@@ -7660,10 +7660,10 @@
           "id": 106,
           "name": "saucer",
           "bbox": [
-            336,
-            363,
-            581,
-            492
+            546,
+            383,
+            966,
+            586
           ],
           "confidence": 1.0,
           "passed": true,
@@ -7767,14 +7767,14 @@
       "swap_accuracy": 0.6666666666666666
     },
     "latency_ms": {
-      "total": 13852.8440160444
+      "total": 13791.128966142423
     }
   },
   {
     "image_id": "1680-3",
     "prompt": "Chefs in black uniforms, part of a group, are working in a sun-drenched kitchen, with a knife resting on a metal tray on a counter.",
     "permutation": "V1-V2-V3",
-    "final_score": 0.7222222222222222,
+    "final_score": 0.7000000000000001,
     "st1_res": {
       "backend": "V1",
       "nodes": [
@@ -7785,7 +7785,7 @@
             268,
             652,
             617,
-            789
+            788
           ],
           "confidence": 1.0,
           "passed": true,
@@ -7794,28 +7794,18 @@
         {
           "id": 15,
           "name": "kitchen",
-          "bbox": [
-            0,
-            0,
-            1664,
-            928
-          ],
-          "confidence": 1.0,
-          "passed": true,
-          "score": 1.0
+          "bbox": null,
+          "confidence": 0.0,
+          "passed": false,
+          "score": 0.0
         },
         {
           "id": 16,
           "name": "group",
-          "bbox": [
-            0,
-            0,
-            874,
-            851
-          ],
-          "confidence": 1.0,
-          "passed": true,
-          "score": 1.0
+          "bbox": null,
+          "confidence": 0.0,
+          "passed": false,
+          "score": 0.0
         },
         {
           "id": 17,
@@ -7823,8 +7813,8 @@
           "bbox": [
             0,
             0,
-            1664,
-            928
+            875,
+            851
           ],
           "confidence": 1.0,
           "passed": true,
@@ -7834,8 +7824,8 @@
           "id": 19,
           "name": "metal tray",
           "bbox": [
-            41,
-            643,
+            40,
+            642,
             620,
             928
           ],
@@ -7844,7 +7834,7 @@
           "score": 1.0
         }
       ],
-      "fidelity_score": 1.0
+      "fidelity_score": 0.6
     },
     "st2_res": {
       "backend": "V2",
@@ -7909,28 +7899,28 @@
           "relation": "of",
           "object": 17,
           "skipped": false,
-          "original_score": 0.0,
+          "original_score": 1.0,
           "swapped_score": 1.0,
-          "delta": -1.0,
+          "delta": 0.0,
           "swap_correct": false,
           "answers": {
-            "original": "no",
+            "original": "yes",
             "swapped": "yes"
           }
         }
       ],
-      "relation_score": 0.6666666666666666,
+      "relation_score": 1.0,
       "swap_accuracy": 0.0
     },
     "latency_ms": {
-      "total": 15696.159647079185
+      "total": 15429.014806984924
     }
   },
   {
     "image_id": "1680-4",
     "prompt": "Chefs in black uniforms, part of a group, are working in a sun-drenched kitchen, with a knife resting on a metal tray on a counter.",
     "permutation": "V1-V2-V3",
-    "final_score": 1.0,
+    "final_score": 0.9333333333333335,
     "st1_res": {
       "backend": "V1",
       "nodes": [
@@ -7939,9 +7929,9 @@
           "name": "knife",
           "bbox": [
             341,
-            755,
-            653,
-            853
+            756,
+            663,
+            854
           ],
           "confidence": 1.0,
           "passed": true,
@@ -7963,24 +7953,19 @@
         {
           "id": 16,
           "name": "group",
-          "bbox": [
-            0,
-            78,
-            788,
-            784
-          ],
-          "confidence": 1.0,
-          "passed": true,
-          "score": 1.0
+          "bbox": null,
+          "confidence": 0.0,
+          "passed": false,
+          "score": 0.0
         },
         {
           "id": 17,
           "name": "chefs",
           "bbox": [
             0,
-            74,
+            73,
             788,
-            785
+            783
           ],
           "confidence": 1.0,
           "passed": true,
@@ -7991,7 +7976,7 @@
           "name": "metal tray",
           "bbox": [
             270,
-            724,
+            723,
             748,
             928
           ],
@@ -8000,7 +7985,7 @@
           "score": 1.0
         }
       ],
-      "fidelity_score": 1.0
+      "fidelity_score": 0.8
     },
     "st2_res": {
       "backend": "V2",
@@ -8079,7 +8064,7 @@
       "swap_accuracy": 0.0
     },
     "latency_ms": {
-      "total": 14961.630586069077
+      "total": 14740.577988908626
     }
   },
   {
@@ -8094,8 +8079,8 @@
           "id": 5,
           "name": "knife",
           "bbox": [
-            454,
-            767,
+            453,
+            765,
             759,
             855
           ],
@@ -8120,10 +8105,10 @@
           "id": 16,
           "name": "group",
           "bbox": [
-            106,
-            0,
+            105,
+            145,
             970,
-            776
+            778
           ],
           "confidence": 1.0,
           "passed": true,
@@ -8133,8 +8118,8 @@
           "id": 17,
           "name": "chefs",
           "bbox": [
-            106,
-            144,
+            105,
+            145,
             332,
             777
           ],
@@ -8148,7 +8133,7 @@
           "bbox": [
             306,
             751,
-            813,
+            812,
             928
           ],
           "confidence": 1.0,
@@ -8235,7 +8220,7 @@
       "swap_accuracy": 0.0
     },
     "latency_ms": {
-      "total": 14796.722777071409
+      "total": 14679.856278933585
     }
   },
   {
@@ -8252,7 +8237,7 @@
           "bbox": [
             0,
             530,
-            945,
+            939,
             999
           ],
           "confidence": 1.0,
@@ -8266,7 +8251,7 @@
             163,
             123,
             1000,
-            997
+            755
           ],
           "confidence": 1.0,
           "passed": true,
@@ -8276,8 +8261,8 @@
           "id": 109,
           "name": "hair",
           "bbox": [
-            743,
-            135,
+            741,
+            134,
             1000,
             537
           ],
@@ -8347,7 +8332,7 @@
       "swap_accuracy": 0.0
     },
     "latency_ms": {
-      "total": 8917.934813071042
+      "total": 8796.90657206811
     }
   },
   {
@@ -8365,7 +8350,7 @@
             0,
             815,
             1024,
-            896
+            894
           ],
           "confidence": 1.0,
           "passed": true,
@@ -8377,7 +8362,7 @@
           "bbox": [
             64,
             111,
-            913,
+            912,
             496
           ],
           "confidence": 1.0,
@@ -8389,7 +8374,7 @@
           "name": "hair",
           "bbox": [
             574,
-            147,
+            146,
             808,
             312
           ],
@@ -8459,14 +8444,14 @@
       "swap_accuracy": 0.0
     },
     "latency_ms": {
-      "total": 6369.227421935648
+      "total": 6340.857930015773
     }
   },
   {
     "image_id": "1739-1",
     "prompt": "A toilet with its lid open sits in an alcove, with its lid beside it, above an open shelving unit, and next to a marble countertop.",
     "permutation": "V1-V2-V3",
-    "final_score": 0.8222222222222223,
+    "final_score": 0.888888888888889,
     "st1_res": {
       "backend": "V1",
       "nodes": [
@@ -8475,7 +8460,7 @@
           "name": "toilet",
           "bbox": [
             421,
-            393,
+            392,
             576,
             928
           ],
@@ -8487,10 +8472,10 @@
           "id": 100,
           "name": "lid",
           "bbox": [
-            434,
-            393,
-            563,
-            654
+            435,
+            394,
+            564,
+            656
           ],
           "confidence": 1.0,
           "passed": true,
@@ -8499,16 +8484,21 @@
         {
           "id": 101,
           "name": "alcove",
-          "bbox": null,
-          "confidence": 0.0,
-          "passed": false,
-          "score": 0.0
+          "bbox": [
+            355,
+            0,
+            640,
+            928
+          ],
+          "confidence": 1.0,
+          "passed": true,
+          "score": 1.0
         },
         {
           "id": 105,
           "name": "countertop",
           "bbox": [
-            699,
+            698,
             401,
             1000,
             928
@@ -8521,17 +8511,17 @@
           "id": 106,
           "name": "shelving",
           "bbox": [
-            356,
+            355,
             0,
-            639,
-            320
+            638,
+            319
           ],
           "confidence": 1.0,
           "passed": true,
           "score": 1.0
         }
       ],
-      "fidelity_score": 0.8
+      "fidelity_score": 1.0
     },
     "st2_res": {
       "backend": "V2",
@@ -8620,7 +8610,7 @@
       "swap_accuracy": 0.3333333333333333
     },
     "latency_ms": {
-      "total": 15736.558355856687
+      "total": 15585.490757017396
     }
   },
   {
@@ -8635,10 +8625,10 @@
           "id": 4,
           "name": "toilet",
           "bbox": [
-            329,
-            385,
-            607,
-            973
+            328,
+            384,
+            606,
+            972
           ],
           "confidence": 1.0,
           "passed": true,
@@ -8650,8 +8640,8 @@
           "bbox": [
             352,
             385,
-            582,
-            630
+            585,
+            631
           ],
           "confidence": 1.0,
           "passed": true,
@@ -8661,9 +8651,9 @@
           "id": 101,
           "name": "alcove",
           "bbox": [
-            196,
+            197,
             0,
-            739,
+            737,
             855
           ],
           "confidence": 1.0,
@@ -8674,10 +8664,10 @@
           "id": 105,
           "name": "countertop",
           "bbox": [
-            783,
+            784,
             374,
             1000,
-            475
+            474
           ],
           "confidence": 1.0,
           "passed": true,
@@ -8689,8 +8679,8 @@
           "bbox": [
             197,
             0,
-            731,
-            331
+            730,
+            330
           ],
           "confidence": 1.0,
           "passed": true,
@@ -8773,12 +8763,12 @@
           "object": 105,
           "skipped": false,
           "original_score": 0.0,
-          "swapped_score": 1.0,
-          "delta": -1.0,
+          "swapped_score": 0.0,
+          "delta": 0.0,
           "swap_correct": false,
           "answers": {
             "original": "no",
-            "swapped": "yes"
+            "swapped": "no"
           }
         }
       ],
@@ -8786,7 +8776,7 @@
       "swap_accuracy": 0.3333333333333333
     },
     "latency_ms": {
-      "total": 12310.612400062382
+      "total": 12172.575198928826
     }
   },
   {
@@ -8801,8 +8791,8 @@
           "id": 2,
           "name": "keyboard",
           "bbox": [
-            343,
-            504,
+            344,
+            503,
             680,
             662
           ],
@@ -8823,7 +8813,7 @@
           "name": "cell phone",
           "bbox": [
             183,
-            625,
+            626,
             290,
             863
           ],
@@ -8901,7 +8891,7 @@
       "swap_accuracy": 0.3333333333333333
     },
     "latency_ms": {
-      "total": 10443.957419949584
+      "total": 10292.397907935083
     }
   },
   {
@@ -8917,9 +8907,9 @@
           "name": "sunlight",
           "bbox": [
             457,
-            325,
-            645,
-            521
+            337,
+            646,
+            519
           ],
           "confidence": 1.0,
           "passed": true,
@@ -8988,7 +8978,7 @@
       "swap_accuracy": 1.0
     },
     "latency_ms": {
-      "total": 7173.884444171563
+      "total": 7111.230659065768
     }
   },
   {
@@ -9004,7 +8994,7 @@
           "name": "people",
           "bbox": [
             0,
-            416,
+            417,
             1024,
             1024
           ],
@@ -9017,7 +9007,7 @@
           "name": "audience",
           "bbox": [
             0,
-            400,
+            417,
             1024,
             1024
           ],
@@ -9030,7 +9020,7 @@
           "name": "group",
           "bbox": [
             0,
-            417,
+            418,
             1024,
             1024
           ],
@@ -9043,7 +9033,7 @@
           "name": "children",
           "bbox": [
             0,
-            416,
+            415,
             1024,
             1024
           ],
@@ -9110,7 +9100,7 @@
       "swap_accuracy": 0.0
     },
     "latency_ms": {
-      "total": 9618.817734066397
+      "total": 9476.999016012996
     }
   },
   {
@@ -9227,7 +9217,7 @@
       "swap_accuracy": 0.0
     },
     "latency_ms": {
-      "total": 3484.06183894258
+      "total": 3449.977340060286
     }
   },
   {
@@ -9242,7 +9232,7 @@
           "id": 2,
           "name": "hair drier",
           "bbox": [
-            112,
+            113,
             703,
             565,
             928
@@ -9256,7 +9246,7 @@
           "name": "sink",
           "bbox": [
             111,
-            674,
+            673,
             1000,
             928
           ],
@@ -9268,10 +9258,10 @@
           "id": 102,
           "name": "mirror",
           "bbox": [
-            200,
+            196,
             0,
             846,
-            557
+            558
           ],
           "confidence": 1.0,
           "passed": true,
@@ -9289,10 +9279,10 @@
           "id": 104,
           "name": "faucet",
           "bbox": [
-            608,
-            574,
+            609,
+            575,
             738,
-            828
+            829
           ],
           "confidence": 1.0,
           "passed": true,
@@ -9302,9 +9292,9 @@
           "id": 106,
           "name": "cord",
           "bbox": [
-            112,
-            787,
-            394,
+            113,
+            786,
+            383,
             928
           ],
           "confidence": 1.0,
@@ -9421,7 +9411,7 @@
       "swap_accuracy": 0.0
     },
     "latency_ms": {
-      "total": 18383.65930598229
+      "total": 18229.701105854474
     }
   },
   {
@@ -9436,10 +9426,10 @@
           "id": 6,
           "name": "motorcycle",
           "bbox": [
-            133,
-            121,
-            913,
-            953
+            134,
+            122,
+            914,
+            954
           ],
           "confidence": 1.0,
           "passed": true,
@@ -9450,9 +9440,9 @@
           "name": "motorcycle",
           "bbox": [
             134,
-            121,
+            122,
             913,
-            953
+            954
           ],
           "confidence": 1.0,
           "passed": true,
@@ -9500,7 +9490,7 @@
       "swap_accuracy": 0.0
     },
     "latency_ms": {
-      "total": 6349.3925330694765
+      "total": 6293.500057072379
     }
   },
   {
@@ -9525,7 +9515,7 @@
           "bbox": [
             444,
             105,
-            952,
+            953,
             936
           ],
           "confidence": 1.0,
@@ -9574,14 +9564,14 @@
       "swap_accuracy": 0.0
     },
     "latency_ms": {
-      "total": 6192.487932974473
+      "total": 6196.0712048457935
     }
   },
   {
     "image_id": "2012-2",
     "prompt": "A frisbee with eyes fixed on it is marked by a faint blue boundary line, with a hose nearby.",
     "permutation": "V1-V2-V3",
-    "final_score": 0.688888888888889,
+    "final_score": 0.5777777777777778,
     "st1_res": {
       "backend": "V1",
       "nodes": [
@@ -9589,8 +9579,8 @@
           "id": 1,
           "name": "frisbee",
           "bbox": [
-            80,
-            102,
+            81,
+            103,
             928,
             912
           ],
@@ -9602,10 +9592,10 @@
           "id": 103,
           "name": "eyes",
           "bbox": [
-            316,
+            315,
             362,
-            699,
-            539
+            698,
+            537
           ],
           "confidence": 1.0,
           "passed": true,
@@ -9691,28 +9681,28 @@
           "relation": "is possibly",
           "object": 110,
           "skipped": false,
-          "original_score": 1.0,
+          "original_score": 0.0,
           "swapped_score": 0.0,
-          "delta": 1.0,
-          "swap_correct": true,
+          "delta": 0.0,
+          "swap_correct": false,
           "answers": {
-            "original": "yes",
+            "original": "no",
             "swapped": "no"
           }
         }
       ],
-      "relation_score": 0.6666666666666666,
-      "swap_accuracy": 0.6666666666666666
+      "relation_score": 0.3333333333333333,
+      "swap_accuracy": 0.3333333333333333
     },
     "latency_ms": {
-      "total": 11090.238224947825
+      "total": 10950.473493081518
     }
   },
   {
     "image_id": "2012-3",
     "prompt": "A frisbee with eyes fixed on it is marked by a faint blue boundary line, with a hose nearby.",
     "permutation": "V1-V2-V3",
-    "final_score": 0.4222222222222223,
+    "final_score": 0.3555555555555556,
     "st1_res": {
       "backend": "V1",
       "nodes": [
@@ -9721,7 +9711,7 @@
           "name": "frisbee",
           "bbox": [
             148,
-            137,
+            139,
             512,
             512
           ],
@@ -9761,18 +9751,13 @@
         {
           "id": 111,
           "name": "boundary marker",
-          "bbox": [
-            298,
-            511,
-            512,
-            512
-          ],
-          "confidence": 1.0,
-          "passed": true,
-          "score": 1.0
+          "bbox": null,
+          "confidence": 0.0,
+          "passed": false,
+          "score": 0.0
         }
       ],
-      "fidelity_score": 0.6
+      "fidelity_score": 0.4
     },
     "st2_res": {
       "backend": "V2",
@@ -9800,12 +9785,12 @@
           "object": 111,
           "skipped": false,
           "original_score": 1.0,
-          "swapped_score": 1.0,
-          "delta": 0.0,
-          "swap_correct": false,
+          "swapped_score": 0.0,
+          "delta": 1.0,
+          "swap_correct": true,
           "answers": {
             "original": "yes",
-            "swapped": "yes"
+            "swapped": "unclear"
           }
         },
         {
@@ -9838,10 +9823,10 @@
         }
       ],
       "relation_score": 0.6666666666666666,
-      "swap_accuracy": 0.3333333333333333
+      "swap_accuracy": 0.6666666666666666
     },
     "latency_ms": {
-      "total": 4378.355834051035
+      "total": 4232.209615991451
     }
   },
   {
@@ -9864,10 +9849,10 @@
           "id": 6,
           "name": "side salad",
           "bbox": [
-            193,
+            192,
             111,
             624,
-            393
+            392
           ],
           "confidence": 1.0,
           "passed": true,
@@ -9878,9 +9863,9 @@
           "name": "green leafy vegetables",
           "bbox": [
             87,
-            418,
-            703,
-            846
+            419,
+            704,
+            848
           ],
           "confidence": 1.0,
           "passed": true,
@@ -9890,9 +9875,9 @@
           "id": 11,
           "name": "red cabbage",
           "bbox": [
-            387,
-            612,
-            666,
+            388,
+            613,
+            665,
             815
           ],
           "confidence": 1.0,
@@ -9991,33 +9976,38 @@
       "swap_accuracy": 0.3333333333333333
     },
     "latency_ms": {
-      "total": 12058.855104958639
+      "total": 12062.681628973223
     }
   },
   {
     "image_id": "2017-5",
     "prompt": "A square meal with four items consists of a side salad made from green leafy vegetables, including red cabbage.",
     "permutation": "V1-V2-V3",
-    "final_score": 0.4722222222222222,
+    "final_score": 0.5555555555555556,
     "st1_res": {
       "backend": "V1",
       "nodes": [
         {
           "id": 4,
           "name": "meal",
-          "bbox": null,
-          "confidence": 0.0,
-          "passed": false,
-          "score": 0.0
+          "bbox": [
+            39,
+            41,
+            958,
+            957
+          ],
+          "confidence": 1.0,
+          "passed": true,
+          "score": 1.0
         },
         {
           "id": 6,
           "name": "side salad",
           "bbox": [
-            39,
+            38,
             42,
-            958,
-            955
+            957,
+            957
           ],
           "confidence": 1.0,
           "passed": true,
@@ -10027,10 +10017,10 @@
           "id": 10,
           "name": "green leafy vegetables",
           "bbox": [
-            114,
-            114,
-            872,
-            895
+            113,
+            113,
+            871,
+            896
           ],
           "confidence": 1.0,
           "passed": true,
@@ -10041,16 +10031,16 @@
           "name": "red cabbage",
           "bbox": [
             522,
-            140,
+            141,
             891,
-            493
+            492
           ],
           "confidence": 1.0,
           "passed": true,
           "score": 1.0
         }
       ],
-      "fidelity_score": 0.75
+      "fidelity_score": 1.0
     },
     "st2_res": {
       "backend": "V2",
@@ -10141,7 +10131,7 @@
       "swap_accuracy": 0.3333333333333333
     },
     "latency_ms": {
-      "total": 10796.689384034835
+      "total": 10887.92102993466
     }
   },
   {
@@ -10158,7 +10148,7 @@
           "bbox": [
             439,
             633,
-            816,
+            817,
             963
           ],
           "confidence": 1.0,
@@ -10193,7 +10183,7 @@
             0,
             0,
             1024,
-            312
+            305
           ],
           "confidence": 1.0,
           "passed": true,
@@ -10244,12 +10234,12 @@
           "object": 11,
           "skipped": false,
           "original_score": 0.0,
-          "swapped_score": 0.0,
-          "delta": 0.0,
+          "swapped_score": 1.0,
+          "delta": -1.0,
           "swap_correct": false,
           "answers": {
             "original": "no",
-            "swapped": "no"
+            "swapped": "yes"
           }
         },
         {
@@ -10285,7 +10275,7 @@
       "swap_accuracy": 0.0
     },
     "latency_ms": {
-      "total": 10841.926949913613
+      "total": 10842.115861945786
     }
   },
   {
@@ -10301,7 +10291,7 @@
           "name": "dirt",
           "bbox": [
             0,
-            74,
+            76,
             1024,
             999
           ],
@@ -10313,10 +10303,10 @@
           "id": 4,
           "name": "snout",
           "bbox": [
-            328,
-            330,
+            326,
+            326,
             685,
-            694
+            884
           ],
           "confidence": 1.0,
           "passed": true,
@@ -10329,7 +10319,7 @@
             0,
             74,
             1024,
-            924
+            999
           ],
           "confidence": 1.0,
           "passed": true,
@@ -10366,7 +10356,7 @@
       "swap_accuracy": 1.0
     },
     "latency_ms": {
-      "total": 5426.53095012065
+      "total": 5481.798683991656
     }
   },
   {
@@ -10432,7 +10422,7 @@
       "swap_accuracy": 0.0
     },
     "latency_ms": {
-      "total": 1871.5140220010653
+      "total": 1919.9758589966223
     }
   },
   {
@@ -10447,8 +10437,8 @@
           "id": 2,
           "name": "carrot",
           "bbox": [
-            169,
-            48,
+            168,
+            46,
             512,
             512
           ],
@@ -10460,8 +10450,8 @@
           "id": 100,
           "name": "whimsical face",
           "bbox": [
-            169,
-            43,
+            168,
+            39,
             512,
             512
           ],
@@ -10473,8 +10463,8 @@
           "id": 101,
           "name": "vegetables",
           "bbox": [
-            166,
-            41,
+            169,
+            39,
             512,
             512
           ],
@@ -10587,7 +10577,7 @@
       "swap_accuracy": 0.3333333333333333
     },
     "latency_ms": {
-      "total": 6240.528495050967
+      "total": 6265.689823077992
     }
   },
   {
@@ -10727,14 +10717,14 @@
       "swap_accuracy": 0.0
     },
     "latency_ms": {
-      "total": 4462.423205026425
+      "total": 4475.748956901953
     }
   },
   {
     "image_id": "2199-1",
     "prompt": "A person wearing an orange bandana around their neck stands near a baseball bat lying on the dirt of a baseball field.",
     "permutation": "V1-V2-V3",
-    "final_score": 0.9333333333333335,
+    "final_score": 1.0,
     "st1_res": {
       "backend": "V1",
       "nodes": [
@@ -10742,10 +10732,10 @@
           "id": 1,
           "name": "baseball bat",
           "bbox": [
-            617,
+            616,
             279,
             693,
-            845
+            846
           ],
           "confidence": 1.0,
           "passed": true,
@@ -10768,10 +10758,10 @@
           "id": 101,
           "name": "neck",
           "bbox": [
-            135,
-            720,
-            592,
-            858
+            134,
+            723,
+            588,
+            856
           ],
           "confidence": 1.0,
           "passed": true,
@@ -10793,13 +10783,18 @@
         {
           "id": 103,
           "name": "baseball field",
-          "bbox": null,
-          "confidence": 0.0,
-          "passed": false,
-          "score": 0.0
+          "bbox": [
+            0,
+            0,
+            1664,
+            928
+          ],
+          "confidence": 1.0,
+          "passed": true,
+          "score": 1.0
         }
       ],
-      "fidelity_score": 0.8
+      "fidelity_score": 1.0
     },
     "st2_res": {
       "backend": "V2",
@@ -10868,7 +10863,7 @@
       "swap_accuracy": 0.3333333333333333
     },
     "latency_ms": {
-      "total": 14373.413703986444
+      "total": 14510.088855982758
     }
   },
   {
@@ -10926,7 +10921,7 @@
           "name": "baseball field",
           "bbox": [
             0,
-            497,
+            496,
             1024,
             1000
           ],
@@ -11004,7 +10999,7 @@
       "swap_accuracy": 0.0
     },
     "latency_ms": {
-      "total": 11186.58935604617
+      "total": 11132.65402300749
     }
   },
   {
@@ -11027,9 +11022,9 @@
           "id": 21,
           "name": "ceiling fan",
           "bbox": [
-            335,
+            339,
             123,
-            937,
+            936,
             493
           ],
           "confidence": 1.0,
@@ -11096,7 +11091,7 @@
       "swap_accuracy": 0.0
     },
     "latency_ms": {
-      "total": 7893.708011019044
+      "total": 7871.174252009951
     }
   },
   {
@@ -11122,7 +11117,7 @@
             310,
             114,
             856,
-            434
+            433
           ],
           "confidence": 1.0,
           "passed": true,
@@ -11132,10 +11127,10 @@
           "id": 2,
           "name": "remote",
           "bbox": [
-            451,
-            757,
+            452,
+            758,
             587,
-            854
+            857
           ],
           "confidence": 1.0,
           "passed": true,
@@ -11193,7 +11188,7 @@
       "swap_accuracy": 0.0
     },
     "latency_ms": {
-      "total": 7196.795896976255
+      "total": 7272.710408899002
     }
   },
   {
@@ -11354,7 +11349,7 @@
       "swap_accuracy": 0.3333333333333333
     },
     "latency_ms": {
-      "total": 4890.7053001457825
+      "total": 4899.795648059808
     }
   },
   {
@@ -11385,7 +11380,7 @@
             0,
             349,
             1000,
-            952
+            953
           ],
           "confidence": 1.0,
           "passed": true,
@@ -11396,9 +11391,9 @@
           "name": "railings",
           "bbox": [
             0,
-            347,
+            349,
             1000,
-            953
+            952
           ],
           "confidence": 1.0,
           "passed": true,
@@ -11411,7 +11406,7 @@
             0,
             0,
             1024,
-            442
+            447
           ],
           "confidence": 1.0,
           "passed": true,
@@ -11424,7 +11419,7 @@
             0,
             0,
             1024,
-            447
+            437
           ],
           "confidence": 1.0,
           "passed": true,
@@ -11530,7 +11525,7 @@
       "swap_accuracy": 0.3333333333333333
     },
     "latency_ms": {
-      "total": 13588.593948050402
+      "total": 13551.529068034142
     }
   },
   {
@@ -11546,8 +11541,8 @@
           "name": "traffic light",
           "bbox": [
             491,
-            222,
-            709,
+            223,
+            708,
             728
           ],
           "confidence": 1.0,
@@ -11665,7 +11660,7 @@
       "swap_accuracy": 0.0
     },
     "latency_ms": {
-      "total": 10653.931340086274
+      "total": 10513.296519988216
     }
   },
   {
@@ -11680,7 +11675,7 @@
           "id": 1,
           "name": "traffic light",
           "bbox": [
-            278,
+            279,
             0,
             597,
             1024
@@ -11706,9 +11701,9 @@
           "id": 102,
           "name": "pole",
           "bbox": [
-            279,
+            278,
             0,
-            393,
+            400,
             1000
           ],
           "confidence": 1.0,
@@ -11793,7 +11788,7 @@
       "swap_accuracy": 0.0
     },
     "latency_ms": {
-      "total": 10643.427754868753
+      "total": 10730.032330960967
     }
   },
   {
@@ -11808,10 +11803,10 @@
           "id": 6,
           "name": "cherry tomatoes",
           "bbox": [
-            108,
-            341,
-            953,
-            877
+            107,
+            343,
+            952,
+            879
           ],
           "confidence": 1.0,
           "passed": true,
@@ -11822,9 +11817,9 @@
           "name": "salad",
           "bbox": [
             0,
-            203,
+            207,
             1024,
-            998
+            999
           ],
           "confidence": 1.0,
           "passed": true,
@@ -11885,14 +11880,14 @@
       "swap_accuracy": 0.0
     },
     "latency_ms": {
-      "total": 6873.405778896995
+      "total": 6921.9753401121125
     }
   },
   {
     "image_id": "2297-5",
     "prompt": "Five stop signs mounted on a pole stand near modern buildings with glass facades under a cloudy sky, while a Korea Way sign with Korean characters underneath it is nearby.",
     "permutation": "V1-V2-V3",
-    "final_score": 0.6111111111111112,
+    "final_score": 0.5,
     "st1_res": {
       "backend": "V1",
       "nodes": [
@@ -11908,7 +11903,7 @@
           "id": 100,
           "name": "pole",
           "bbox": [
-            187,
+            189,
             0,
             267,
             1000
@@ -11939,7 +11934,7 @@
           "bbox": [
             0,
             0,
-            998,
+            999,
             1000
           ],
           "confidence": 1.0,
@@ -12032,21 +12027,21 @@
           "relation": "underneath",
           "object": 103,
           "skipped": false,
-          "original_score": 1.0,
+          "original_score": 0.0,
           "swapped_score": 0.0,
-          "delta": 1.0,
-          "swap_correct": true,
+          "delta": 0.0,
+          "swap_correct": false,
           "answers": {
-            "original": "yes",
+            "original": "no",
             "swapped": "no"
           }
         }
       ],
-      "relation_score": 1.0,
-      "swap_accuracy": 0.3333333333333333
+      "relation_score": 0.6666666666666666,
+      "swap_accuracy": 0.0
     },
     "latency_ms": {
-      "total": 14168.44347002916
+      "total": 14152.357149985619
     }
   },
   {
@@ -12076,7 +12071,7 @@
           "bbox": [
             0,
             0,
-            1000,
+            1024,
             1000
           ],
           "confidence": 1.0,
@@ -12090,7 +12085,7 @@
             0,
             0,
             1024,
-            1000
+            1024
           ],
           "confidence": 1.0,
           "passed": true,
@@ -12100,8 +12095,8 @@
           "id": 106,
           "name": "floor",
           "bbox": [
-            272,
-            836,
+            273,
+            834,
             769,
             1000
           ],
@@ -12179,7 +12174,7 @@
       "swap_accuracy": 0.0
     },
     "latency_ms": {
-      "total": 10319.766373955645
+      "total": 10536.254436010495
     }
   },
   {
@@ -12215,7 +12210,7 @@
           "id": 105,
           "name": "walls",
           "bbox": [
-            48,
+            0,
             0,
             512,
             512
@@ -12307,14 +12302,14 @@
       "swap_accuracy": 0.3333333333333333
     },
     "latency_ms": {
-      "total": 4896.761693991721
+      "total": 4935.74683892075
     }
   },
   {
     "image_id": "2370-5",
     "prompt": "A donut is arranged within a white box and resembles an image displayed on a nearby screen.",
     "permutation": "V1-V2-V3",
-    "final_score": 1.0,
+    "final_score": 0.8333333333333333,
     "st1_res": {
       "backend": "V1",
       "nodes": [
@@ -12323,7 +12318,7 @@
           "name": "donut",
           "bbox": [
             287,
-            260,
+            261,
             753,
             772
           ],
@@ -12335,9 +12330,9 @@
           "id": 2,
           "name": "white box",
           "bbox": [
-            157,
-            175,
-            849,
+            156,
+            174,
+            850,
             855
           ],
           "confidence": 1.0,
@@ -12402,21 +12397,21 @@
           "relation": "resembling",
           "object": 2,
           "skipped": false,
-          "original_score": 1.0,
+          "original_score": 0.0,
           "swapped_score": 0.0,
-          "delta": 1.0,
-          "swap_correct": true,
+          "delta": 0.0,
+          "swap_correct": false,
           "answers": {
-            "original": "yes",
+            "original": "no",
             "swapped": "no"
           }
         }
       ],
-      "relation_score": 1.0,
-      "swap_accuracy": 0.6666666666666666
+      "relation_score": 0.6666666666666666,
+      "swap_accuracy": 0.3333333333333333
     },
     "latency_ms": {
-      "total": 8271.365777938627
+      "total": 8430.846106959507
     }
   },
   {
@@ -12434,7 +12429,7 @@
             227,
             168,
             482,
-            607
+            608
           ],
           "confidence": 1.0,
           "passed": true,
@@ -12444,10 +12439,10 @@
           "id": 104,
           "name": "holder",
           "bbox": [
-            312,
-            555,
-            468,
-            712
+            313,
+            554,
+            467,
+            713
           ],
           "confidence": 1.0,
           "passed": true,
@@ -12458,9 +12453,9 @@
           "name": "faucet",
           "bbox": [
             475,
-            356,
-            659,
-            775
+            357,
+            658,
+            776
           ],
           "confidence": 1.0,
           "passed": true,
@@ -12471,9 +12466,9 @@
           "name": "tube",
           "bbox": [
             682,
-            423,
-            764,
-            823
+            421,
+            763,
+            822
           ],
           "confidence": 1.0,
           "passed": true,
@@ -12483,7 +12478,7 @@
           "id": 110,
           "name": "toothbrush",
           "bbox": [
-            783,
+            782,
             251,
             831,
             836
@@ -12549,20 +12544,20 @@
           "object": 104,
           "skipped": false,
           "original_score": 1.0,
-          "swapped_score": 1.0,
-          "delta": 0.0,
-          "swap_correct": false,
+          "swapped_score": 0.0,
+          "delta": 1.0,
+          "swap_correct": true,
           "answers": {
             "original": "yes",
-            "swapped": "yes"
+            "swapped": "no"
           }
         }
       ],
       "relation_score": 1.0,
-      "swap_accuracy": 0.6666666666666666
+      "swap_accuracy": 1.0
     },
     "latency_ms": {
-      "total": 13859.553511952981
+      "total": 13941.72573403921
     }
   },
   {
@@ -12578,8 +12573,8 @@
           "name": "toilet paper",
           "bbox": [
             222,
-            218,
-            527,
+            217,
+            528,
             823
           ],
           "confidence": 1.0,
@@ -12591,8 +12586,8 @@
           "name": "holder",
           "bbox": [
             137,
-            112,
-            423,
+            113,
+            425,
             518
           ],
           "confidence": 1.0,
@@ -12604,9 +12599,9 @@
           "name": "faucet",
           "bbox": [
             698,
-            379,
+            378,
             870,
-            713
+            710
           ],
           "confidence": 1.0,
           "passed": true,
@@ -12617,9 +12612,9 @@
           "name": "tube",
           "bbox": [
             593,
-            427,
+            429,
             658,
-            753
+            754
           ],
           "confidence": 1.0,
           "passed": true,
@@ -12629,10 +12624,10 @@
           "id": 110,
           "name": "toothbrush",
           "bbox": [
-            651,
-            645,
+            650,
+            644,
             915,
-            785
+            786
           ],
           "confidence": 1.0,
           "passed": true,
@@ -12667,12 +12662,12 @@
           "object": 106,
           "skipped": false,
           "original_score": 0.0,
-          "swapped_score": 0.0,
-          "delta": 0.0,
+          "swapped_score": 1.0,
+          "delta": -1.0,
           "swap_correct": false,
           "answers": {
             "original": "no",
-            "swapped": "no"
+            "swapped": "yes"
           }
         },
         {
@@ -12708,7 +12703,7 @@
       "swap_accuracy": 0.3333333333333333
     },
     "latency_ms": {
-      "total": 13773.407675907947
+      "total": 13804.640927002765
     }
   },
   {
@@ -12724,9 +12719,9 @@
           "name": "refrigerator",
           "bbox": [
             50,
-            169,
+            171,
             933,
-            882
+            880
           ],
           "confidence": 1.0,
           "passed": true,
@@ -12739,7 +12734,7 @@
             0,
             0,
             1024,
-            842
+            844
           ],
           "confidence": 1.0,
           "passed": true,
@@ -12749,10 +12744,10 @@
           "id": 2,
           "name": "leftmost refrigerator",
           "bbox": [
-            55,
-            605,
+            54,
+            604,
             260,
-            879
+            880
           ],
           "confidence": 1.0,
           "passed": true,
@@ -12764,7 +12759,7 @@
           "bbox": [
             505,
             171,
-            725,
+            724,
             878
           ],
           "confidence": 1.0,
@@ -12775,10 +12770,10 @@
           "id": 4,
           "name": "two-door model refrigerator",
           "bbox": [
-            272,
+            271,
             326,
-            484,
-            877
+            483,
+            878
           ],
           "confidence": 1.0,
           "passed": true,
@@ -12904,7 +12899,7 @@
       "swap_accuracy": 0.0
     },
     "latency_ms": {
-      "total": 14201.384076965041
+      "total": 14181.624266901053
     }
   },
   {
@@ -12930,7 +12925,7 @@
             0,
             0,
             1024,
-            827
+            826
           ],
           "confidence": 1.0,
           "passed": true,
@@ -12941,8 +12936,8 @@
           "name": "leftmost refrigerator",
           "bbox": [
             126,
-            483,
-            286,
+            482,
+            287,
             853
           ],
           "confidence": 1.0,
@@ -12953,9 +12948,9 @@
           "id": 3,
           "name": "slightly taller refrigerator",
           "bbox": [
-            443,
+            444,
             359,
-            635,
+            636,
             851
           ],
           "confidence": 1.0,
@@ -12966,9 +12961,9 @@
           "id": 4,
           "name": "two-door model refrigerator",
           "bbox": [
-            444,
+            443,
             359,
-            636,
+            635,
             851
           ],
           "confidence": 1.0,
@@ -13095,7 +13090,7 @@
       "swap_accuracy": 0.0
     },
     "latency_ms": {
-      "total": 14840.233736904338
+      "total": 14827.060671988875
     }
   },
   {
@@ -13111,7 +13106,7 @@
           "name": "refrigerator",
           "bbox": [
             207,
-            266,
+            267,
             365,
             928
           ],
@@ -13137,8 +13132,8 @@
           "name": "leftmost refrigerator",
           "bbox": [
             207,
-            267,
-            365,
+            266,
+            366,
             928
           ],
           "confidence": 1.0,
@@ -13150,7 +13145,7 @@
           "name": "slightly taller refrigerator",
           "bbox": [
             207,
-            268,
+            267,
             365,
             928
           ],
@@ -13163,8 +13158,8 @@
           "name": "two-door model refrigerator",
           "bbox": [
             207,
-            267,
-            366,
+            266,
+            365,
             928
           ],
           "confidence": 1.0,
@@ -13175,8 +13170,8 @@
           "id": 5,
           "name": "fourth refrigerator",
           "bbox": [
-            638,
-            540,
+            637,
+            542,
             785,
             928
           ],
@@ -13338,14 +13333,14 @@
       "swap_accuracy": 0.0
     },
     "latency_ms": {
-      "total": 21548.80217486061
+      "total": 21452.691767015494
     }
   },
   {
     "image_id": "2549-1",
     "prompt": "Train schedules, including departure times, display train numbers in bright yellow font, with a large white and red logo positioned below the date 29-10-2011.",
     "permutation": "V1-V2-V3",
-    "final_score": 0.3666666666666667,
+    "final_score": 0.4333333333333334,
     "st1_res": {
       "backend": "V1",
       "nodes": [
@@ -13390,10 +13385,10 @@
           "id": 110,
           "name": "date",
           "bbox": [
-            29,
-            500,
-            272,
-            950
+            25,
+            496,
+            275,
+            958
           ],
           "confidence": 1.0,
           "passed": true,
@@ -13403,10 +13398,10 @@
           "id": 111,
           "name": "logo",
           "bbox": [
-            358,
+            355,
             562,
-            642,
-            865
+            643,
+            864
           ],
           "confidence": 1.0,
           "passed": true,
@@ -13424,9 +13419,9 @@
           "name": "train schedules",
           "attribute": "various",
           "skipped": false,
-          "score": 0.0,
-          "calibrated_score": 0.0,
-          "answer": "no",
+          "score": 1.0,
+          "calibrated_score": 1.0,
+          "answer": "yes",
           "count_evaluator": "qwen"
         },
         {
@@ -13482,7 +13477,7 @@
           "count_evaluator": "qwen"
         }
       ],
-      "binding_score": 0.6
+      "binding_score": 0.8
     },
     "st3_res": {
       "backend": "V3",
@@ -13534,7 +13529,7 @@
       "swap_accuracy": 0.0
     },
     "latency_ms": {
-      "total": 9951.575613114983
+      "total": 9958.137556095608
     }
   },
   {
@@ -13551,8 +13546,8 @@
           "bbox": [
             0,
             159,
-            998,
-            999
+            997,
+            997
           ],
           "confidence": 1.0,
           "passed": true,
@@ -13562,10 +13557,10 @@
           "id": 7,
           "name": "artichoke-like vegetable",
           "bbox": [
-            58,
+            56,
             184,
-            942,
-            777
+            944,
+            779
           ],
           "confidence": 1.0,
           "passed": true,
@@ -13621,7 +13616,7 @@
       "swap_accuracy": 0.0
     },
     "latency_ms": {
-      "total": 6882.96588184312
+      "total": 6733.792122104205
     }
   },
   {
@@ -13730,12 +13725,12 @@
           "object": 4,
           "skipped": false,
           "original_score": 0.0,
-          "swapped_score": 1.0,
-          "delta": -1.0,
+          "swapped_score": 0.0,
+          "delta": 0.0,
           "swap_correct": false,
           "answers": {
             "original": "no",
-            "swapped": "yes"
+            "swapped": "no"
           }
         }
       ],
@@ -13743,7 +13738,7 @@
       "swap_accuracy": 0.0
     },
     "latency_ms": {
-      "total": 7209.233447094448
+      "total": 7142.888386966661
     }
   },
   {
@@ -13848,7 +13843,7 @@
       "swap_accuracy": 0.0
     },
     "latency_ms": {
-      "total": 4708.446351927705
+      "total": 4614.823898067698
     }
   },
   {
@@ -13935,7 +13930,7 @@
       "swap_accuracy": 0.0
     },
     "latency_ms": {
-      "total": 3400.72053601034
+      "total": 3396.2918949546292
     }
   },
   {
@@ -13958,7 +13953,7 @@
           "id": 109,
           "name": "flower",
           "bbox": [
-            274,
+            273,
             0,
             682,
             928
@@ -13973,7 +13968,7 @@
           "bbox": [
             0,
             0,
-            726,
+            728,
             928
           ],
           "confidence": 1.0,
@@ -14042,7 +14037,7 @@
       "swap_accuracy": 0.0
     },
     "latency_ms": {
-      "total": 10626.6629321035
+      "total": 10477.25275810808
     }
   },
   {
@@ -14068,7 +14063,7 @@
             464,
             210,
             512,
-            492
+            494
           ],
           "confidence": 1.0,
           "passed": true,
@@ -14149,7 +14144,7 @@
       "swap_accuracy": 0.0
     },
     "latency_ms": {
-      "total": 3962.187509983778
+      "total": 3980.874018976465
     }
   },
   {
@@ -14166,7 +14161,7 @@
           "bbox": [
             329,
             37,
-            698,
+            697,
             951
           ],
           "confidence": 1.0,
@@ -14257,12 +14252,12 @@
           "object": 100,
           "skipped": false,
           "original_score": 1.0,
-          "swapped_score": 0.0,
-          "delta": 1.0,
-          "swap_correct": true,
+          "swapped_score": 1.0,
+          "delta": 0.0,
+          "swap_correct": false,
           "answers": {
             "original": "yes",
-            "swapped": "no"
+            "swapped": "yes"
           }
         },
         {
@@ -14281,10 +14276,10 @@
         }
       ],
       "relation_score": 1.0,
-      "swap_accuracy": 0.3333333333333333
+      "swap_accuracy": 0.0
     },
     "latency_ms": {
-      "total": 11924.082394107245
+      "total": 11730.85572803393
     }
   },
   {
@@ -14300,8 +14295,8 @@
           "name": "tally marks",
           "bbox": [
             29,
-            53,
-            972,
+            54,
+            970,
             928
           ],
           "confidence": 1.0,
@@ -14312,9 +14307,9 @@
           "id": 111,
           "name": "rows",
           "bbox": [
-            28,
-            54,
-            971,
+            29,
+            53,
+            970,
             928
           ],
           "confidence": 1.0,
@@ -14325,7 +14320,7 @@
           "id": 112,
           "name": "vertical lines",
           "bbox": [
-            31,
+            33,
             54,
             970,
             928
@@ -14338,10 +14333,10 @@
           "id": 113,
           "name": "diagonal line",
           "bbox": [
-            39,
-            58,
-            973,
-            928
+            84,
+            97,
+            936,
+            896
           ],
           "confidence": 1.0,
           "passed": true,
@@ -14406,7 +14401,7 @@
       "swap_accuracy": 0.3333333333333333
     },
     "latency_ms": {
-      "total": 12577.64138688799
+      "total": 12388.755594030954
     }
   },
   {
@@ -14472,12 +14467,12 @@
           "object": 112,
           "skipped": false,
           "original_score": 0.0,
-          "swapped_score": 0.0,
-          "delta": 0.0,
+          "swapped_score": 1.0,
+          "delta": -1.0,
           "swap_correct": false,
           "answers": {
             "original": "no",
-            "swapped": "no"
+            "swapped": "yes"
           }
         },
         {
@@ -14513,7 +14508,7 @@
       "swap_accuracy": 0.3333333333333333
     },
     "latency_ms": {
-      "total": 8458.88905483298
+      "total": 8367.131492006592
     }
   },
   {
@@ -14541,7 +14536,7 @@
           "id": 16,
           "name": "bookshelf",
           "bbox": [
-            267,
+            265,
             91,
             607,
             896
@@ -14554,7 +14549,7 @@
           "id": 15,
           "name": "remote",
           "bbox": [
-            729,
+            728,
             841,
             955,
             906
@@ -14605,7 +14600,7 @@
       "swap_accuracy": 1.0
     },
     "latency_ms": {
-      "total": 7466.712877037935
+      "total": 7455.794777953997
     }
   },
   {
@@ -14620,9 +14615,9 @@
           "id": 107,
           "name": "yellow markings",
           "bbox": [
-            223,
-            65,
-            746,
+            222,
+            64,
+            748,
             836
           ],
           "confidence": 1.0,
@@ -14633,8 +14628,8 @@
           "id": 108,
           "name": "number",
           "bbox": [
-            222,
-            419,
+            223,
+            421,
             707,
             836
           ],
@@ -14649,7 +14644,7 @@
             223,
             65,
             746,
-            837
+            836
           ],
           "confidence": 1.0,
           "passed": true,
@@ -14661,8 +14656,8 @@
           "bbox": [
             0,
             0,
-            599,
-            502
+            597,
+            512
           ],
           "confidence": 1.0,
           "passed": true,
@@ -14736,12 +14731,12 @@
           "object": 107,
           "skipped": false,
           "original_score": 1.0,
-          "swapped_score": 1.0,
-          "delta": 0.0,
-          "swap_correct": false,
+          "swapped_score": 0.0,
+          "delta": 1.0,
+          "swap_correct": true,
           "answers": {
             "original": "yes",
-            "swapped": "yes"
+            "swapped": "no"
           }
         },
         {
@@ -14760,10 +14755,10 @@
         }
       ],
       "relation_score": 1.0,
-      "swap_accuracy": 0.0
+      "swap_accuracy": 0.3333333333333333
     },
     "latency_ms": {
-      "total": 14191.088581108488
+      "total": 14199.754690984264
     }
   },
   {
@@ -14787,9 +14782,9 @@
           "name": "wedding couple",
           "bbox": [
             120,
-            206,
-            941,
-            976
+            209,
+            940,
+            975
           ],
           "confidence": 1.0,
           "passed": true,
@@ -14812,10 +14807,10 @@
           "id": 8,
           "name": "bushes",
           "bbox": [
-            427,
+            424,
             0,
-            998,
-            317
+            999,
+            304
           ],
           "confidence": 1.0,
           "passed": true,
@@ -14899,7 +14894,7 @@
       "swap_accuracy": 0.0
     },
     "latency_ms": {
-      "total": 8872.272254899144
+      "total": 8799.243064015172
     }
   },
   {
@@ -14922,10 +14917,10 @@
           "id": 5,
           "name": "wedding couple",
           "bbox": [
-            8,
-            426,
-            999,
-            863
+            10,
+            427,
+            998,
+            862
           ],
           "confidence": 1.0,
           "passed": true,
@@ -14936,9 +14931,9 @@
           "name": "grassy lawn",
           "bbox": [
             0,
-            199,
+            197,
             1024,
-            1024
+            1000
           ],
           "confidence": 1.0,
           "passed": true,
@@ -14951,7 +14946,7 @@
             0,
             0,
             1024,
-            314
+            315
           ],
           "confidence": 1.0,
           "passed": true,
@@ -15035,7 +15030,7 @@
       "swap_accuracy": 0.0
     },
     "latency_ms": {
-      "total": 10610.365750035271
+      "total": 10631.376792909577
     }
   },
   {
@@ -15050,10 +15045,10 @@
           "id": 1,
           "name": "apple",
           "bbox": [
-            273,
+            271,
             741,
             657,
-            946
+            945
           ],
           "confidence": 1.0,
           "passed": true,
@@ -15064,8 +15059,8 @@
           "name": "white surface",
           "bbox": [
             0,
-            443,
-            1000,
+            442,
+            999,
             1000
           ],
           "confidence": 1.0,
@@ -15173,7 +15168,7 @@
       "swap_accuracy": 0.0
     },
     "latency_ms": {
-      "total": 10439.185871044174
+      "total": 10451.298394007608
     }
   },
   {
@@ -15189,9 +15184,9 @@
           "name": "apple",
           "bbox": [
             498,
-            511,
+            96,
             512,
-            512
+            421
           ],
           "confidence": 1.0,
           "passed": true,
@@ -15273,12 +15268,12 @@
           "object": 2,
           "skipped": false,
           "original_score": 1.0,
-          "swapped_score": 0.0,
-          "delta": 1.0,
-          "swap_correct": true,
+          "swapped_score": 1.0,
+          "delta": 0.0,
+          "swap_correct": false,
           "answers": {
             "original": "yes",
-            "swapped": "no"
+            "swapped": "yes"
           }
         },
         {
@@ -15297,10 +15292,10 @@
         }
       ],
       "relation_score": 0.6666666666666666,
-      "swap_accuracy": 0.6666666666666666
+      "swap_accuracy": 0.3333333333333333
     },
     "latency_ms": {
-      "total": 4803.049338050187
+      "total": 4823.630929924548
     }
   },
   {
@@ -15323,10 +15318,10 @@
           "id": 15,
           "name": "sunlight",
           "bbox": [
-            468,
-            397,
-            542,
-            528
+            469,
+            388,
+            547,
+            523
           ],
           "confidence": 1.0,
           "passed": true,
@@ -15338,8 +15333,8 @@
           "bbox": [
             0,
             0,
-            500,
-            250
+            508,
+            325
           ],
           "confidence": 1.0,
           "passed": true,
@@ -15349,10 +15344,10 @@
           "id": 17,
           "name": "body of water",
           "bbox": [
-            93,
-            254,
+            92,
+            252,
             985,
-            681
+            680
           ],
           "confidence": 1.0,
           "passed": true,
@@ -15441,7 +15436,7 @@
       "swap_accuracy": 0.3333333333333333
     },
     "latency_ms": {
-      "total": 14978.542717988603
+      "total": 14842.177661019377
     }
   }
 ]

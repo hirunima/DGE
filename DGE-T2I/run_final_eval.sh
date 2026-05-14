@@ -25,6 +25,7 @@ export BLIP2_MODEL_PATH="${BLIP2_MODEL_PATH:-Salesforce/blip2-itm-vit-g}"
 export EVA_CLIP_CODE_DIR="$SCENE_GRAPH_ROOT/EVA/EVA-CLIP/rei"
 export REITR_CODE_DIR="${REITR_CODE_DIR:-$SCENE_GRAPH_ROOT/RelTR}"
 PROMPTS_FILE="$ROOT_DIR/data/raw/qwen8b_t2i_prompts_aug_v1.json"
+SKIP_INDICES="9,20,22,23,25,39,50,53,59,62,77,89,91,93,101,103"
 echo "vLLM API: $VLLM_API_BASE"
 echo "Qwen model id: $QWEN_MODEL_PATH"
 echo "ReITR/RelTR code dir: $REITR_CODE_DIR"
@@ -77,6 +78,7 @@ build_cmd() {
         --output-dir "$output_root"
         --images-dir "$images_dir"
         --prompts-file "$PROMPTS_FILE"
+        --skip-indices "$SKIP_INDICES"
         --low-vram
     )
 

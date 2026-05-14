@@ -109,7 +109,7 @@ def load_eval_scores(eval_dir: Path) -> Dict[str, Dict[str, float]]:
     return scores
 
 
-def load_vqa_scores(path: Optional[Path]) -> Dict[str, float]:
+def load_jsonl_image_scores(path: Optional[Path]) -> Dict[str, float]:
     if not path or not path.exists():
         return {}
     scores: Dict[str, float] = {}
@@ -125,6 +125,10 @@ def load_vqa_scores(path: Optional[Path]) -> Dict[str, float]:
                 continue
             scores[os.path.abspath(image_path)] = float(score)
     return scores
+
+
+def load_vqa_scores(path: Optional[Path]) -> Dict[str, float]:
+    return load_jsonl_image_scores(path)
 
 
 def load_dsg_scores(path: Optional[Path]) -> Dict[str, float]:
@@ -156,17 +160,23 @@ def score_rows_present(
     eval_scores: Dict[str, Dict[str, float]],
     dsg_scores: Dict[str, float],
     vqa_scores: Dict[str, float],
+    pickscore_scores: Dict[str, float],
+    imagereward_scores: Dict[str, float],
     human_prefs: Dict[str, Dict[str, float]],
 ) -> List[str]:
     rows = []
     if eval_scores:
         rows.append("Eval score")
+    if pickscore_scores:
+        rows.append("PickScore")
     if dsg_scores:
         rows.append("DSG score")
     if vqa_scores:
         rows.append("VQA score")
+    if imagereward_scores:
+        rows.append("ImageReward")
     if human_prefs:
-        rows.append("Human pref")
+        rows.append("Human Survey Preference")
     return rows
 
 
@@ -174,6 +184,71 @@ def format_score(value: Optional[float]) -> str:
     if value is None:
         return "NA"
     return f"{value:.2f}"
+
+
+def outcome_status(
+    score1: Optional[float],
+    score2: Optional[float],
+    human1: Optional[float],
+    human2: Optional[float],
+    eps: float = 1e-12,
+) -> str:
+    if score1 is None or score2 is None or human1 is None or human2 is None:
+        return "unknown"
+    human_delta = human1 - human2
+    score_delta = score1 - score2
+    if abs(human_delta) < eps:
+        return "survey tie"
+    if abs(score_delta) < eps:
+        return "tie"
+    return "right" if (human_delta > 0) == (score_delta > 0) else "wrong"
+
+
+def label_with_outcome(
+    label: str,
+    score1: Optional[float],
+    score2: Optional[float],
+    human1: Optional[float],
+    human2: Optional[float],
+) -> str:
+    if label == "Human Survey Preference":
+        return label
+    return f"{label} ({outcome_status(score1, score2, human1, human2)})"
+
+
+def pair_scores_for_row(
+    row_name: str,
+    idx: int,
+    eval_scores: Dict[str, Dict[str, float]],
+    dsg_scores: Dict[str, float],
+    vqa_scores: Dict[str, float],
+    pickscore_scores: Dict[str, float],
+    imagereward_scores: Dict[str, float],
+    human_prefs: Dict[str, Dict[str, float]],
+    survey_pair_info: Dict[str, Dict[str, str]],
+) -> Tuple[Optional[float], Optional[float]]:
+    idx_str = f"{idx:04d}"
+    pair_info = survey_pair_info.get(idx_str, {})
+    if row_name == "Eval score":
+        return (
+            eval_scores.get(pair_info.get("model_1", ""), {}).get(str(idx)),
+            eval_scores.get(pair_info.get("model_2", ""), {}).get(str(idx)),
+        )
+    if row_name == "Human Survey Preference":
+        human1 = human_prefs.get(idx_str, {}).get("preference")
+        return human1, None if human1 is None else 1.0 - human1
+    if row_name == "DSG score":
+        scores = dsg_scores
+    elif row_name == "VQA score":
+        scores = vqa_scores
+    elif row_name == "PickScore":
+        scores = pickscore_scores
+    else:
+        scores = imagereward_scores
+    return (
+        scores.get(pair_info.get("image1_path", "")),
+        scores.get(pair_info.get("image2_path", "")),
+    )
 
 
 def display_name(model_key: Optional[str]) -> str:
@@ -203,6 +278,10 @@ def build_svg(
     dsg2: Optional[float],
     vqa1: Optional[float],
     vqa2: Optional[float],
+    pickscore1: Optional[float],
+    pickscore2: Optional[float],
+    imagereward1: Optional[float],
+    imagereward2: Optional[float],
     human1: Optional[float],
     human2: Optional[float],
 ) -> str:
@@ -214,7 +293,12 @@ def build_svg(
         f'<tspan x="150" dy="{18 if i > 0 else 0}">{html.escape(line)}</tspan>'
         for i, line in enumerate(lines)
     )
-    return f"""<svg width="1000" height="420" viewBox="0 0 1000 420" xmlns="http://www.w3.org/2000/svg">
+    eval_label = label_with_outcome("DGE-FineEval", eval1, eval2, human1, human2)
+    pickscore_label = label_with_outcome("PickScore", pickscore1, pickscore2, human1, human2)
+    dsg_label = label_with_outcome("DSG score", dsg1, dsg2, human1, human2)
+    vqa_label = label_with_outcome("VQA score", vqa1, vqa2, human1, human2)
+    imagereward_label = label_with_outcome("ImageReward", imagereward1, imagereward2, human1, human2)
+    return f"""<svg width="1000" height="530" viewBox="0 0 1000 530" xmlns="http://www.w3.org/2000/svg">
   <defs>
     <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
       <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#f0f0f0" stroke-width="1"/>
@@ -235,9 +319,17 @@ def build_svg(
       <stop offset="0%" style="stop-color:#ffe4bc;stop-opacity:1" />
       <stop offset="100%" style="stop-color:#fff6e9;stop-opacity:1" />
     </linearGradient>
+    <linearGradient id="tealGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#d5f4f0;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#f1fffd;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="pinkGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#ffddec;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#fff5fa;stop-opacity:1" />
+    </linearGradient>
   </defs>
   
-  <rect width="1000" height="420" fill="#ffffff" />
+  <rect width="1000" height="530" fill="#ffffff" />
 
   <text x="150" y="40" font-family="Segoe UI, Helvetica, Arial" font-size="18" font-weight="bold" text-anchor="middle" fill="#333">Text Prompt</text>
   <text x="500" y="45" font-family="Segoe UI, Helvetica, Arial" font-size="18" font-weight="bold" text-anchor="middle" fill="#333">{html.escape(model1_label)}</text>
@@ -256,32 +348,46 @@ def build_svg(
 
   <g transform="translate(0, 40)">
     <rect x="20" y="160" width="260" height="45" rx="10" fill="url(#blueGrad)" />
-    <text x="150" y="188" font-family="Segoe UI, Arial" font-size="15" text-anchor="middle" fill="#222">DGE-FineEval</text>
+    <text x="150" y="188" font-family="Segoe UI, Arial" font-size="14" text-anchor="middle" fill="#222">{html.escape(eval_label)}</text>
     <rect x="360" y="160" width="280" height="45" rx="10" fill="url(#blueGrad)" />
     <text x="500" y="188" font-family="Segoe UI, Arial" font-size="16" font-weight="bold" text-anchor="middle">{format_score(eval1)}</text>
     <rect x="710" y="160" width="280" height="45" rx="10" fill="url(#blueGrad)" />
     <text x="850" y="188" font-family="Segoe UI, Arial" font-size="16" font-weight="bold" text-anchor="middle">{format_score(eval2)}</text>
 
-    <rect x="20" y="215" width="260" height="45" rx="10" fill="url(#purpleGrad)" />
-    <text x="150" y="243" font-family="Segoe UI, Arial" font-size="15" text-anchor="middle" fill="#222">DSG score</text>
-    <rect x="360" y="215" width="280" height="45" rx="10" fill="url(#purpleGrad)" />
-    <text x="500" y="243" font-family="Segoe UI, Arial" font-size="16" font-weight="bold" text-anchor="middle">{format_score(dsg1)}</text>
-    <rect x="710" y="215" width="280" height="45" rx="10" fill="url(#purpleGrad)" />
-    <text x="850" y="243" font-family="Segoe UI, Arial" font-size="16" font-weight="bold" text-anchor="middle">{format_score(dsg2)}</text>
+    <rect x="20" y="215" width="260" height="45" rx="10" fill="url(#tealGrad)" />
+    <text x="150" y="243" font-family="Segoe UI, Arial" font-size="14" text-anchor="middle" fill="#222">{html.escape(pickscore_label)}</text>
+    <rect x="360" y="215" width="280" height="45" rx="10" fill="url(#tealGrad)" />
+    <text x="500" y="243" font-family="Segoe UI, Arial" font-size="16" font-weight="bold" text-anchor="middle">{format_score(pickscore1)}</text>
+    <rect x="710" y="215" width="280" height="45" rx="10" fill="url(#tealGrad)" />
+    <text x="850" y="243" font-family="Segoe UI, Arial" font-size="16" font-weight="bold" text-anchor="middle">{format_score(pickscore2)}</text>
 
-    <rect x="20" y="270" width="260" height="45" rx="10" fill="url(#greenGrad)" />
-    <text x="150" y="298" font-family="Segoe UI, Arial" font-size="15" text-anchor="middle" fill="#222">VQA score</text>
-    <rect x="360" y="270" width="280" height="45" rx="10" fill="url(#greenGrad)" />
-    <text x="500" y="298" font-family="Segoe UI, Arial" font-size="16" font-weight="bold" text-anchor="middle">{format_score(vqa1)}</text>
-    <rect x="710" y="270" width="280" height="45" rx="10" fill="url(#greenGrad)" />
-    <text x="850" y="298" font-family="Segoe UI, Arial" font-size="16" font-weight="bold" text-anchor="middle">{format_score(vqa2)}</text>
+    <rect x="20" y="270" width="260" height="45" rx="10" fill="url(#purpleGrad)" />
+    <text x="150" y="298" font-family="Segoe UI, Arial" font-size="14" text-anchor="middle" fill="#222">{html.escape(dsg_label)}</text>
+    <rect x="360" y="270" width="280" height="45" rx="10" fill="url(#purpleGrad)" />
+    <text x="500" y="298" font-family="Segoe UI, Arial" font-size="16" font-weight="bold" text-anchor="middle">{format_score(dsg1)}</text>
+    <rect x="710" y="270" width="280" height="45" rx="10" fill="url(#purpleGrad)" />
+    <text x="850" y="298" font-family="Segoe UI, Arial" font-size="16" font-weight="bold" text-anchor="middle">{format_score(dsg2)}</text>
 
-    <rect x="20" y="325" width="260" height="45" rx="10" fill="url(#orangeGrad)" />
-    <text x="150" y="353" font-family="Segoe UI, Arial" font-size="15" text-anchor="middle" fill="#222">Human pref</text>
-    <rect x="360" y="325" width="280" height="45" rx="10" fill="url(#orangeGrad)" />
-    <text x="500" y="353" font-family="Segoe UI, Arial" font-size="18" font-weight="bold" text-anchor="middle">{format_score(human1)}</text>
-    <rect x="710" y="325" width="280" height="45" rx="10" fill="url(#orangeGrad)" />
-    <text x="850" y="353" font-family="Segoe UI, Arial" font-size="16" font-weight="bold" text-anchor="middle">{format_score(human2)}</text>
+    <rect x="20" y="325" width="260" height="45" rx="10" fill="url(#greenGrad)" />
+    <text x="150" y="353" font-family="Segoe UI, Arial" font-size="14" text-anchor="middle" fill="#222">{html.escape(vqa_label)}</text>
+    <rect x="360" y="325" width="280" height="45" rx="10" fill="url(#greenGrad)" />
+    <text x="500" y="353" font-family="Segoe UI, Arial" font-size="16" font-weight="bold" text-anchor="middle">{format_score(vqa1)}</text>
+    <rect x="710" y="325" width="280" height="45" rx="10" fill="url(#greenGrad)" />
+    <text x="850" y="353" font-family="Segoe UI, Arial" font-size="16" font-weight="bold" text-anchor="middle">{format_score(vqa2)}</text>
+
+    <rect x="20" y="380" width="260" height="45" rx="10" fill="url(#pinkGrad)" />
+    <text x="150" y="408" font-family="Segoe UI, Arial" font-size="14" text-anchor="middle" fill="#222">{html.escape(imagereward_label)}</text>
+    <rect x="360" y="380" width="280" height="45" rx="10" fill="url(#pinkGrad)" />
+    <text x="500" y="408" font-family="Segoe UI, Arial" font-size="16" font-weight="bold" text-anchor="middle">{format_score(imagereward1)}</text>
+    <rect x="710" y="380" width="280" height="45" rx="10" fill="url(#pinkGrad)" />
+    <text x="850" y="408" font-family="Segoe UI, Arial" font-size="16" font-weight="bold" text-anchor="middle">{format_score(imagereward2)}</text>
+
+    <rect x="20" y="435" width="260" height="45" rx="10" fill="url(#orangeGrad)" />
+    <text x="150" y="463" font-family="Segoe UI, Arial" font-size="15" text-anchor="middle" fill="#222">Human Survey Preference</text>
+    <rect x="360" y="435" width="280" height="45" rx="10" fill="url(#orangeGrad)" />
+    <text x="500" y="463" font-family="Segoe UI, Arial" font-size="18" font-weight="bold" text-anchor="middle">{format_score(human1)}</text>
+    <rect x="710" y="435" width="280" height="45" rx="10" fill="url(#orangeGrad)" />
+    <text x="850" y="463" font-family="Segoe UI, Arial" font-size="16" font-weight="bold" text-anchor="middle">{format_score(human2)}</text>
   </g>
 </svg>
 """
@@ -296,11 +402,20 @@ def render_prompt_grid(
     eval_scores: Dict[str, Dict[str, float]],
     dsg_scores: Dict[str, float],
     vqa_scores: Dict[str, float],
+    pickscore_scores: Dict[str, float],
+    imagereward_scores: Dict[str, float],
     human_prefs: Dict[str, Dict[str, float]],
     survey_pair_info: Dict[str, Dict[str, str]],
     generation: int,
 ) -> None:
-    score_rows = score_rows_present(eval_scores, dsg_scores, vqa_scores, human_prefs)
+    score_rows = score_rows_present(
+        eval_scores,
+        dsg_scores,
+        vqa_scores,
+        pickscore_scores,
+        imagereward_scores,
+        human_prefs,
+    )
     n_rows = 1 + len(score_rows)
     n_cols = 1 + len(image_infos)
 
@@ -348,14 +463,41 @@ def render_prompt_grid(
         ax_label = axes[row_idx][0]
         if row_name == "Eval score":
             bg = "#e8f4ff"
+        elif row_name == "PickScore":
+            bg = "#e2f6f2"
         elif row_name == "DSG score":
             bg = "#f4f0ff"
-        elif row_name == "Human pref":
+        elif row_name == "Human Survey Preference":
             bg = "#fff2cc"
+        elif row_name == "ImageReward":
+            bg = "#ffe9f2"
         else:
             bg = "#e6ffe6"
+        row_score1, row_score2 = pair_scores_for_row(
+            row_name,
+            idx,
+            eval_scores,
+            dsg_scores,
+            vqa_scores,
+            pickscore_scores,
+            imagereward_scores,
+            human_prefs,
+            survey_pair_info,
+        )
+        human1, human2 = pair_scores_for_row(
+            "Human Survey Preference",
+            idx,
+            eval_scores,
+            dsg_scores,
+            vqa_scores,
+            pickscore_scores,
+            imagereward_scores,
+            human_prefs,
+            survey_pair_info,
+        )
+        row_label = label_with_outcome(row_name, row_score1, row_score2, human1, human2)
         ax_label.add_patch(patches.Rectangle((0, 0), 1, 1, facecolor=bg, edgecolor="none"))
-        ax_label.text(0.5, 0.5, row_name, ha="center", va="center", fontsize=12)
+        ax_label.text(0.5, 0.5, row_label, ha="center", va="center", fontsize=11)
 
         for col, info in enumerate(image_infos, start=1):
             ax_cell = axes[row_idx][col]
@@ -373,7 +515,7 @@ def render_prompt_grid(
                     value = dsg_scores.get(pair_info.get("image2_path", ""))
                 else:
                     value = None
-            elif row_name == "Human pref":
+            elif row_name == "Human Survey Preference":
                 model_name = info.get("model")
                 idx_str = f"{idx:04d}"
                 pref_entry = human_prefs.get(idx_str)
@@ -387,7 +529,7 @@ def render_prompt_grid(
                         value = None
                 else:
                     value = None
-            else:
+            elif row_name == "VQA score":
                 model_name = info.get("model")
                 idx_str = f"{idx:04d}"
                 pair_info = survey_pair_info.get(idx_str, {})
@@ -395,6 +537,17 @@ def render_prompt_grid(
                     value = vqa_scores.get(pair_info.get("image1_path", ""))
                 elif model_name == pair_info.get("model_2"):
                     value = vqa_scores.get(pair_info.get("image2_path", ""))
+                else:
+                    value = None
+            else:
+                model_name = info.get("model")
+                idx_str = f"{idx:04d}"
+                pair_info = survey_pair_info.get(idx_str, {})
+                row_scores = pickscore_scores if row_name == "PickScore" else imagereward_scores
+                if model_name == pair_info.get("model_1"):
+                    value = row_scores.get(pair_info.get("image1_path", ""))
+                elif model_name == pair_info.get("model_2"):
+                    value = row_scores.get(pair_info.get("image2_path", ""))
                 else:
                     value = None
             ax_cell.text(0.5, 0.5, format_score(value), ha="center", va="center", fontsize=12)
@@ -423,6 +576,8 @@ def main() -> None:
     parser.add_argument("--eval_dir", type=Path, default=Path("data/raw/eval_v1"))
     parser.add_argument("--dsg_scores", type=Path, default=Path("../../DSG/evaluation_results_dge.json"))
     parser.add_argument("--vqa_scores", type=Path, default=Path("../../t2v_metrics/results/survey_samples_vqa_scores.jsonl"))
+    parser.add_argument("--pickscore_scores", type=Path, default=Path("reports/baselines/survey_samples_pickscore.jsonl"))
+    parser.add_argument("--imagereward_scores", type=Path, default=Path("reports/baselines/survey_samples_imagereward.jsonl"))
     parser.add_argument("--human_counts", type=Path, default=Path("data/images/survey_samples/question_counts.csv"))
     parser.add_argument("--models", type=str, default=None, help="Comma-separated model list.")
     parser.add_argument("--exclude_models", type=str, default="bagel,survey_samples")
@@ -451,6 +606,8 @@ def main() -> None:
     eval_scores = load_eval_scores(args.eval_dir) if args.eval_dir.exists() else {}
     dsg_scores = load_dsg_scores(args.dsg_scores)
     vqa_scores = load_vqa_scores(args.vqa_scores)
+    pickscore_scores = load_jsonl_image_scores(args.pickscore_scores)
+    imagereward_scores = load_jsonl_image_scores(args.imagereward_scores)
     human_prefs = load_question_counts(args.human_counts)
     survey_pair_info = load_survey_pair_info(args.images_dir)
 
@@ -465,7 +622,14 @@ def main() -> None:
             raise SystemExit("No prompts left after filtering by only_ids.")
     idx = max(0, min(args.start_idx, len(prompt_items) - 1))
 
-    score_rows = score_rows_present(eval_scores, dsg_scores, vqa_scores, human_prefs)
+    score_rows = score_rows_present(
+        eval_scores,
+        dsg_scores,
+        vqa_scores,
+        pickscore_scores,
+        imagereward_scores,
+        human_prefs,
+    )
     n_rows = 1 + len(score_rows)
     n_cols = 3
 
@@ -522,6 +686,8 @@ def main() -> None:
                 eval_scores,
                 dsg_scores,
                 vqa_scores,
+                pickscore_scores,
+                imagereward_scores,
                 human_prefs,
                 survey_pair_info,
                 args.generation,
@@ -543,6 +709,10 @@ def main() -> None:
             dsg2 = dsg_scores.get(image2_path)
             vqa1 = vqa_scores.get(image1_path)
             vqa2 = vqa_scores.get(image2_path)
+            pickscore1 = pickscore_scores.get(image1_path)
+            pickscore2 = pickscore_scores.get(image2_path)
+            imagereward1 = imagereward_scores.get(image1_path)
+            imagereward2 = imagereward_scores.get(image2_path)
             human_entry = human_prefs.get(idx_str, {})
             human1 = human_entry.get("preference")
             human2 = None if human1 is None else 1.0 - human1
@@ -559,6 +729,10 @@ def main() -> None:
                 dsg2=dsg2,
                 vqa1=vqa1,
                 vqa2=vqa2,
+                pickscore1=pickscore1,
+                pickscore2=pickscore2,
+                imagereward1=imagereward1,
+                imagereward2=imagereward2,
                 human1=human1,
                 human2=human2,
             )
@@ -584,6 +758,8 @@ def main() -> None:
         eval_scores,
         dsg_scores,
         vqa_scores,
+        pickscore_scores,
+        imagereward_scores,
         human_prefs,
         survey_pair_info,
         args.generation,
@@ -618,6 +794,8 @@ def main() -> None:
             eval_scores,
             dsg_scores,
             vqa_scores,
+            pickscore_scores,
+            imagereward_scores,
             human_prefs,
             survey_pair_info,
             args.generation,

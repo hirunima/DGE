@@ -47,6 +47,7 @@ def make_config(use_vllm: bool = False) -> ExperimentConfig:
         start_idx=0,
         end_idx=None,
         limit=None,
+        skip_indices=(),
         weights=StageWeights(1.0, 1.0, 1.0),
         node_confidence_threshold=0.5,
         node_nms_threshold=0.3,
