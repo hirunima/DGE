@@ -20,7 +20,10 @@ from .processing import (
     extract_scene_graph
 )
 
-from modules.config import PROJECT_ROOT
+try:
+    from .config import PROJECT_ROOT
+except ImportError:
+    from modules.config import PROJECT_ROOT
 
 
 def main_pipeline(args: Any, model: Any, sampling_params: Any) -> None:

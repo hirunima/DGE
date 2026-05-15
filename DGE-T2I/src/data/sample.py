@@ -2,7 +2,10 @@ import random
 import os
 import json
 import argparse 
-from modules.config import DEFAULT_SEED, DEFAULT_OUTPUT_FILE, DATA_RAW_DIR
+try:
+    from .modules.config import DEFAULT_SEED, DEFAULT_OUTPUT_FILE, DATA_RAW_DIR
+except ImportError:
+    from modules.config import DEFAULT_SEED, DEFAULT_OUTPUT_FILE, DATA_RAW_DIR
 
 DEFAULT_N = 20
 DEFAULT_FILENAME = "qwen8b_t2i_prompts_aug_sample.json"

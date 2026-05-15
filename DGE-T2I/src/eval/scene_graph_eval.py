@@ -4,12 +4,20 @@ Modular scene graph evaluation pipeline for generated images.
 
 import argparse
 
-from modules.config import (
-    DEFAULT_OUTPUT_DIR,
-    DEFAULT_PROMPTS_FILE,
-    DEFAULT_IMAGES_DIR,
-    MAX_TOKENS,
-)
+try:
+    from .modules.config import (
+        DEFAULT_OUTPUT_DIR,
+        DEFAULT_PROMPTS_FILE,
+        DEFAULT_IMAGES_DIR,
+        MAX_TOKENS,
+    )
+except ImportError:
+    from modules.config import (
+        DEFAULT_OUTPUT_DIR,
+        DEFAULT_PROMPTS_FILE,
+        DEFAULT_IMAGES_DIR,
+        MAX_TOKENS,
+    )
 
 
 def main() -> None:
@@ -29,8 +37,12 @@ def main() -> None:
     parser.add_argument("--max_tokens", type=int, default=MAX_TOKENS)
     args = parser.parse_args()
 
-    from modules.model import initialize_model
-    from modules.pipeline import main_pipeline
+    try:
+        from .modules.model import initialize_model
+        from .modules.pipeline import main_pipeline
+    except ImportError:
+        from modules.model import initialize_model
+        from modules.pipeline import main_pipeline
 
     if args.prompts_file == "None": args.prompts_file = None
 

@@ -285,7 +285,10 @@ def apply_batch_results(outputs: List[Any], pending_meta: List[Dict[str, Any]], 
 
 def summarize_results(results: Dict[int, Dict[str, Any]]) -> Dict[str, Any]:
     import numpy as np
-    from modules.config import LABEL_THRESHOLD
+    try:
+        from .config import LABEL_THRESHOLD
+    except ImportError:
+        from modules.config import LABEL_THRESHOLD
 
     all_scores = {}
     summary = {

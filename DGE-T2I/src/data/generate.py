@@ -12,7 +12,10 @@ import random
 import numpy as np
 import torch
 
-from modules.config import DEFAULT_SEED, DEFAULT_INPUT_FILE, DEFAULT_OUTPUT_FILE
+try:
+    from .modules.config import DEFAULT_SEED, DEFAULT_INPUT_FILE, DEFAULT_OUTPUT_FILE
+except ImportError:
+    from modules.config import DEFAULT_SEED, DEFAULT_INPUT_FILE, DEFAULT_OUTPUT_FILE
 
 
 def main():
@@ -25,8 +28,12 @@ def main():
     args = parser.parse_args()
 
     # Import model functions only when needed (to handle vLLM dependencies)
-    from modules.model import initialize_model
-    from modules.pipeline import main_pipeline
+    try:
+        from .modules.model import initialize_model
+        from .modules.pipeline import main_pipeline
+    except ImportError:
+        from modules.model import initialize_model
+        from modules.pipeline import main_pipeline
 
     # Initialize model
     model, sampling_params = initialize_model(args.seed)

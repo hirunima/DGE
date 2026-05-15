@@ -9,7 +9,10 @@ from PIL import Image
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from modules.config import DEFAULT_OUTPUT_DIR, SAMPLE_DIFF, N_PROMPTS, DEFAULT_IMAGES_DIR, DEFAULT_PROMPTS_FILE
+try:
+    from ..modules.config import DEFAULT_OUTPUT_DIR, SAMPLE_DIFF, N_PROMPTS, DEFAULT_IMAGES_DIR, DEFAULT_PROMPTS_FILE
+except ImportError:
+    from modules.config import DEFAULT_OUTPUT_DIR, SAMPLE_DIFF, N_PROMPTS, DEFAULT_IMAGES_DIR, DEFAULT_PROMPTS_FILE
 
 def main(): 
     # parser = argparse.ArgumentParser()
@@ -96,5 +99,4 @@ def main():
       
 if __name__ == "__main__":
     main()
-
 

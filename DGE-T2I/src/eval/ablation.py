@@ -15,20 +15,36 @@ from PIL import Image
 import os
 import re
 
-from modules.processing import (
-    apply_batch_results,
-    build_attribute_prompt,
-    build_object_prompt,
-    build_relation_prompt,
-    extract_json,
-    image_path_from_pattern,
-    load_json_or_jsonl,
-    normalize_answer,
-    normalize_bbox,
-    normalize_visible,
-    summarize_results,
-    extract_scene_graph
-)
+try:
+    from .modules.processing import (
+        apply_batch_results,
+        build_attribute_prompt,
+        build_object_prompt,
+        build_relation_prompt,
+        extract_json,
+        image_path_from_pattern,
+        load_json_or_jsonl,
+        normalize_answer,
+        normalize_bbox,
+        normalize_visible,
+        summarize_results,
+        extract_scene_graph,
+    )
+except ImportError:
+    from modules.processing import (
+        apply_batch_results,
+        build_attribute_prompt,
+        build_object_prompt,
+        build_relation_prompt,
+        extract_json,
+        image_path_from_pattern,
+        load_json_or_jsonl,
+        normalize_answer,
+        normalize_bbox,
+        normalize_visible,
+        summarize_results,
+        extract_scene_graph,
+    )
 
 from tqdm import tqdm
 
@@ -187,7 +203,6 @@ class AttributeScorerBackend(StageBackend):
                 results.append({"id": entity.get("id"), "name": entity.get("name"), "attribute": attr, "score": raw_score, "calibrated_score": cal_score, "skipped": False, "bbox": node["bbox"], **extra})
         return {"backend": self.backend_id, "crop_size": self.config.stage2_crop_size, "attributes": results, "binding_score": safe_mean(e.get("calibrated_score") for e in results if not e.get("skipped"))}
 
-    @abstractmethod
     def _evaluate_attribute(self, crop: Image.Image, entity_name: str, attribute: str) -> Tuple[float, dict]: raise NotImplementedError
 
 class RelationScorerBackend(StageBackend):
@@ -209,7 +224,6 @@ class RelationScorerBackend(StageBackend):
         
         return {"backend": self.backend_id, "relations": results, "relation_score": safe_mean(e.get("original_score") for e in results if not e.get("skipped")), "swap_accuracy": safe_mean(1.0 if e.get("swap_correct") else 0.0 for e in results if e.get("swap_correct") is not None)}
 
-    @abstractmethod
     def _evaluate_relation(self, image: Image.Image, subj_bbox: list, obj_bbox: list, relation: str, subj_name: str, obj_name: str) -> Tuple[float, float, dict]: raise NotImplementedError
 
 class _TransformersBackendMixin:
@@ -1803,6 +1817,75 @@ def safe_mean(v: Iterable) -> Optional[float]:
     cleaned = [float(x) for x in v if x is not None]
     return sum(cleaned) / len(cleaned) if cleaned else None
 
+def build_pipeline_permutations(
+    stage1_variants: Sequence[str] = STAGE1_VARIANTS,
+    stage2_variants: Sequence[str] = DEFAULT_STAGE2_VARIANTS,
+    stage3_variants: Sequence[str] = STAGE3_VARIANTS,
+) -> List[Tuple[str, str, str]]:
+    return [(s1, s2, s3) for s1 in stage1_variants for s2 in stage2_variants for s3 in stage3_variants]
+
+def normalize_weights(weights: StageWeights) -> Dict[str, Dict[str, float]]:
+    raw = {"node": weights.node, "attribute": weights.attribute, "relation": weights.relation}
+    total = sum(raw.values())
+    normalized = {key: (value / total if total else 0.0) for key, value in raw.items()}
+    return {"raw": raw, "normalized": normalized}
+
+def compose_score(scores: Mapping[str, Optional[float]], weights: Mapping[str, float]) -> Dict[str, Any]:
+    active = {key: value for key, value in scores.items() if value is not None}
+    active_weight_total = sum(weights.get(key, 0.0) for key in active)
+    if not active or active_weight_total <= 0:
+        return {"score": None, "active_weights": {}}
+    active_weights = {key: weights.get(key, 0.0) / active_weight_total for key in active}
+    return {
+        "score": sum(active[key] * active_weights[key] for key in active),
+        "active_weights": active_weights,
+    }
+
+def compute_correlation_report(
+    rows_by_perm: Mapping[str, Sequence[Mapping[str, Any]]] | Sequence[Mapping[str, Any]],
+    labels: Optional[Sequence[Mapping[str, Any]]],
+    label_config: LabelConfig,
+) -> Optional[Dict[str, Any]]:
+    if labels is None:
+        if not label_config.path or not Path(label_config.path).exists():
+            return None
+        labels = load_json_or_jsonl(label_config.path)
+
+    label_map = {
+        str(row.get(label_config.key_field)): row.get(label_config.score_field)
+        for row in labels
+        if row.get(label_config.key_field) is not None and row.get(label_config.score_field) is not None
+    }
+    if not label_map:
+        return None
+
+    grouped = rows_by_perm if isinstance(rows_by_perm, Mapping) else {"all": rows_by_perm}
+    report: Dict[str, Any] = {}
+    for perm, rows in grouped.items():
+        pred, gold = [], []
+        for row in rows:
+            key = str(row.get(label_config.result_key_field))
+            if key in label_map and row.get("final_score") is not None:
+                pred.append(float(row["final_score"]))
+                gold.append(float(label_map[key]))
+        if not pred:
+            continue
+        pearson = None
+        if len(pred) >= 2:
+            pred_arr = np.asarray(pred, dtype=float)
+            gold_arr = np.asarray(gold, dtype=float)
+            if pred_arr.std() > 0 and gold_arr.std() > 0:
+                pearson = float(np.corrcoef(pred_arr, gold_arr)[0, 1])
+        report[perm] = {"n": len(pred), "pearson": pearson}
+    return report or None
+
+def invert_relation(relation: Mapping[str, Any]) -> Dict[str, Any]:
+    return {
+        "subject": relation.get("object"),
+        "relation": relation.get("relation"),
+        "object": relation.get("subject"),
+    }
+
 def clamp_bbox(b: Sequence[float], w: int, h: int) -> List[int]: return [max(0, min(int(round(b[0])), w-1)), max(0, min(int(round(b[1])), h-1)), max(1, min(int(round(b[2])), w)), max(1, min(int(round(b[3])), h))]
 def normalized_bbox_to_pixel(b: Sequence[float], w: int, h: int) -> List[int]: return clamp_bbox([w*b[0]/1000.0, h*b[1]/1000.0, w*b[2]/1000.0, h*b[3]/1000.0], w, h)
 def parse_stage1_localization(raw: str, size: Tuple[int, int]) -> List[List[int]]:
@@ -1897,8 +1980,7 @@ def load_experiment_items(config: ExperimentConfig) -> List[ExperimentItem]:
 
 def run_ablation_experiment(config: ExperimentConfig, items=None, backends=None) -> Dict[str, Any]:
     import torch
-    wt = {"node": config.weights.node, "attribute": config.weights.attribute, "relation": config.weights.relation}
-    norm_wts = {k: v / sum(wt.values()) for k, v in wt.items()}
+    norm_wts = normalize_weights(config.weights)["normalized"]
     items = items or load_experiment_items(config)
 
     # Determine which backends to use based on config or defaults to all
@@ -1935,18 +2017,47 @@ def run_ablation_experiment(config: ExperimentConfig, items=None, backends=None)
         for perm in rows_by_perm.keys():
             b1, b2, b3 = perm.split("-")
             sc = {"node": st1_cache[b1]["res"].get("fidelity_score"), "attribute": st2_cache[(b1, b2)]["res"].get("binding_score"), "relation": st3_cache[(b1, b3)]["res"].get("relation_score")}
-            act_wts = {k: norm_wts[k] / sum(norm_wts[x] for x in sc if sc[x] is not None) for k in sc if sc[k] is not None} if any(v is not None for v in sc.values()) else {}
+            composed = compose_score(sc, norm_wts)
 
             rows_by_perm[perm].append({
-                "image_id": item.image_id, "prompt": item.prompt, "permutation": perm, "final_score": sum(sc[k] * act_wts[k] for k in act_wts),
+                "image_id": item.image_id, "prompt": item.prompt, "permutation": perm, "final_score": composed["score"],
                 "st1_res": st1_cache[b1]["res"], 
                 "st2_res": st2_cache[(b1, b2)]["res"], 
                 "st3_res": st3_cache[(b1, b3)]["res"], 
                 "latency_ms": {"total": st1_cache[b1]["lat"] + st2_cache[(b1, b2)]["lat"] + st3_cache[(b1, b3)]["lat"]}
             }) # Condensed dict for brevity
 
-            
-    return {"config": asdict(config), "items_total": len(items), "permutations": rows_by_perm}
+    aggregate_matrix = [
+        {
+            "permutation": perm,
+            "n": len(rows),
+            "average_final_score": safe_mean(row.get("final_score") for row in rows),
+        }
+        for perm, rows in rows_by_perm.items()
+    ]
+    latency_report = {
+        perm: {"average_total_ms": safe_mean(row.get("latency_ms", {}).get("total") for row in rows)}
+        for perm, rows in rows_by_perm.items()
+    }
+    relation_swap_report = {
+        perm: {
+            "average_swap_accuracy": safe_mean(
+                row.get("st3_res", {}).get("swap_accuracy") for row in rows
+            )
+        }
+        for perm, rows in rows_by_perm.items()
+    }
+    correlation_report = compute_correlation_report(rows_by_perm, None, config.label_config)
+
+    return {
+        "config": serialize_config(config),
+        "items_total": len(items),
+        "permutations": rows_by_perm,
+        "aggregate_matrix": aggregate_matrix,
+        "latency_report": latency_report,
+        "relation_swap_report": relation_swap_report,
+        "correlation_report": correlation_report,
+    }
 
 def serialize_config(config: ExperimentConfig) -> Dict[str, Any]:
     payload = asdict(config)
@@ -2061,62 +2172,68 @@ def build_arg_parser() -> argparse.ArgumentParser:
     return p
 def config_from_args(args: argparse.Namespace) -> ExperimentConfig:
     none_vals = {None, "None"}
+    get = lambda name, default=None: getattr(args, name, default)
+    backend_kind = lambda name: get(f"{name}_backend_kind", "mock")
+    model_path = lambda name: get(f"{name}_model_path", None)
+    checkpoint_path = lambda name: get(f"{name}_checkpoint_path", None)
+    e2_kind = backend_kind("e2")
+    e3_kind = backend_kind("e3")
     return ExperimentConfig(
         output_dir=args.output_dir,
-        prompts_file=None if args.prompts_file in none_vals else args.prompts_file,
-        sg_file=None if args.sg_file in none_vals else args.sg_file,
+        prompts_file=None if get("prompts_file") in none_vals else get("prompts_file"),
+        sg_file=None if get("sg_file") in none_vals else get("sg_file"),
         images_dir=args.images_dir,
-        image_pattern=args.image_pattern,
-        generation=args.generation,
-        start_idx=args.start_idx,
-        end_idx=args.end_idx,
-        limit=args.limit,
-        skip_indices=tuple(int(x.strip()) for x in args.skip_indices.split(",") if x.strip()),
-        weights=StageWeights(args.weight_node, args.weight_attribute, args.weight_relation),
-        node_confidence_threshold=args.node_confidence_threshold,
-        node_nms_threshold=args.node_nms_threshold,
-        stage2_crop_size=args.stage2_crop_size,
-        stage2_calibration=args.stage2_calibration,
-        stage2_calibration_scale=args.stage2_calibration_scale,
-        stage2_calibration_bias=args.stage2_calibration_bias,
-        stage3_margin_ratio=args.stage3_margin_ratio,
-        include_model_load_time=args.include_model_load_time,
+        image_pattern=get("image_pattern", "{index:04d}-{generation}.png"),
+        generation=get("generation", 1),
+        start_idx=get("start_idx", 0),
+        end_idx=get("end_idx", None),
+        limit=get("limit", None),
+        skip_indices=tuple(int(x.strip()) for x in get("skip_indices", "").split(",") if x.strip()),
+        weights=StageWeights(get("weight_node", 0.3), get("weight_attribute", 0.3), get("weight_relation", 0.3)),
+        node_confidence_threshold=get("node_confidence_threshold", 0.2),
+        node_nms_threshold=get("node_nms_threshold", 0.3),
+        stage2_crop_size=get("stage2_crop_size", 384),
+        stage2_calibration=get("stage2_calibration", "clip"),
+        stage2_calibration_scale=get("stage2_calibration_scale", 1.0),
+        stage2_calibration_bias=get("stage2_calibration_bias", 0.0),
+        stage3_margin_ratio=get("stage3_margin_ratio", 0.1),
+        include_model_load_time=get("include_model_load_time", False),
         label_config=LabelConfig(
-            path=None if args.human_score_file in none_vals else args.human_score_file,
-            key_field=args.label_key_field,
-            score_field=args.label_score_field,
-            result_key_field=args.result_key_field,
+            path=None if get("human_score_file") in none_vals else get("human_score_file"),
+            key_field=get("label_key_field", "image_id"),
+            score_field=get("label_score_field", "score"),
+            result_key_field=get("result_key_field", "image_id"),
         ),
         backend_specs={
-            "E1": BackendSpec(args.e1_backend_kind, args.eupe_model_path, args.eupe_checkpoint_path),
-            "V1": BackendSpec(args.v1_backend_kind, args.qwen_model_path, args.qwen_checkpoint_path),
+            "E1": BackendSpec(backend_kind("e1"), model_path("eupe"), checkpoint_path("eupe")),
+            "V1": BackendSpec(backend_kind("v1"), model_path("qwen"), checkpoint_path("qwen")),
             "E2": BackendSpec(
-                args.e2_backend_kind,
-                args.eva_clip_model_path if args.e2_backend_kind in {"eva", "eva-clip", "evaclip"} else args.blip2_model_path if args.e2_backend_kind in {"blip2", "blip-2"} else args.siglip_model_path,
-                args.eva_clip_checkpoint_path if args.e2_backend_kind in {"eva", "eva-clip", "evaclip"} else args.blip2_checkpoint_path if args.e2_backend_kind in {"blip2", "blip-2"} else args.siglip_checkpoint_path,
+                e2_kind,
+                model_path("eva_clip") if e2_kind in {"eva", "eva-clip", "evaclip"} else model_path("blip2") if e2_kind in {"blip2", "blip-2"} else model_path("siglip"),
+                checkpoint_path("eva_clip") if e2_kind in {"eva", "eva-clip", "evaclip"} else checkpoint_path("blip2") if e2_kind in {"blip2", "blip-2"} else checkpoint_path("siglip"),
             ),
-            "V2": BackendSpec(args.v2_backend_kind, args.qwen_model_path, args.qwen_checkpoint_path),
+            "V2": BackendSpec(backend_kind("v2"), model_path("qwen"), checkpoint_path("qwen")),
             "S2": BackendSpec("skip"),
             "E3": BackendSpec(
-                args.e3_backend_kind,
-                args.reitr_model_path if args.e3_backend_kind in {"reitr", "reltr"} else args.eva_clip_model_path if args.e3_backend_kind in {"eva", "eva-clip", "evaclip"} else args.siglip_model_path,
-                args.reitr_checkpoint_path if args.e3_backend_kind in {"reitr", "reltr"} else args.eva_clip_checkpoint_path if args.e3_backend_kind in {"eva", "eva-clip", "evaclip"} else args.siglip_checkpoint_path,
+                e3_kind,
+                model_path("reitr") if e3_kind in {"reitr", "reltr"} else model_path("eva_clip") if e3_kind in {"eva", "eva-clip", "evaclip"} else model_path("siglip"),
+                checkpoint_path("reitr") if e3_kind in {"reitr", "reltr"} else checkpoint_path("eva_clip") if e3_kind in {"eva", "eva-clip", "evaclip"} else checkpoint_path("siglip"),
             ),
-            "V3": BackendSpec(args.v3_backend_kind, args.qwen_model_path, args.qwen_checkpoint_path),
+            "V3": BackendSpec(backend_kind("v3"), model_path("qwen"), checkpoint_path("qwen")),
         },
-        selected_backends=set(args.backends.split(",")) if args.backends else None,
-        use_cpu=args.cpu,
-        low_vram=args.low_vram,
-        use_vllm=args.use_vllm,
-        max_text_length=args.max_text_length,
-        torch_cuda_mem_frac=args.torch_cuda_mem_frac,
-        vllm_api_base=args.vllm_api_base,
-        vllm_api_key=args.vllm_api_key,
-        vllm_temperature=args.vllm_temperature,
-        vllm_max_tokens=args.vllm_max_tokens,
-        vllm_yes_no_max_tokens=args.vllm_yes_no_max_tokens,
-        molmopoint_model_path=args.molmopoint_model_path,
-        molmopoint_checkpoint_path=args.molmopoint_checkpoint_path,
+        selected_backends=set(get("backends").split(",")) if get("backends") else None,
+        use_cpu=get("cpu", False),
+        low_vram=get("low_vram", False),
+        use_vllm=get("use_vllm", False),
+        max_text_length=get("max_text_length", 64),
+        torch_cuda_mem_frac=get("torch_cuda_mem_frac", 0.8),
+        vllm_api_base=get("vllm_api_base", "http://127.0.0.1:8000/v1"),
+        vllm_api_key=get("vllm_api_key", None),
+        vllm_temperature=get("vllm_temperature", None),
+        vllm_max_tokens=get("vllm_max_tokens", None),
+        vllm_yes_no_max_tokens=get("vllm_yes_no_max_tokens", None),
+        molmopoint_model_path=model_path("molmopoint"),
+        molmopoint_checkpoint_path=checkpoint_path("molmopoint"),
     )
 
 if __name__ == "__main__":
